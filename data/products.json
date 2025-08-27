@@ -1,0 +1,2640 @@
+[
+  {
+    "id": 1,
+    "name": "Espresso",
+    "image": "https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?w=300&h=300&fit=crop",
+    "price": 2.5,
+    "category": "coffee",
+    "description": "Rich and bold espresso shot.",
+    "options": {
+      "size": [{ "name": "Single", "price": 0 }, { "name": "Double", "price": 1.0 }]
+    }
+  },
+  {
+    "id": 2,
+    "name": "Americano",
+    "image": "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=300&h=300&fit=crop",
+    "price": 3.0,
+    "category": "coffee",
+    "description": "Espresso with hot water for a smooth taste.",
+    "options": {
+      "size": [{ "name": "Small", "price": 0 }, { "name": "Medium", "price": 0.5 }, { "name": "Large", "price": 1.0 }]
+    }
+  },
+  {
+    "id": 3,
+    "name": "Cappuccino",
+    "image": "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=300&h=300&fit=crop",
+    "price": 4.0,
+    "category": "coffee",
+    "description": "Espresso with steamed milk and foam.",
+    "options": {
+      "size": [{ "name": "Small", "price": 0 }, { "name": "Medium", "price": 0.5 }, { "name": "Large", "price": 1.0 }],
+      "milk": [
+        { "name": "Whole", "price": 0 },
+        { "name": "Almond", "price": 0.5 },
+        { "name": "Oat", "price": 0.5 },
+        { "name": "Soy", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "name": "Latte",
+    "image": "https://images.unsplash.com/photo-1561047029-3000c68339ca?w=300&h=300&fit=crop",
+    "price": 4.5,
+    "category": "coffee",
+    "description": "Smooth espresso with steamed milk.",
+    "options": {
+      "size": [{ "name": "Small", "price": 0 }, { "name": "Medium", "price": 0.5 }, { "name": "Large", "price": 1.0 }],
+      "milk": [
+        { "name": "Whole", "price": 0 },
+        { "name": "Almond", "price": 0.5 },
+        { "name": "Oat", "price": 0.5 },
+        { "name": "Soy", "price": 0.5 }
+      ],
+      "flavor": [
+        { "name": "None", "price": 0 },
+        { "name": "Vanilla", "price": 0.5 },
+        { "name": "Caramel", "price": 0.5 },
+        { "name": "Hazelnut", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "name": "Mocha",
+    "image": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+    "price": 5.0,
+    "category": "coffee",
+    "description": "Espresso with chocolate and steamed milk.",
+    "options": {
+      "size": [{ "name": "Small", "price": 0 }, { "name": "Medium", "price": 0.5 }, { "name": "Large", "price": 1.0 }],
+      "chocolate": [
+        { "name": "Milk Chocolate", "price": 0 },
+        { "name": "Dark Chocolate", "price": 0 },
+        { "name": "White Chocolate", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 6,
+    "name": "Macchiato",
+    "image": "https://images.unsplash.com/photo-1541167760496-1628856ab772?w=300&h=300&fit=crop",
+    "price": 4.25,
+    "category": "coffee",
+    "description": "Espresso with a dollop of foamed milk.",
+    "options": {
+      "style": [{ "name": "Traditional", "price": 0 }, { "name": "Caramel", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 7,
+    "name": "Flat White",
+    "image": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=300&h=300&fit=crop",
+    "price": 4.75,
+    "category": "coffee",
+    "description": "Double shot espresso with microfoam milk.",
+    "options": {
+      "milk": [{ "name": "Whole", "price": 0 }, { "name": "Almond", "price": 0.5 }, { "name": "Oat", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 8,
+    "name": "Cold Brew",
+    "image": "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=300&h=300&fit=crop",
+    "price": 3.75,
+    "category": "coffee",
+    "description": "Smooth cold-brewed coffee served over ice.",
+    "options": {
+      "size": [{ "name": "Medium", "price": 0 }, { "name": "Large", "price": 1.0 }]
+    }
+  },
+  {
+    "id": 9,
+    "name": "Iced Coffee",
+    "image": "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=300&h=300&fit=crop",
+    "price": 3.25,
+    "category": "coffee",
+    "description": "Chilled coffee served over ice.",
+    "options": {
+      "size": [{ "name": "Medium", "price": 0 }, { "name": "Large", "price": 1.0 }],
+      "sweetener": [
+        { "name": "None", "price": 0 },
+        { "name": "Sugar", "price": 0 },
+        { "name": "Simple Syrup", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "name": "Frappé",
+    "image": "https://images.unsplash.com/photo-1570197788417-0e82375c9371?w=300&h=300&fit=crop",
+    "price": 5.25,
+    "category": "coffee",
+    "description": "Blended iced coffee with whipped cream.",
+    "options": {
+      "flavor": [
+        { "name": "Original", "price": 0 },
+        { "name": "Caramel", "price": 0.5 },
+        { "name": "Mocha", "price": 0.5 },
+        { "name": "Vanilla", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 11,
+    "name": "Turkish Coffee",
+    "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=300&h=300&fit=crop",
+    "price": 3.5,
+    "category": "coffee",
+    "description": "Traditional Turkish coffee with cardamom.",
+    "options": {
+      "sweetness": [
+        { "name": "No Sugar", "price": 0 },
+        { "name": "Little Sugar", "price": 0 },
+        { "name": "Medium Sugar", "price": 0 },
+        { "name": "Sweet", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 12,
+    "name": "Cortado",
+    "image": "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=300&h=300&fit=crop",
+    "price": 4.0,
+    "category": "coffee",
+    "description": "Equal parts espresso and warm milk.",
+    "options": {
+      "milk": [{ "name": "Whole", "price": 0 }, { "name": "Almond", "price": 0.5 }, { "name": "Oat", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 13,
+    "name": "Affogato",
+    "image": "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=300&h=300&fit=crop",
+    "price": 5.5,
+    "category": "coffee",
+    "description": "Vanilla ice cream drowned in hot espresso.",
+    "options": {
+      "ice_cream": [
+        { "name": "Vanilla", "price": 0 },
+        { "name": "Chocolate", "price": 0.5 },
+        { "name": "Caramel", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 14,
+    "name": "Gibraltar",
+    "image": "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=300&h=300&fit=crop",
+    "price": 4.25,
+    "category": "coffee",
+    "description": "Double espresso with steamed milk in a Gibraltar glass.",
+    "options": {
+      "milk": [{ "name": "Whole", "price": 0 }, { "name": "Almond", "price": 0.5 }, { "name": "Oat", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 15,
+    "name": "Red Eye",
+    "image": "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=300&h=300&fit=crop",
+    "price": 3.75,
+    "category": "coffee",
+    "description": "Drip coffee with a shot of espresso.",
+    "options": {
+      "size": [{ "name": "Medium", "price": 0 }, { "name": "Large", "price": 1.0 }]
+    }
+  },
+  {
+    "id": 16,
+    "name": "Black Eye",
+    "image": "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=300&h=300&fit=crop",
+    "price": 4.25,
+    "category": "coffee",
+    "description": "Drip coffee with two shots of espresso.",
+    "options": {
+      "size": [{ "name": "Medium", "price": 0 }, { "name": "Large", "price": 1.0 }]
+    }
+  },
+  {
+    "id": 17,
+    "name": "Drip Coffee",
+    "image": "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=300&h=300&fit=crop",
+    "price": 2.75,
+    "category": "coffee",
+    "description": "Classic drip coffee, freshly brewed.",
+    "options": {
+      "size": [{ "name": "Small", "price": 0 }, { "name": "Medium", "price": 0.5 }, { "name": "Large", "price": 1.0 }]
+    }
+  },
+  {
+    "id": 18,
+    "name": "French Press",
+    "image": "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=300&h=300&fit=crop",
+    "price": 4.5,
+    "category": "coffee",
+    "description": "Rich coffee brewed in a French press.",
+    "options": {
+      "size": [{ "name": "Single Serve", "price": 0 }, { "name": "For Two", "price": 2.0 }]
+    }
+  },
+  {
+    "id": 19,
+    "name": "Pour Over",
+    "image": "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=300&h=300&fit=crop",
+    "price": 5.0,
+    "category": "coffee",
+    "description": "Hand-poured coffee with precision brewing.",
+    "options": {
+      "bean": [
+        { "name": "House Blend", "price": 0 },
+        { "name": "Single Origin", "price": 1.0 },
+        { "name": "Premium", "price": 2.0 }
+      ]
+    }
+  },
+  {
+    "id": 20,
+    "name": "Nitro Coffee",
+    "image": "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=300&h=300&fit=crop",
+    "price": 4.75,
+    "category": "coffee",
+    "description": "Cold brew infused with nitrogen for a creamy texture.",
+    "options": {
+      "size": [{ "name": "Medium", "price": 0 }, { "name": "Large", "price": 1.0 }]
+    }
+  },
+  {
+    "id": 21,
+    "name": "Green Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 2.5,
+    "category": "tea",
+    "description": "Fresh green tea with antioxidants.",
+    "options": {
+      "type": [
+        { "name": "Sencha", "price": 0 },
+        { "name": "Matcha", "price": 1.0 },
+        { "name": "Jasmine", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 22,
+    "name": "Black Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 2.25,
+    "category": "tea",
+    "description": "Classic black tea blend.",
+    "options": {
+      "type": [
+        { "name": "Earl Grey", "price": 0 },
+        { "name": "English Breakfast", "price": 0 },
+        { "name": "Ceylon", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 23,
+    "name": "Herbal Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 2.75,
+    "category": "tea",
+    "description": "Caffeine-free herbal blend.",
+    "options": {
+      "type": [
+        { "name": "Chamomile", "price": 0 },
+        { "name": "Peppermint", "price": 0 },
+        { "name": "Ginger", "price": 0 },
+        { "name": "Lemon Balm", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 24,
+    "name": "Oolong Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 3.0,
+    "category": "tea",
+    "description": "Traditional Chinese oolong tea.",
+    "options": {
+      "origin": [{ "name": "Fujian", "price": 0 }, { "name": "Taiwan", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 25,
+    "name": "White Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 3.25,
+    "category": "tea",
+    "description": "Delicate white tea with subtle flavor.",
+    "options": {
+      "type": [{ "name": "Silver Needle", "price": 0 }, { "name": "White Peony", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 26,
+    "name": "Chai Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 3.5,
+    "category": "tea",
+    "description": "Spiced tea with milk and honey.",
+    "options": {
+      "milk": [{ "name": "Whole", "price": 0 }, { "name": "Almond", "price": 0.5 }, { "name": "Oat", "price": 0.5 }],
+      "spice_level": [{ "name": "Mild", "price": 0 }, { "name": "Medium", "price": 0 }, { "name": "Spicy", "price": 0 }]
+    }
+  },
+  {
+    "id": 27,
+    "name": "Matcha Latte",
+    "image": "https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=300&h=300&fit=crop",
+    "price": 4.75,
+    "category": "tea",
+    "description": "Creamy matcha green tea latte.",
+    "options": {
+      "sweetness": [
+        { "name": "Unsweetened", "price": 0 },
+        { "name": "Lightly Sweet", "price": 0 },
+        { "name": "Regular", "price": 0 },
+        { "name": "Extra Sweet", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 28,
+    "name": "Thai Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 3.75,
+    "category": "tea",
+    "description": "Sweet Thai tea with condensed milk.",
+    "options": {
+      "temperature": [{ "name": "Hot", "price": 0 }, { "name": "Iced", "price": 0 }]
+    }
+  },
+  {
+    "id": 29,
+    "name": "Bubble Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 4.5,
+    "category": "tea",
+    "description": "Tea with chewy tapioca pearls.",
+    "options": {
+      "flavor": [
+        { "name": "Original", "price": 0 },
+        { "name": "Taro", "price": 0.5 },
+        { "name": "Mango", "price": 0.5 },
+        { "name": "Strawberry", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 30,
+    "name": "Iced Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 2.5,
+    "category": "tea",
+    "description": "Refreshing iced tea.",
+    "options": {
+      "flavor": [{ "name": "Lemon", "price": 0 }, { "name": "Peach", "price": 0 }, { "name": "Raspberry", "price": 0 }]
+    }
+  },
+  {
+    "id": 31,
+    "name": "Beef Pho",
+    "image": "https://images.unsplash.com/photo-1555126634-323283e090fa?w=300&h=300&fit=crop",
+    "price": 12.5,
+    "category": "noodles",
+    "description": "Traditional Vietnamese beef noodle soup.",
+    "options": {
+      "meat": [
+        { "name": "Rare Beef", "price": 0 },
+        { "name": "Well Done", "price": 0 },
+        { "name": "Combination", "price": 1.5 }
+      ]
+    }
+  },
+  {
+    "id": 32,
+    "name": "Chicken Pho",
+    "image": "https://images.unsplash.com/photo-1555126634-323283e090fa?w=300&h=300&fit=crop",
+    "price": 11.5,
+    "category": "noodles",
+    "description": "Vietnamese chicken noodle soup.",
+    "options": {
+      "spice": [{ "name": "Mild", "price": 0 }, { "name": "Medium", "price": 0 }, { "name": "Spicy", "price": 0 }]
+    }
+  },
+  {
+    "id": 33,
+    "name": "Pad Thai",
+    "image": "https://images.unsplash.com/photo-1559314809-0f31657def5e?w=300&h=300&fit=crop",
+    "price": 10.75,
+    "category": "noodles",
+    "description": "Thai stir-fried rice noodles with tamarind sauce.",
+    "options": {
+      "protein": [
+        { "name": "Chicken", "price": 0 },
+        { "name": "Shrimp", "price": 2.0 },
+        { "name": "Tofu", "price": -1.0 }
+      ]
+    }
+  },
+  {
+    "id": 34,
+    "name": "Ramen",
+    "image": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300&h=300&fit=crop",
+    "price": 13.25,
+    "category": "noodles",
+    "description": "Japanese ramen with rich broth.",
+    "options": {
+      "broth": [
+        { "name": "Tonkotsu", "price": 0 },
+        { "name": "Miso", "price": 0 },
+        { "name": "Shoyu", "price": 0 },
+        { "name": "Shio", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 35,
+    "name": "Lo Mein",
+    "image": "https://images.unsplash.com/photo-1555126634-323283e090fa?w=300&h=300&fit=crop",
+    "price": 9.5,
+    "category": "noodles",
+    "description": "Chinese soft noodles with vegetables.",
+    "options": {
+      "protein": [
+        { "name": "Chicken", "price": 0 },
+        { "name": "Beef", "price": 1.0 },
+        { "name": "Pork", "price": 0.5 },
+        { "name": "Vegetable", "price": -1.0 }
+      ]
+    }
+  },
+  {
+    "id": 36,
+    "name": "Spaghetti Carbonara",
+    "image": "https://images.unsplash.com/photo-1551892374-ecf8754cf8b0?w=300&h=300&fit=crop",
+    "price": 14.25,
+    "category": "noodles",
+    "description": "Italian pasta with eggs, cheese, and pancetta.",
+    "options": {
+      "cheese": [{ "name": "Parmesan", "price": 0 }, { "name": "Pecorino", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 37,
+    "name": "Fettuccine Alfredo",
+    "image": "https://images.unsplash.com/photo-1551892374-ecf8754cf8b0?w=300&h=300&fit=crop",
+    "price": 13.5,
+    "category": "noodles",
+    "description": "Creamy pasta with parmesan cheese.",
+    "options": {
+      "protein": [
+        { "name": "None", "price": 0 },
+        { "name": "Chicken", "price": 3.0 },
+        { "name": "Shrimp", "price": 4.0 }
+      ]
+    }
+  },
+  {
+    "id": 38,
+    "name": "Udon",
+    "image": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300&h=300&fit=crop",
+    "price": 11.75,
+    "category": "noodles",
+    "description": "Thick Japanese wheat noodles in broth.",
+    "options": {
+      "style": [
+        { "name": "Hot Broth", "price": 0 },
+        { "name": "Cold", "price": 0 },
+        { "name": "Stir-fried", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 39,
+    "name": "Soba",
+    "image": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300&h=300&fit=crop",
+    "price": 10.5,
+    "category": "noodles",
+    "description": "Japanese buckwheat noodles.",
+    "options": {
+      "temperature": [{ "name": "Hot", "price": 0 }, { "name": "Cold", "price": 0 }]
+    }
+  },
+  {
+    "id": 40,
+    "name": "Laksa",
+    "image": "https://images.unsplash.com/photo-1555126634-323283e090fa?w=300&h=300&fit=crop",
+    "price": 12.25,
+    "category": "noodles",
+    "description": "Spicy coconut curry noodle soup.",
+    "options": {
+      "spice": [
+        { "name": "Mild", "price": 0 },
+        { "name": "Medium", "price": 0 },
+        { "name": "Spicy", "price": 0 },
+        { "name": "Extra Spicy", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 41,
+    "name": "Baguette with Pâté",
+    "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&h=300&fit=crop",
+    "price": 6.5,
+    "category": "european-breakfast",
+    "description": "Fresh baguette with French pâté.",
+    "options": {
+      "pate": [
+        { "name": "Chicken Liver", "price": 0 },
+        { "name": "Duck", "price": 1.0 },
+        { "name": "Country", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 42,
+    "name": "Croissant",
+    "image": "https://images.unsplash.com/photo-1555507036-ab794f4afe5b?w=300&h=300&fit=crop",
+    "price": 3.5,
+    "category": "european-breakfast",
+    "description": "Buttery French croissant.",
+    "options": {
+      "filling": [
+        { "name": "Plain", "price": 0 },
+        { "name": "Chocolate", "price": 0.5 },
+        { "name": "Almond", "price": 0.75 },
+        { "name": "Ham & Cheese", "price": 1.5 }
+      ]
+    }
+  },
+  {
+    "id": 43,
+    "name": "Full English Breakfast",
+    "image": "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=300&h=300&fit=crop",
+    "price": 12.5,
+    "category": "european-breakfast",
+    "description": "Traditional English breakfast with eggs, bacon, sausage, beans, and toast.",
+    "options": {
+      "eggs": [{ "name": "Fried", "price": 0 }, { "name": "Scrambled", "price": 0 }, { "name": "Poached", "price": 0 }]
+    }
+  },
+  {
+    "id": 44,
+    "name": "Continental Breakfast",
+    "image": "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=300&h=300&fit=crop",
+    "price": 8.75,
+    "category": "european-breakfast",
+    "description": "Light breakfast with pastries, fruit, and coffee.",
+    "options": {
+      "pastry": [
+        { "name": "Croissant", "price": 0 },
+        { "name": "Danish", "price": 0 },
+        { "name": "Muffin", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 45,
+    "name": "Eggs Benedict",
+    "image": "https://images.unsplash.com/photo-1506084868230-bb9d95c24759?w=300&h=300&fit=crop",
+    "price": 11.25,
+    "category": "european-breakfast",
+    "description": "Poached eggs on English muffin with hollandaise sauce.",
+    "options": {
+      "meat": [
+        { "name": "Canadian Bacon", "price": 0 },
+        { "name": "Smoked Salmon", "price": 2.0 },
+        { "name": "Spinach", "price": -0.5 }
+      ]
+    }
+  },
+  {
+    "id": 46,
+    "name": "French Toast",
+    "image": "https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=300&h=300&fit=crop",
+    "price": 9.5,
+    "category": "european-breakfast",
+    "description": "Thick sliced bread soaked in custard and grilled.",
+    "options": {
+      "topping": [
+        { "name": "Maple Syrup", "price": 0 },
+        { "name": "Berry Compote", "price": 0.5 },
+        { "name": "Powdered Sugar", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 47,
+    "name": "Pancakes",
+    "image": "https://images.unsplash.com/photo-1506084868230-bb9d95c24759?w=300&h=300&fit=crop",
+    "price": 8.25,
+    "category": "european-breakfast",
+    "description": "Fluffy pancakes with butter and syrup.",
+    "options": {
+      "style": [
+        { "name": "Plain", "price": 0 },
+        { "name": "Blueberry", "price": 0.5 },
+        { "name": "Chocolate Chip", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 48,
+    "name": "Waffles",
+    "image": "https://images.unsplash.com/photo-1562376552-0d160dcb0e64?w=300&h=300&fit=crop",
+    "price": 8.75,
+    "category": "european-breakfast",
+    "description": "Crispy waffles with syrup and butter.",
+    "options": {
+      "topping": [
+        { "name": "Maple Syrup", "price": 0 },
+        { "name": "Fresh Berries", "price": 1.0 },
+        { "name": "Whipped Cream", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 49,
+    "name": "Avocado Toast",
+    "image": "https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?w=300&h=300&fit=crop",
+    "price": 7.5,
+    "category": "european-breakfast",
+    "description": "Smashed avocado on sourdough toast.",
+    "options": {
+      "extras": [
+        { "name": "None", "price": 0 },
+        { "name": "Poached Egg", "price": 1.5 },
+        { "name": "Feta Cheese", "price": 1.0 },
+        { "name": "Smoked Salmon", "price": 3.0 }
+      ]
+    }
+  },
+  {
+    "id": 50,
+    "name": "Granola Bowl",
+    "image": "https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=300&h=300&fit=crop",
+    "price": 6.75,
+    "category": "european-breakfast",
+    "description": "House-made granola with yogurt and fresh fruit.",
+    "options": {
+      "yogurt": [
+        { "name": "Greek", "price": 0 },
+        { "name": "Coconut", "price": 0.5 },
+        { "name": "Vanilla", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 51,
+    "name": "Bai Sach Chrouk",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 8.5,
+    "category": "khmer-breakfast",
+    "description": "Grilled pork with rice and pickled vegetables.",
+    "options": {
+      "meat": [{ "name": "Pork", "price": 0 }, { "name": "Chicken", "price": 0 }, { "name": "Beef", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 52,
+    "name": "Kuy Teav",
+    "image": "https://images.unsplash.com/photo-1555126634-323283e090fa?w=300&h=300&fit=crop",
+    "price": 7.25,
+    "category": "khmer-breakfast",
+    "description": "Cambodian rice noodle soup with pork and shrimp.",
+    "options": {
+      "protein": [
+        { "name": "Pork & Shrimp", "price": 0 },
+        { "name": "Chicken", "price": 0 },
+        { "name": "Beef", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 53,
+    "name": "Num Banh Chok",
+    "image": "https://images.unsplash.com/photo-1555126634-323283e090fa?w=300&h=300&fit=crop",
+    "price": 6.75,
+    "category": "khmer-breakfast",
+    "description": "Khmer noodles with fish curry and fresh vegetables.",
+    "options": {
+      "curry": [{ "name": "Fish Curry", "price": 0 }, { "name": "Coconut Curry", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 54,
+    "name": "Bobor",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 5.5,
+    "category": "khmer-breakfast",
+    "description": "Cambodian rice porridge with chicken or pork.",
+    "options": {
+      "protein": [{ "name": "Chicken", "price": 0 }, { "name": "Pork", "price": 0 }, { "name": "Fish", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 55,
+    "name": "Nom Krok",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 4.25,
+    "category": "khmer-breakfast",
+    "description": "Coconut rice cakes with scallions.",
+    "options": {
+      "quantity": [{ "name": "6 pieces", "price": 0 }, { "name": "12 pieces", "price": 2.0 }]
+    }
+  },
+  {
+    "id": 56,
+    "name": "Amok",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 12.5,
+    "category": "khmer-breakfast",
+    "description": "Steamed fish curry in banana leaf.",
+    "options": {
+      "protein": [{ "name": "Fish", "price": 0 }, { "name": "Chicken", "price": 0 }, { "name": "Tofu", "price": -1.0 }]
+    }
+  },
+  {
+    "id": 57,
+    "name": "Kroeung Paste Rice",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 7.75,
+    "category": "khmer-breakfast",
+    "description": "Rice with traditional Khmer spice paste.",
+    "options": {
+      "spice": [{ "name": "Mild", "price": 0 }, { "name": "Medium", "price": 0 }, { "name": "Spicy", "price": 0 }]
+    }
+  },
+  {
+    "id": 58,
+    "name": "Samlor Korko",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 9.25,
+    "category": "khmer-breakfast",
+    "description": "Traditional Khmer vegetable soup with pork.",
+    "options": {
+      "vegetables": [{ "name": "Mixed", "price": 0 }, { "name": "Extra Vegetables", "price": 1.0 }]
+    }
+  },
+  {
+    "id": 59,
+    "name": "Prahok Ktis",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 8.75,
+    "category": "khmer-breakfast",
+    "description": "Fermented fish dip with vegetables and rice.",
+    "options": {
+      "vegetables": [
+        { "name": "Cucumber", "price": 0 },
+        { "name": "Eggplant", "price": 0 },
+        { "name": "Mixed", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 60,
+    "name": "Nom Ansorm",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 6.5,
+    "category": "khmer-breakfast",
+    "description": "Sticky rice cake with banana and coconut.",
+    "options": {
+      "filling": [
+        { "name": "Banana", "price": 0 },
+        { "name": "Mung Bean", "price": 0 },
+        { "name": "Pork", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 61,
+    "name": "Caesar Salad",
+    "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&h=300&fit=crop",
+    "price": 9.5,
+    "category": "salads",
+    "description": "Romaine lettuce with Caesar dressing, croutons, and parmesan.",
+    "options": {
+      "protein": [
+        { "name": "None", "price": 0 },
+        { "name": "Grilled Chicken", "price": 3.0 },
+        { "name": "Shrimp", "price": 4.0 },
+        { "name": "Salmon", "price": 5.0 }
+      ]
+    }
+  },
+  {
+    "id": 62,
+    "name": "Greek Salad",
+    "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&h=300&fit=crop",
+    "price": 8.75,
+    "category": "salads",
+    "description": "Fresh vegetables with feta cheese and olives.",
+    "options": {
+      "dressing": [{ "name": "Olive Oil & Lemon", "price": 0 }, { "name": "Greek Vinaigrette", "price": 0 }]
+    }
+  },
+  {
+    "id": 63,
+    "name": "Caprese Salad",
+    "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&h=300&fit=crop",
+    "price": 10.25,
+    "category": "salads",
+    "description": "Fresh mozzarella, tomatoes, and basil with balsamic.",
+    "options": {
+      "cheese": [{ "name": "Fresh Mozzarella", "price": 0 }, { "name": "Burrata", "price": 2.0 }]
+    }
+  },
+  {
+    "id": 64,
+    "name": "Cobb Salad",
+    "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&h=300&fit=crop",
+    "price": 11.5,
+    "category": "salads",
+    "description": "Mixed greens with bacon, blue cheese, and hard-boiled eggs.",
+    "options": {
+      "dressing": [
+        { "name": "Blue Cheese", "price": 0 },
+        { "name": "Ranch", "price": 0 },
+        { "name": "Vinaigrette", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 65,
+    "name": "Quinoa Salad",
+    "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&h=300&fit=crop",
+    "price": 9.25,
+    "category": "salads",
+    "description": "Quinoa with roasted vegetables and lemon dressing.",
+    "options": {
+      "vegetables": [
+        { "name": "Roasted", "price": 0 },
+        { "name": "Fresh", "price": 0 },
+        { "name": "Mixed", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 66,
+    "name": "Arugula Salad",
+    "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&h=300&fit=crop",
+    "price": 8.5,
+    "category": "salads",
+    "description": "Peppery arugula with pears and walnuts.",
+    "options": {
+      "cheese": [
+        { "name": "None", "price": 0 },
+        { "name": "Goat Cheese", "price": 1.5 },
+        { "name": "Parmesan", "price": 1.0 }
+      ]
+    }
+  },
+  {
+    "id": 67,
+    "name": "Spinach Salad",
+    "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&h=300&fit=crop",
+    "price": 8.25,
+    "category": "salads",
+    "description": "Baby spinach with strawberries and poppy seed dressing.",
+    "options": {
+      "nuts": [{ "name": "None", "price": 0 }, { "name": "Pecans", "price": 0.5 }, { "name": "Almonds", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 68,
+    "name": "Waldorf Salad",
+    "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&h=300&fit=crop",
+    "price": 7.75,
+    "category": "salads",
+    "description": "Apples, celery, grapes, and walnuts with mayo dressing.",
+    "options": {
+      "nuts": [{ "name": "Walnuts", "price": 0 }, { "name": "Pecans", "price": 0 }]
+    }
+  },
+  {
+    "id": 69,
+    "name": "Asian Chicken Salad",
+    "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&h=300&fit=crop",
+    "price": 10.75,
+    "category": "salads",
+    "description": "Mixed greens with grilled chicken and sesame dressing.",
+    "options": {
+      "dressing": [{ "name": "Sesame", "price": 0 }, { "name": "Ginger", "price": 0 }, { "name": "Peanut", "price": 0 }]
+    }
+  },
+  {
+    "id": 70,
+    "name": "Niçoise Salad",
+    "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&h=300&fit=crop",
+    "price": 12.25,
+    "category": "salads",
+    "description": "French salad with tuna, olives, and hard-boiled eggs.",
+    "options": {
+      "tuna": [{ "name": "Canned", "price": 0 }, { "name": "Fresh Seared", "price": 3.0 }]
+    }
+  },
+  {
+    "id": 71,
+    "name": "Margherita Pizza",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 14.5,
+    "category": "pizza",
+    "description": "Classic pizza with tomato, mozzarella, and basil.",
+    "options": {
+      "size": [
+        { "name": "Personal", "price": 0 },
+        { "name": "Medium", "price": 3.0 },
+        { "name": "Large", "price": 6.0 }
+      ]
+    }
+  },
+  {
+    "id": 72,
+    "name": "Pepperoni Pizza",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 16.25,
+    "category": "pizza",
+    "description": "Classic pepperoni with mozzarella cheese.",
+    "options": {
+      "size": [
+        { "name": "Personal", "price": 0 },
+        { "name": "Medium", "price": 3.0 },
+        { "name": "Large", "price": 6.0 }
+      ]
+    }
+  },
+  {
+    "id": 73,
+    "name": "Hawaiian Pizza",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 15.75,
+    "category": "pizza",
+    "description": "Ham and pineapple with mozzarella.",
+    "options": {
+      "size": [
+        { "name": "Personal", "price": 0 },
+        { "name": "Medium", "price": 3.0 },
+        { "name": "Large", "price": 6.0 }
+      ]
+    }
+  },
+  {
+    "id": 74,
+    "name": "Meat Lovers Pizza",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 18.5,
+    "category": "pizza",
+    "description": "Pepperoni, sausage, bacon, and ham.",
+    "options": {
+      "size": [
+        { "name": "Personal", "price": 0 },
+        { "name": "Medium", "price": 3.0 },
+        { "name": "Large", "price": 6.0 }
+      ]
+    }
+  },
+  {
+    "id": 75,
+    "name": "Vegetarian Pizza",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 16.0,
+    "category": "pizza",
+    "description": "Bell peppers, mushrooms, onions, and olives.",
+    "options": {
+      "size": [
+        { "name": "Personal", "price": 0 },
+        { "name": "Medium", "price": 3.0 },
+        { "name": "Large", "price": 6.0 }
+      ]
+    }
+  },
+  {
+    "id": 76,
+    "name": "BBQ Chicken Pizza",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 17.25,
+    "category": "pizza",
+    "description": "Grilled chicken with BBQ sauce and red onions.",
+    "options": {
+      "size": [
+        { "name": "Personal", "price": 0 },
+        { "name": "Medium", "price": 3.0 },
+        { "name": "Large", "price": 6.0 }
+      ]
+    }
+  },
+  {
+    "id": 77,
+    "name": "White Pizza",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 15.5,
+    "category": "pizza",
+    "description": "Ricotta, mozzarella, and garlic without tomato sauce.",
+    "options": {
+      "size": [
+        { "name": "Personal", "price": 0 },
+        { "name": "Medium", "price": 3.0 },
+        { "name": "Large", "price": 6.0 }
+      ]
+    }
+  },
+  {
+    "id": 78,
+    "name": "Supreme Pizza",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 19.0,
+    "category": "pizza",
+    "description": "Pepperoni, sausage, peppers, mushrooms, and onions.",
+    "options": {
+      "size": [
+        { "name": "Personal", "price": 0 },
+        { "name": "Medium", "price": 3.0 },
+        { "name": "Large", "price": 6.0 }
+      ]
+    }
+  },
+  {
+    "id": 79,
+    "name": "Four Cheese Pizza",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 16.75,
+    "category": "pizza",
+    "description": "Mozzarella, parmesan, gorgonzola, and fontina.",
+    "options": {
+      "size": [
+        { "name": "Personal", "price": 0 },
+        { "name": "Medium", "price": 3.0 },
+        { "name": "Large", "price": 6.0 }
+      ]
+    }
+  },
+  {
+    "id": 80,
+    "name": "Buffalo Chicken Pizza",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 17.75,
+    "category": "pizza",
+    "description": "Spicy buffalo chicken with ranch drizzle.",
+    "options": {
+      "size": [
+        { "name": "Personal", "price": 0 },
+        { "name": "Medium", "price": 3.0 },
+        { "name": "Large", "price": 6.0 }
+      ]
+    }
+  },
+  {
+    "id": 81,
+    "name": "Club Sandwich",
+    "image": "https://images.unsplash.com/photo-1567234669003-dce7a7a88821?w=300&h=300&fit=crop",
+    "price": 11.5,
+    "category": "sandwiches",
+    "description": "Triple-decker with turkey, bacon, lettuce, and tomato.",
+    "options": {
+      "bread": [{ "name": "White", "price": 0 }, { "name": "Wheat", "price": 0 }, { "name": "Sourdough", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 82,
+    "name": "BLT",
+    "image": "https://images.unsplash.com/photo-1567234669003-dce7a7a88821?w=300&h=300&fit=crop",
+    "price": 8.75,
+    "category": "sandwiches",
+    "description": "Bacon, lettuce, and tomato on toasted bread.",
+    "options": {
+      "bread": [{ "name": "White", "price": 0 }, { "name": "Wheat", "price": 0 }, { "name": "Sourdough", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 83,
+    "name": "Grilled Cheese",
+    "image": "https://images.unsplash.com/photo-1567234669003-dce7a7a88821?w=300&h=300&fit=crop",
+    "price": 6.5,
+    "category": "sandwiches",
+    "description": "Classic grilled cheese sandwich.",
+    "options": {
+      "cheese": [
+        { "name": "American", "price": 0 },
+        { "name": "Cheddar", "price": 0 },
+        { "name": "Swiss", "price": 0.5 },
+        { "name": "Brie", "price": 1.0 }
+      ]
+    }
+  },
+  {
+    "id": 84,
+    "name": "Reuben",
+    "image": "https://images.unsplash.com/photo-1567234669003-dce7a7a88821?w=300&h=300&fit=crop",
+    "price": 12.25,
+    "category": "sandwiches",
+    "description": "Corned beef, sauerkraut, Swiss cheese, and Russian dressing on rye.",
+    "options": {
+      "meat": [
+        { "name": "Corned Beef", "price": 0 },
+        { "name": "Pastrami", "price": 0.5 },
+        { "name": "Turkey", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 85,
+    "name": "Philly Cheesesteak",
+    "image": "https://images.unsplash.com/photo-1567234669003-dce7a7a88821?w=300&h=300&fit=crop",
+    "price": 13.5,
+    "category": "sandwiches",
+    "description": "Sliced steak with peppers, onions, and cheese.",
+    "options": {
+      "cheese": [
+        { "name": "Provolone", "price": 0 },
+        { "name": "American", "price": 0 },
+        { "name": "Cheese Whiz", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 86,
+    "name": "Italian Sub",
+    "image": "https://images.unsplash.com/photo-1567234669003-dce7a7a88821?w=300&h=300&fit=crop",
+    "price": 10.75,
+    "category": "sandwiches",
+    "description": "Salami, ham, pepperoni, and provolone with Italian dressing.",
+    "options": {
+      "size": [{ "name": "6 inch", "price": 0 }, { "name": "12 inch", "price": 3.0 }]
+    }
+  },
+  {
+    "id": 87,
+    "name": "Chicken Parmesan Sub",
+    "image": "https://images.unsplash.com/photo-1567234669003-dce7a7a88821?w=300&h=300&fit=crop",
+    "price": 12.0,
+    "category": "sandwiches",
+    "description": "Breaded chicken with marinara and mozzarella.",
+    "options": {
+      "size": [{ "name": "6 inch", "price": 0 }, { "name": "12 inch", "price": 3.0 }]
+    }
+  },
+  {
+    "id": 88,
+    "name": "Tuna Melt",
+    "image": "https://images.unsplash.com/photo-1567234669003-dce7a7a88821?w=300&h=300&fit=crop",
+    "price": 9.25,
+    "category": "sandwiches",
+    "description": "Tuna salad with melted cheese on grilled bread.",
+    "options": {
+      "cheese": [{ "name": "Cheddar", "price": 0 }, { "name": "Swiss", "price": 0 }, { "name": "American", "price": 0 }]
+    }
+  },
+  {
+    "id": 89,
+    "name": "French Dip",
+    "image": "https://images.unsplash.com/photo-1567234669003-dce7a7a88821?w=300&h=300&fit=crop",
+    "price": 11.75,
+    "category": "sandwiches",
+    "description": "Roast beef on French roll with au jus for dipping.",
+    "options": {
+      "cheese": [
+        { "name": "None", "price": 0 },
+        { "name": "Swiss", "price": 0.5 },
+        { "name": "Provolone", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 90,
+    "name": "Meatball Sub",
+    "image": "https://images.unsplash.com/photo-1567234669003-dce7a7a88821?w=300&h=300&fit=crop",
+    "price": 10.5,
+    "category": "sandwiches",
+    "description": "Italian meatballs with marinara and mozzarella.",
+    "options": {
+      "size": [{ "name": "6 inch", "price": 0 }, { "name": "12 inch", "price": 3.0 }]
+    }
+  },
+  {
+    "id": 91,
+    "name": "Chocolate Croissant",
+    "image": "https://images.unsplash.com/photo-1555507036-ab794f4afe5b?w=300&h=300&fit=crop",
+    "price": 4.25,
+    "category": "pastries",
+    "description": "Buttery croissant filled with dark chocolate.",
+    "options": {
+      "chocolate": [{ "name": "Dark", "price": 0 }, { "name": "Milk", "price": 0 }, { "name": "White", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 92,
+    "name": "Almond Croissant",
+    "image": "https://images.unsplash.com/photo-1555507036-ab794f4afe5b?w=300&h=300&fit=crop",
+    "price": 4.75,
+    "category": "pastries",
+    "description": "Croissant with almond cream and sliced almonds.",
+    "options": {
+      "nuts": [{ "name": "Sliced Almonds", "price": 0 }, { "name": "Chopped Almonds", "price": 0 }]
+    }
+  },
+  {
+    "id": 93,
+    "name": "Danish Pastry",
+    "image": "https://images.unsplash.com/photo-1555507036-ab794f4afe5b?w=300&h=300&fit=crop",
+    "price": 3.75,
+    "category": "pastries",
+    "description": "Flaky pastry with fruit or cheese filling.",
+    "options": {
+      "filling": [
+        { "name": "Apple", "price": 0 },
+        { "name": "Cherry", "price": 0 },
+        { "name": "Cheese", "price": 0.5 },
+        { "name": "Blueberry", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 94,
+    "name": "Cinnamon Roll",
+    "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&h=300&fit=crop",
+    "price": 4.5,
+    "category": "pastries",
+    "description": "Sweet roll with cinnamon and icing.",
+    "options": {
+      "icing": [
+        { "name": "Cream Cheese", "price": 0 },
+        { "name": "Vanilla", "price": 0 },
+        { "name": "Caramel", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 95,
+    "name": "Scone",
+    "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&h=300&fit=crop",
+    "price": 3.25,
+    "category": "pastries",
+    "description": "British-style scone with jam and cream.",
+    "options": {
+      "flavor": [
+        { "name": "Plain", "price": 0 },
+        { "name": "Blueberry", "price": 0.5 },
+        { "name": "Cranberry", "price": 0.5 },
+        { "name": "Chocolate Chip", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 96,
+    "name": "Muffin",
+    "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&h=300&fit=crop",
+    "price": 2.75,
+    "category": "pastries",
+    "description": "Fresh baked muffin in various flavors.",
+    "options": {
+      "flavor": [
+        { "name": "Blueberry", "price": 0 },
+        { "name": "Chocolate Chip", "price": 0 },
+        { "name": "Banana Nut", "price": 0 },
+        { "name": "Lemon Poppy", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 97,
+    "name": "Éclair",
+    "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&h=300&fit=crop",
+    "price": 4.0,
+    "category": "pastries",
+    "description": "Choux pastry filled with cream and topped with chocolate.",
+    "options": {
+      "filling": [
+        { "name": "Vanilla Cream", "price": 0 },
+        { "name": "Chocolate Cream", "price": 0 },
+        { "name": "Coffee Cream", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 98,
+    "name": "Profiterole",
+    "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&h=300&fit=crop",
+    "price": 3.5,
+    "category": "pastries",
+    "description": "Cream puff filled with vanilla cream.",
+    "options": {
+      "quantity": [{ "name": "3 pieces", "price": 0 }, { "name": "6 pieces", "price": 2.0 }]
+    }
+  },
+  {
+    "id": 99,
+    "name": "Palmier",
+    "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&h=300&fit=crop",
+    "price": 2.5,
+    "category": "pastries",
+    "description": "Butterfly-shaped puff pastry with caramelized sugar.",
+    "options": {
+      "size": [{ "name": "Regular", "price": 0 }, { "name": "Large", "price": 1.0 }]
+    }
+  },
+  {
+    "id": 100,
+    "name": "Turnover",
+    "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&h=300&fit=crop",
+    "price": 3.75,
+    "category": "pastries",
+    "description": "Flaky pastry turnover with fruit filling.",
+    "options": {
+      "filling": [{ "name": "Apple", "price": 0 }, { "name": "Cherry", "price": 0 }, { "name": "Peach", "price": 0 }]
+    }
+  },
+  {
+    "id": 101,
+    "name": "Tiramisu",
+    "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=300&h=300&fit=crop",
+    "price": 6.5,
+    "category": "desserts",
+    "description": "Italian coffee-flavored dessert with mascarpone.",
+    "options": {
+      "size": [{ "name": "Individual", "price": 0 }, { "name": "Large Slice", "price": 1.5 }]
+    }
+  },
+  {
+    "id": 102,
+    "name": "Cheesecake",
+    "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=300&h=300&fit=crop",
+    "price": 5.75,
+    "category": "desserts",
+    "description": "Rich and creamy New York style cheesecake.",
+    "options": {
+      "topping": [
+        { "name": "Plain", "price": 0 },
+        { "name": "Strawberry", "price": 0.5 },
+        { "name": "Blueberry", "price": 0.5 },
+        { "name": "Chocolate", "price": 0.75 }
+      ]
+    }
+  },
+  {
+    "id": 103,
+    "name": "Chocolate Cake",
+    "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=300&h=300&fit=crop",
+    "price": 5.25,
+    "category": "desserts",
+    "description": "Rich chocolate layer cake with chocolate frosting.",
+    "options": {
+      "frosting": [
+        { "name": "Chocolate", "price": 0 },
+        { "name": "Vanilla", "price": 0 },
+        { "name": "Cream Cheese", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 104,
+    "name": "Crème Brûlée",
+    "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=300&h=300&fit=crop",
+    "price": 6.25,
+    "category": "desserts",
+    "description": "Vanilla custard with caramelized sugar top.",
+    "options": {
+      "flavor": [
+        { "name": "Vanilla", "price": 0 },
+        { "name": "Lavender", "price": 0.5 },
+        { "name": "Coffee", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 105,
+    "name": "Panna Cotta",
+    "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=300&h=300&fit=crop",
+    "price": 5.5,
+    "category": "desserts",
+    "description": "Italian cream dessert with berry sauce.",
+    "options": {
+      "sauce": [
+        { "name": "Berry", "price": 0 },
+        { "name": "Caramel", "price": 0 },
+        { "name": "Chocolate", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 106,
+    "name": "Gelato",
+    "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=300&h=300&fit=crop",
+    "price": 4.75,
+    "category": "desserts",
+    "description": "Italian-style ice cream in various flavors.",
+    "options": {
+      "flavor": [
+        { "name": "Vanilla", "price": 0 },
+        { "name": "Chocolate", "price": 0 },
+        { "name": "Pistachio", "price": 0.5 },
+        { "name": "Stracciatella", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 107,
+    "name": "Cannoli",
+    "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=300&h=300&fit=crop",
+    "price": 4.25,
+    "category": "desserts",
+    "description": "Sicilian pastry tubes filled with sweet ricotta.",
+    "options": {
+      "filling": [
+        { "name": "Traditional Ricotta", "price": 0 },
+        { "name": "Chocolate Chip", "price": 0.5 },
+        { "name": "Pistachio", "price": 0.75 }
+      ]
+    }
+  },
+  {
+    "id": 108,
+    "name": "Fruit Tart",
+    "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=300&h=300&fit=crop",
+    "price": 5.0,
+    "category": "desserts",
+    "description": "Pastry shell with custard and fresh fruit.",
+    "options": {
+      "fruit": [
+        { "name": "Mixed Berries", "price": 0 },
+        { "name": "Kiwi & Strawberry", "price": 0 },
+        { "name": "Seasonal", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 109,
+    "name": "Chocolate Mousse",
+    "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=300&h=300&fit=crop",
+    "price": 5.75,
+    "category": "desserts",
+    "description": "Light and airy chocolate mousse.",
+    "options": {
+      "chocolate": [{ "name": "Dark", "price": 0 }, { "name": "Milk", "price": 0 }, { "name": "White", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 110,
+    "name": "Apple Pie",
+    "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=300&h=300&fit=crop",
+    "price": 4.5,
+    "category": "desserts",
+    "description": "Classic American apple pie with cinnamon.",
+    "options": {
+      "serving": [{ "name": "Plain", "price": 0 }, { "name": "À la Mode", "price": 1.0 }]
+    }
+  },
+  {
+    "id": 111,
+    "name": "Fresh Orange Juice",
+    "image": "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300&h=300&fit=crop",
+    "price": 4.5,
+    "category": "beverages",
+    "description": "Freshly squeezed orange juice.",
+    "options": {
+      "size": [{ "name": "Small", "price": 0 }, { "name": "Medium", "price": 1.0 }, { "name": "Large", "price": 2.0 }]
+    }
+  },
+  {
+    "id": 112,
+    "name": "Apple Juice",
+    "image": "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300&h=300&fit=crop",
+    "price": 3.5,
+    "category": "beverages",
+    "description": "Pure apple juice.",
+    "options": {
+      "size": [{ "name": "Small", "price": 0 }, { "name": "Medium", "price": 1.0 }, { "name": "Large", "price": 2.0 }]
+    }
+  },
+  {
+    "id": 113,
+    "name": "Lemonade",
+    "image": "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300&h=300&fit=crop",
+    "price": 3.25,
+    "category": "beverages",
+    "description": "Fresh lemonade with real lemons.",
+    "options": {
+      "style": [
+        { "name": "Regular", "price": 0 },
+        { "name": "Pink", "price": 0 },
+        { "name": "Sparkling", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 114,
+    "name": "Smoothie",
+    "image": "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300&h=300&fit=crop",
+    "price": 5.75,
+    "category": "beverages",
+    "description": "Blended fruit smoothie with yogurt.",
+    "options": {
+      "flavor": [
+        { "name": "Strawberry Banana", "price": 0 },
+        { "name": "Mango", "price": 0 },
+        { "name": "Mixed Berry", "price": 0 },
+        { "name": "Green", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 115,
+    "name": "Milkshake",
+    "image": "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300&h=300&fit=crop",
+    "price": 4.75,
+    "category": "beverages",
+    "description": "Thick milkshake with ice cream.",
+    "options": {
+      "flavor": [
+        { "name": "Vanilla", "price": 0 },
+        { "name": "Chocolate", "price": 0 },
+        { "name": "Strawberry", "price": 0 },
+        { "name": "Cookies & Cream", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 116,
+    "name": "Soda",
+    "image": "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300&h=300&fit=crop",
+    "price": 2.5,
+    "category": "beverages",
+    "description": "Carbonated soft drinks.",
+    "options": {
+      "type": [
+        { "name": "Coca-Cola", "price": 0 },
+        { "name": "Pepsi", "price": 0 },
+        { "name": "Sprite", "price": 0 },
+        { "name": "Orange", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 117,
+    "name": "Sparkling Water",
+    "image": "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300&h=300&fit=crop",
+    "price": 2.25,
+    "category": "beverages",
+    "description": "Carbonated mineral water.",
+    "options": {
+      "flavor": [
+        { "name": "Plain", "price": 0 },
+        { "name": "Lemon", "price": 0 },
+        { "name": "Lime", "price": 0 },
+        { "name": "Berry", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 118,
+    "name": "Energy Drink",
+    "image": "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300&h=300&fit=crop",
+    "price": 3.75,
+    "category": "beverages",
+    "description": "Caffeinated energy drink.",
+    "options": {
+      "brand": [
+        { "name": "Red Bull", "price": 0 },
+        { "name": "Monster", "price": 0 },
+        { "name": "Rockstar", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 119,
+    "name": "Coconut Water",
+    "image": "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300&h=300&fit=crop",
+    "price": 3.25,
+    "category": "beverages",
+    "description": "Natural coconut water.",
+    "options": {
+      "style": [{ "name": "Pure", "price": 0 }, { "name": "With Pulp", "price": 0 }]
+    }
+  },
+  {
+    "id": 120,
+    "name": "Sports Drink",
+    "image": "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300&h=300&fit=crop",
+    "price": 2.75,
+    "category": "beverages",
+    "description": "Electrolyte sports drink.",
+    "options": {
+      "flavor": [
+        { "name": "Lemon-Lime", "price": 0 },
+        { "name": "Orange", "price": 0 },
+        { "name": "Fruit Punch", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 121,
+    "name": "Classic Burger",
+    "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=300&fit=crop",
+    "price": 12.5,
+    "category": "burgers",
+    "description": "Beef patty with lettuce, tomato, onion, and pickles.",
+    "options": {
+      "patty": [{ "name": "Beef", "price": 0 }, { "name": "Turkey", "price": 0 }, { "name": "Veggie", "price": -1.0 }]
+    }
+  },
+  {
+    "id": 122,
+    "name": "Cheeseburger",
+    "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=300&fit=crop",
+    "price": 13.25,
+    "category": "burgers",
+    "description": "Classic burger with American cheese.",
+    "options": {
+      "cheese": [
+        { "name": "American", "price": 0 },
+        { "name": "Cheddar", "price": 0 },
+        { "name": "Swiss", "price": 0.5 },
+        { "name": "Blue Cheese", "price": 0.75 }
+      ]
+    }
+  },
+  {
+    "id": 123,
+    "name": "Bacon Burger",
+    "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=300&fit=crop",
+    "price": 14.75,
+    "category": "burgers",
+    "description": "Burger with crispy bacon and cheese.",
+    "options": {
+      "bacon": [{ "name": "Regular", "price": 0 }, { "name": "Extra", "price": 1.5 }]
+    }
+  },
+  {
+    "id": 124,
+    "name": "BBQ Burger",
+    "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=300&fit=crop",
+    "price": 13.75,
+    "category": "burgers",
+    "description": "Burger with BBQ sauce and onion rings.",
+    "options": {
+      "sauce": [
+        { "name": "Regular BBQ", "price": 0 },
+        { "name": "Spicy BBQ", "price": 0 },
+        { "name": "Honey BBQ", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 125,
+    "name": "Mushroom Swiss Burger",
+    "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=300&fit=crop",
+    "price": 14.25,
+    "category": "burgers",
+    "description": "Burger with sautéed mushrooms and Swiss cheese.",
+    "options": {
+      "mushrooms": [{ "name": "Button", "price": 0 }, { "name": "Portobello", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 126,
+    "name": "Jalapeño Burger",
+    "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=300&fit=crop",
+    "price": 13.5,
+    "category": "burgers",
+    "description": "Spicy burger with jalapeños and pepper jack cheese.",
+    "options": {
+      "spice": [{ "name": "Mild", "price": 0 }, { "name": "Medium", "price": 0 }, { "name": "Hot", "price": 0 }]
+    }
+  },
+  {
+    "id": 127,
+    "name": "Turkey Burger",
+    "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=300&fit=crop",
+    "price": 12.25,
+    "category": "burgers",
+    "description": "Lean turkey patty with avocado and sprouts.",
+    "options": {
+      "toppings": [{ "name": "Standard", "price": 0 }, { "name": "Extra Avocado", "price": 1.0 }]
+    }
+  },
+  {
+    "id": 128,
+    "name": "Veggie Burger",
+    "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=300&fit=crop",
+    "price": 11.5,
+    "category": "burgers",
+    "description": "Plant-based patty with fresh vegetables.",
+    "options": {
+      "patty": [
+        { "name": "Black Bean", "price": 0 },
+        { "name": "Quinoa", "price": 0 },
+        { "name": "Beyond Meat", "price": 1.5 }
+      ]
+    }
+  },
+  {
+    "id": 129,
+    "name": "Double Burger",
+    "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=300&fit=crop",
+    "price": 16.5,
+    "category": "burgers",
+    "description": "Two beef patties with double cheese.",
+    "options": {
+      "size": [{ "name": "Regular Patties", "price": 0 }, { "name": "Large Patties", "price": 2.0 }]
+    }
+  },
+  {
+    "id": 130,
+    "name": "Fish Burger",
+    "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=300&fit=crop",
+    "price": 13.0,
+    "category": "burgers",
+    "description": "Crispy fish fillet with tartar sauce.",
+    "options": {
+      "fish": [{ "name": "Cod", "price": 0 }, { "name": "Salmon", "price": 1.5 }]
+    }
+  },
+  {
+    "id": 131,
+    "name": "Chicken Wings",
+    "image": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=300&h=300&fit=crop",
+    "price": 9.75,
+    "category": "appetizers",
+    "description": "Crispy chicken wings with your choice of sauce.",
+    "options": {
+      "sauce": [
+        { "name": "Buffalo", "price": 0 },
+        { "name": "BBQ", "price": 0 },
+        { "name": "Honey Garlic", "price": 0 },
+        { "name": "Teriyaki", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 132,
+    "name": "Mozzarella Sticks",
+    "image": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=300&h=300&fit=crop",
+    "price": 7.5,
+    "category": "appetizers",
+    "description": "Breaded mozzarella sticks with marinara sauce.",
+    "options": {
+      "quantity": [{ "name": "6 pieces", "price": 0 }, { "name": "12 pieces", "price": 4.0 }]
+    }
+  },
+  {
+    "id": 133,
+    "name": "Nachos",
+    "image": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=300&h=300&fit=crop",
+    "price": 8.25,
+    "category": "appetizers",
+    "description": "Tortilla chips with cheese, jalapeños, and sour cream.",
+    "options": {
+      "size": [{ "name": "Regular", "price": 0 }, { "name": "Large", "price": 3.0 }]
+    }
+  },
+  {
+    "id": 134,
+    "name": "Onion Rings",
+    "image": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=300&h=300&fit=crop",
+    "price": 6.75,
+    "category": "appetizers",
+    "description": "Crispy beer-battered onion rings.",
+    "options": {
+      "size": [{ "name": "Regular", "price": 0 }, { "name": "Large", "price": 2.0 }]
+    }
+  },
+  {
+    "id": 135,
+    "name": "Jalapeño Poppers",
+    "image": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=300&h=300&fit=crop",
+    "price": 7.25,
+    "category": "appetizers",
+    "description": "Jalapeños stuffed with cream cheese and wrapped in bacon.",
+    "options": {
+      "quantity": [{ "name": "6 pieces", "price": 0 }, { "name": "12 pieces", "price": 4.0 }]
+    }
+  },
+  {
+    "id": 136,
+    "name": "Potato Skins",
+    "image": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=300&h=300&fit=crop",
+    "price": 8.5,
+    "category": "appetizers",
+    "description": "Loaded potato skins with cheese, bacon, and sour cream.",
+    "options": {
+      "toppings": [{ "name": "Standard", "price": 0 }, { "name": "Extra Loaded", "price": 2.0 }]
+    }
+  },
+  {
+    "id": 137,
+    "name": "Spinach Artichoke Dip",
+    "image": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=300&h=300&fit=crop",
+    "price": 9.0,
+    "category": "appetizers",
+    "description": "Creamy spinach and artichoke dip with tortilla chips.",
+    "options": {
+      "bread": [{ "name": "Tortilla Chips", "price": 0 }, { "name": "Bread Bowl", "price": 1.5 }]
+    }
+  },
+  {
+    "id": 138,
+    "name": "Calamari",
+    "image": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=300&h=300&fit=crop",
+    "price": 10.25,
+    "category": "appetizers",
+    "description": "Crispy fried squid rings with marinara sauce.",
+    "options": {
+      "sauce": [
+        { "name": "Marinara", "price": 0 },
+        { "name": "Aioli", "price": 0 },
+        { "name": "Spicy Mayo", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 139,
+    "name": "Shrimp Cocktail",
+    "image": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=300&h=300&fit=crop",
+    "price": 11.5,
+    "category": "appetizers",
+    "description": "Chilled shrimp with cocktail sauce.",
+    "options": {
+      "quantity": [{ "name": "6 pieces", "price": 0 }, { "name": "12 pieces", "price": 6.0 }]
+    }
+  },
+  {
+    "id": 140,
+    "name": "Bruschetta",
+    "image": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=300&h=300&fit=crop",
+    "price": 7.75,
+    "category": "appetizers",
+    "description": "Toasted bread with tomatoes, basil, and garlic.",
+    "options": {
+      "quantity": [{ "name": "4 pieces", "price": 0 }, { "name": "8 pieces", "price": 3.0 }]
+    }
+  },
+  {
+    "id": 141,
+    "name": "Grilled Salmon",
+    "image": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=300&h=300&fit=crop",
+    "price": 18.5,
+    "category": "main-courses",
+    "description": "Fresh Atlantic salmon with lemon herb butter.",
+    "options": {
+      "preparation": [
+        { "name": "Grilled", "price": 0 },
+        { "name": "Blackened", "price": 0 },
+        { "name": "Cedar Plank", "price": 1.5 }
+      ]
+    }
+  },
+  {
+    "id": 142,
+    "name": "Ribeye Steak",
+    "image": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&h=300&fit=crop",
+    "price": 24.75,
+    "category": "main-courses",
+    "description": "12oz ribeye steak cooked to your preference.",
+    "options": {
+      "temperature": [
+        { "name": "Rare", "price": 0 },
+        { "name": "Medium Rare", "price": 0 },
+        { "name": "Medium", "price": 0 },
+        { "name": "Medium Well", "price": 0 },
+        { "name": "Well Done", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 143,
+    "name": "Chicken Parmesan",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 16.25,
+    "category": "main-courses",
+    "description": "Breaded chicken breast with marinara and mozzarella.",
+    "options": {
+      "pasta": [
+        { "name": "Spaghetti", "price": 0 },
+        { "name": "Penne", "price": 0 },
+        { "name": "Fettuccine", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 144,
+    "name": "Pork Tenderloin",
+    "image": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&h=300&fit=crop",
+    "price": 19.5,
+    "category": "main-courses",
+    "description": "Herb-crusted pork tenderloin with apple chutney.",
+    "options": {
+      "sauce": [
+        { "name": "Apple Chutney", "price": 0 },
+        { "name": "Mushroom Gravy", "price": 0 },
+        { "name": "Honey Glaze", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 145,
+    "name": "Lamb Chops",
+    "image": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&h=300&fit=crop",
+    "price": 22.75,
+    "category": "main-courses",
+    "description": "Herb-crusted lamb chops with mint sauce.",
+    "options": {
+      "quantity": [{ "name": "3 chops", "price": 0 }, { "name": "4 chops", "price": 3.0 }]
+    }
+  },
+  {
+    "id": 146,
+    "name": "Fish and Chips",
+    "image": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=300&h=300&fit=crop",
+    "price": 14.25,
+    "category": "main-courses",
+    "description": "Beer-battered fish with crispy fries and tartar sauce.",
+    "options": {
+      "fish": [{ "name": "Cod", "price": 0 }, { "name": "Haddock", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 147,
+    "name": "Lobster Tail",
+    "image": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=300&h=300&fit=crop",
+    "price": 28.5,
+    "category": "main-courses",
+    "description": "Broiled lobster tail with drawn butter.",
+    "options": {
+      "size": [{ "name": "6-8 oz", "price": 0 }, { "name": "8-10 oz", "price": 5.0 }]
+    }
+  },
+  {
+    "id": 148,
+    "name": "Duck Confit",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=300&fit=crop",
+    "price": 21.25,
+    "category": "main-courses",
+    "description": "Traditional French duck leg confit with cherry sauce.",
+    "options": {
+      "sauce": [
+        { "name": "Cherry", "price": 0 },
+        { "name": "Orange", "price": 0 },
+        { "name": "Port Wine", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 149,
+    "name": "Paella",
+    "image": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=300&h=300&fit=crop",
+    "price": 20.75,
+    "category": "main-courses",
+    "description": "Spanish rice dish with seafood and saffron.",
+    "options": {
+      "style": [
+        { "name": "Seafood", "price": 0 },
+        { "name": "Chicken & Seafood", "price": 0 },
+        { "name": "Vegetarian", "price": -2.0 }
+      ]
+    }
+  },
+  {
+    "id": 150,
+    "name": "Rack of Lamb",
+    "image": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&h=300&fit=crop",
+    "price": 26.5,
+    "category": "main-courses",
+    "description": "Herb-crusted rack of lamb with rosemary jus.",
+    "options": {
+      "temperature": [{ "name": "Medium Rare", "price": 0 }, { "name": "Medium", "price": 0 }]
+    }
+  },
+  {
+    "id": 151,
+    "name": "Roasted Vegetables",
+    "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&h=300&fit=crop",
+    "price": 5.5,
+    "category": "sides",
+    "description": "Seasonal vegetables roasted with herbs.",
+    "options": {
+      "vegetables": [
+        { "name": "Mixed", "price": 0 },
+        { "name": "Root Vegetables", "price": 0 },
+        { "name": "Mediterranean", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 152,
+    "name": "Grilled Asparagus",
+    "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&h=300&fit=crop",
+    "price": 6.25,
+    "category": "sides",
+    "description": "Fresh asparagus grilled with lemon and parmesan.",
+    "options": {
+      "preparation": [{ "name": "Grilled", "price": 0 }, { "name": "Roasted", "price": 0 }]
+    }
+  },
+  {
+    "id": 153,
+    "name": "Sweet Potato Fries",
+    "image": "https://images.unsplash.com/photo-1639024471283-03518883512d?w=300&h=300&fit=crop",
+    "price": 6.0,
+    "category": "sides",
+    "description": "Crispy sweet potato fries with chipotle mayo.",
+    "options": {
+      "sauce": [
+        { "name": "Chipotle Mayo", "price": 0 },
+        { "name": "Honey Mustard", "price": 0 },
+        { "name": "Ketchup", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 154,
+    "name": "Creamed Spinach",
+    "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&h=300&fit=crop",
+    "price": 5.75,
+    "category": "sides",
+    "description": "Rich and creamy spinach with garlic.",
+    "options": {
+      "style": [{ "name": "Traditional", "price": 0 }, { "name": "With Bacon", "price": 1.0 }]
+    }
+  },
+  {
+    "id": 155,
+    "name": "Baked Potato",
+    "image": "https://images.unsplash.com/photo-1518013431117-eb1465fa5752?w=300&h=300&fit=crop",
+    "price": 4.75,
+    "category": "sides",
+    "description": "Fluffy baked potato with butter and sour cream.",
+    "options": {
+      "toppings": [
+        { "name": "Butter & Sour Cream", "price": 0 },
+        { "name": "Loaded", "price": 2.0 },
+        { "name": "Chives", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 156,
+    "name": "Quinoa Pilaf",
+    "image": "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=300&h=300&fit=crop",
+    "price": 5.25,
+    "category": "sides",
+    "description": "Fluffy quinoa with herbs and vegetables.",
+    "options": {
+      "style": [
+        { "name": "Herb", "price": 0 },
+        { "name": "Mediterranean", "price": 0.5 },
+        { "name": "Cranberry Almond", "price": 0.75 }
+      ]
+    }
+  },
+  {
+    "id": 157,
+    "name": "Corn on the Cob",
+    "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&h=300&fit=crop",
+    "price": 4.0,
+    "category": "sides",
+    "description": "Fresh corn with butter and herbs.",
+    "options": {
+      "style": [{ "name": "Butter", "price": 0 }, { "name": "Mexican Street Corn", "price": 1.0 }]
+    }
+  },
+  {
+    "id": 158,
+    "name": "Brussels Sprouts",
+    "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&h=300&fit=crop",
+    "price": 6.5,
+    "category": "sides",
+    "description": "Roasted Brussels sprouts with bacon and balsamic.",
+    "options": {
+      "preparation": [{ "name": "With Bacon", "price": 0 }, { "name": "Vegetarian", "price": -0.5 }]
+    }
+  },
+  {
+    "id": 159,
+    "name": "Wild Rice",
+    "image": "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=300&h=300&fit=crop",
+    "price": 5.0,
+    "category": "sides",
+    "description": "Nutty wild rice with cranberries and pecans.",
+    "options": {
+      "nuts": [
+        { "name": "Pecans", "price": 0 },
+        { "name": "Almonds", "price": 0 },
+        { "name": "No Nuts", "price": -0.5 }
+      ]
+    }
+  },
+  {
+    "id": 160,
+    "name": "Polenta",
+    "image": "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=300&h=300&fit=crop",
+    "price": 4.5,
+    "category": "sides",
+    "description": "Creamy Italian cornmeal with parmesan.",
+    "options": {
+      "style": [{ "name": "Creamy", "price": 0 }, { "name": "Grilled", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 161,
+    "name": "Iced Americano",
+    "image": "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=300&h=300&fit=crop",
+    "price": 3.5,
+    "category": "specialty-drinks",
+    "description": "Chilled espresso with cold water over ice.",
+    "options": {
+      "size": [{ "name": "Medium", "price": 0 }, { "name": "Large", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 162,
+    "name": "Iced Latte",
+    "image": "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=300&h=300&fit=crop",
+    "price": 4.75,
+    "category": "specialty-drinks",
+    "description": "Espresso with cold milk over ice.",
+    "options": {
+      "milk": [
+        { "name": "Whole", "price": 0 },
+        { "name": "Almond", "price": 0.5 },
+        { "name": "Oat", "price": 0.5 },
+        { "name": "Coconut", "price": 0.5 }
+      ],
+      "sweetener": [
+        { "name": "None", "price": 0 },
+        { "name": "Simple Syrup", "price": 0 },
+        { "name": "Vanilla", "price": 0.5 },
+        { "name": "Caramel", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 163,
+    "name": "Iced Mocha",
+    "image": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+    "price": 5.25,
+    "category": "specialty-drinks",
+    "description": "Iced coffee with chocolate and whipped cream.",
+    "options": {
+      "chocolate": [
+        { "name": "Milk Chocolate", "price": 0 },
+        { "name": "Dark Chocolate", "price": 0 },
+        { "name": "White Chocolate", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 164,
+    "name": "Caramel Macchiato",
+    "image": "https://images.unsplash.com/photo-1541167760496-1628856ab772?w=300&h=300&fit=crop",
+    "price": 5.0,
+    "category": "specialty-drinks",
+    "description": "Espresso with steamed milk and caramel drizzle.",
+    "options": {
+      "temperature": [{ "name": "Hot", "price": 0 }, { "name": "Iced", "price": 0 }]
+    }
+  },
+  {
+    "id": 165,
+    "name": "Vanilla Latte",
+    "image": "https://images.unsplash.com/photo-1561047029-3000c68339ca?w=300&h=300&fit=crop",
+    "price": 4.75,
+    "category": "specialty-drinks",
+    "description": "Smooth latte with vanilla syrup.",
+    "options": {
+      "temperature": [{ "name": "Hot", "price": 0 }, { "name": "Iced", "price": 0 }]
+    }
+  },
+  {
+    "id": 166,
+    "name": "Hazelnut Coffee",
+    "image": "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=300&h=300&fit=crop",
+    "price": 3.75,
+    "category": "specialty-drinks",
+    "description": "Coffee with hazelnut flavoring.",
+    "options": {
+      "strength": [{ "name": "Regular", "price": 0 }, { "name": "Strong", "price": 0 }]
+    }
+  },
+  {
+    "id": 167,
+    "name": "Pumpkin Spice Latte",
+    "image": "https://images.unsplash.com/photo-1561047029-3000c68339ca?w=300&h=300&fit=crop",
+    "price": 5.25,
+    "category": "specialty-drinks",
+    "description": "Seasonal latte with pumpkin spice and whipped cream.",
+    "options": {
+      "spice_level": [
+        { "name": "Light", "price": 0 },
+        { "name": "Regular", "price": 0 },
+        { "name": "Extra Spicy", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 168,
+    "name": "Chai Latte",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 4.25,
+    "category": "specialty-drinks",
+    "description": "Spiced tea latte with steamed milk.",
+    "options": {
+      "temperature": [{ "name": "Hot", "price": 0 }, { "name": "Iced", "price": 0 }]
+    }
+  },
+  {
+    "id": 169,
+    "name": "Hot Chocolate",
+    "image": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+    "price": 3.5,
+    "category": "specialty-drinks",
+    "description": "Rich hot chocolate with whipped cream.",
+    "options": {
+      "toppings": [
+        { "name": "Whipped Cream", "price": 0 },
+        { "name": "Marshmallows", "price": 0 },
+        { "name": "Both", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 170,
+    "name": "White Chocolate Mocha",
+    "image": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+    "price": 5.5,
+    "category": "specialty-drinks",
+    "description": "Espresso with white chocolate and steamed milk.",
+    "options": {
+      "temperature": [{ "name": "Hot", "price": 0 }, { "name": "Iced", "price": 0 }]
+    }
+  },
+  {
+    "id": 171,
+    "name": "Espresso Romano",
+    "image": "https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?w=300&h=300&fit=crop",
+    "price": 3.0,
+    "category": "coffee",
+    "description": "Espresso served with a twist of lemon peel.",
+    "options": {
+      "shots": [{ "name": "Single", "price": 0 }, { "name": "Double", "price": 1.0 }]
+    }
+  },
+  {
+    "id": 172,
+    "name": "Long Black",
+    "image": "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=300&h=300&fit=crop",
+    "price": 3.25,
+    "category": "coffee",
+    "description": "Double espresso poured over hot water.",
+    "options": {
+      "strength": [{ "name": "Regular", "price": 0 }, { "name": "Strong", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 173,
+    "name": "Café Bombón",
+    "image": "https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?w=300&h=300&fit=crop",
+    "price": 3.75,
+    "category": "coffee",
+    "description": "Espresso with sweetened condensed milk.",
+    "options": {
+      "milk": [{ "name": "Regular", "price": 0 }, { "name": "Extra Sweet", "price": 0 }]
+    }
+  },
+  {
+    "id": 174,
+    "name": "Café con Leche",
+    "image": "https://images.unsplash.com/photo-1561047029-3000c68339ca?w=300&h=300&fit=crop",
+    "price": 4.0,
+    "category": "coffee",
+    "description": "Spanish coffee with equal parts coffee and milk.",
+    "options": {
+      "temperature": [{ "name": "Hot", "price": 0 }, { "name": "Iced", "price": 0 }]
+    }
+  },
+  {
+    "id": 175,
+    "name": "Café Noisette",
+    "image": "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=300&h=300&fit=crop",
+    "price": 3.5,
+    "category": "coffee",
+    "description": "French espresso with a small amount of milk.",
+    "options": {
+      "milk": [{ "name": "Whole", "price": 0 }, { "name": "Steamed", "price": 0 }]
+    }
+  },
+  {
+    "id": 176,
+    "name": "Ristretto",
+    "image": "https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?w=300&h=300&fit=crop",
+    "price": 2.75,
+    "category": "coffee",
+    "description": "Short shot of espresso with less water.",
+    "options": {
+      "shots": [{ "name": "Single", "price": 0 }, { "name": "Double", "price": 1.0 }]
+    }
+  },
+  {
+    "id": 177,
+    "name": "Lungo",
+    "image": "https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?w=300&h=300&fit=crop",
+    "price": 3.0,
+    "category": "coffee",
+    "description": "Long shot of espresso with more water.",
+    "options": {
+      "shots": [{ "name": "Single", "price": 0 }, { "name": "Double", "price": 1.0 }]
+    }
+  },
+  {
+    "id": 178,
+    "name": "Café Zorro",
+    "image": "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=300&h=300&fit=crop",
+    "price": 3.25,
+    "category": "coffee",
+    "description": "Double espresso with hot water in a 1:1 ratio.",
+    "options": {
+      "strength": [{ "name": "Regular", "price": 0 }, { "name": "Strong", "price": 0 }]
+    }
+  },
+  {
+    "id": 179,
+    "name": "Breve",
+    "image": "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=300&h=300&fit=crop",
+    "price": 4.5,
+    "category": "coffee",
+    "description": "Espresso with steamed half-and-half.",
+    "options": {
+      "size": [{ "name": "Small", "price": 0 }, { "name": "Large", "price": 1.0 }]
+    }
+  },
+  {
+    "id": 180,
+    "name": "Café au Lait",
+    "image": "https://images.unsplash.com/photo-1561047029-3000c68339ca?w=300&h=300&fit=crop",
+    "price": 3.75,
+    "category": "coffee",
+    "description": "French coffee with hot milk.",
+    "options": {
+      "milk": [{ "name": "Whole", "price": 0 }, { "name": "2%", "price": 0 }, { "name": "Almond", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 181,
+    "name": "Earl Grey Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 2.75,
+    "category": "tea",
+    "description": "Classic Earl Grey with bergamot oil.",
+    "options": {
+      "additions": [
+        { "name": "Plain", "price": 0 },
+        { "name": "Lemon", "price": 0 },
+        { "name": "Milk", "price": 0 },
+        { "name": "Honey", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 182,
+    "name": "English Breakfast Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 2.5,
+    "category": "tea",
+    "description": "Traditional English breakfast blend.",
+    "options": {
+      "strength": [{ "name": "Light", "price": 0 }, { "name": "Medium", "price": 0 }, { "name": "Strong", "price": 0 }]
+    }
+  },
+  {
+    "id": 183,
+    "name": "Darjeeling Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 3.0,
+    "category": "tea",
+    "description": "Premium Darjeeling black tea from India.",
+    "options": {
+      "grade": [{ "name": "FTGFOP", "price": 0 }, { "name": "SFTGFOP", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 184,
+    "name": "Assam Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 2.75,
+    "category": "tea",
+    "description": "Robust Assam black tea with malty flavor.",
+    "options": {
+      "preparation": [{ "name": "Traditional", "price": 0 }, { "name": "With Milk", "price": 0 }]
+    }
+  },
+  {
+    "id": 185,
+    "name": "Ceylon Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 3.25,
+    "category": "tea",
+    "description": "Sri Lankan Ceylon tea with bright citrusy notes.",
+    "options": {
+      "region": [
+        { "name": "Nuwara Eliya", "price": 0 },
+        { "name": "Dimbula", "price": 0 },
+        { "name": "Uva", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 186,
+    "name": "Rooibos Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 2.75,
+    "category": "tea",
+    "description": "Caffeine-free South African red bush tea.",
+    "options": {
+      "flavor": [{ "name": "Plain", "price": 0 }, { "name": "Vanilla", "price": 0 }, { "name": "Honey", "price": 0 }]
+    }
+  },
+  {
+    "id": 187,
+    "name": "Jasmine Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 3.5,
+    "category": "tea",
+    "description": "Green tea scented with jasmine flowers.",
+    "options": {
+      "grade": [{ "name": "Dragon Pearls", "price": 0 }, { "name": "Phoenix Pearls", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 188,
+    "name": "Pu-erh Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 4.0,
+    "category": "tea",
+    "description": "Aged Chinese fermented tea with earthy flavor.",
+    "options": {
+      "age": [
+        { "name": "5 Years", "price": 0 },
+        { "name": "10 Years", "price": 1.0 },
+        { "name": "20 Years", "price": 2.0 }
+      ]
+    }
+  },
+  {
+    "id": 189,
+    "name": "Dragon Well Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 3.75,
+    "category": "tea",
+    "description": "Premium Chinese green tea with delicate flavor.",
+    "options": {
+      "grade": [{ "name": "Grade A", "price": 0 }, { "name": "Premium", "price": 0.5 }]
+    }
+  },
+  {
+    "id": 190,
+    "name": "Lemon Ginger Tea",
+    "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop",
+    "price": 3.0,
+    "category": "tea",
+    "description": "Herbal blend with lemon and fresh ginger.",
+    "options": {
+      "strength": [{ "name": "Mild", "price": 0 }, { "name": "Medium", "price": 0 }, { "name": "Strong", "price": 0 }]
+    }
+  },
+  {
+    "id": 191,
+    "name": "Beef Stir-Fry Noodles",
+    "image": "https://images.unsplash.com/photo-1555126634-323283e090fa?w=300&h=300&fit=crop",
+    "price": 11.75,
+    "category": "noodles",
+    "description": "Tender beef with vegetables over fresh noodles.",
+    "options": {
+      "spice": [{ "name": "Mild", "price": 0 }, { "name": "Medium", "price": 0 }, { "name": "Spicy", "price": 0 }]
+    }
+  },
+  {
+    "id": 192,
+    "name": "Seafood Linguine",
+    "image": "https://images.unsplash.com/photo-1551892374-ecf8754cf8b0?w=300&h=300&fit=crop",
+    "price": 16.5,
+    "category": "noodles",
+    "description": "Linguine with mixed seafood in white wine sauce.",
+    "options": {
+      "sauce": [
+        { "name": "White Wine", "price": 0 },
+        { "name": "Marinara", "price": 0 },
+        { "name": "Cream", "price": 0.5 }
+      ]
+    }
+  },
+  {
+    "id": 193,
+    "name": "Chicken Chow Mein",
+    "image": "https://images.unsplash.com/photo-1555126634-323283e090fa?w=300&h=300&fit=crop",
+    "price": 10.25,
+    "category": "noodles",
+    "description": "Crispy noodles with chicken and vegetables.",
+    "options": {
+      "noodles": [{ "name": "Crispy", "price": 0 }, { "name": "Soft", "price": 0 }]
+    }
+  },
+  {
+    "id": 194,
+    "name": "Vegetable Pad See Ew",
+    "image": "https://images.unsplash.com/photo-1559314809-0f31657def5e?w=300&h=300&fit=crop",
+    "price": 9.75,
+    "category": "noodles",
+    "description": "Thai flat noodles with vegetables and dark soy sauce.",
+    "options": {
+      "vegetables": [
+        { "name": "Mixed", "price": 0 },
+        { "name": "Broccoli", "price": 0 },
+        { "name": "Bok Choy", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 195,
+    "name": "Penne Arrabbiata",
+    "image": "https://images.unsplash.com/photo-1551892374-ecf8754cf8b0?w=300&h=300&fit=crop",
+    "price": 12.0,
+    "category": "noodles",
+    "description": "Spicy Italian pasta with tomatoes and chili.",
+    "options": {
+      "spice": [{ "name": "Medium", "price": 0 }, { "name": "Hot", "price": 0 }, { "name": "Extra Hot", "price": 0 }]
+    }
+  },
+  {
+    "id": 196,
+    "name": "Yakisoba",
+    "image": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300&h=300&fit=crop",
+    "price": 10.5,
+    "category": "noodles",
+    "description": "Japanese stir-fried wheat noodles with vegetables.",
+    "options": {
+      "protein": [
+        { "name": "Chicken", "price": 0 },
+        { "name": "Pork", "price": 0 },
+        { "name": "Vegetarian", "price": -1.0 }
+      ]
+    }
+  },
+  {
+    "id": 197,
+    "name": "Dan Dan Noodles",
+    "image": "https://images.unsplash.com/photo-1555126634-323283e090fa?w=300&h=300&fit=crop",
+    "price": 11.25,
+    "category": "noodles",
+    "description": "Sichuan noodles with spicy sesame sauce.",
+    "options": {
+      "spice": [
+        { "name": "Medium", "price": 0 },
+        { "name": "Spicy", "price": 0 },
+        { "name": "Extra Spicy", "price": 0 }
+      ]
+    }
+  },
+  {
+    "id": 198,
+    "name": "Cacio e Pepe",
+    "image": "https://images.unsplash.com/photo-1551892374-ecf8754cf8b0?w=300&h=300&fit=crop",
+    "price": 13.5,
+    "category": "noodles",
+    "description": "Roman pasta with pecorino cheese and black pepper.",
+    "options": {
+      "cheese": [{ "name": "Pecorino Romano", "price": 0 }, { "name": "Extra Cheese", "price": 1.0 }]
+    }
+  },
+  {
+    "id": 199,
+    "name": "Beef Pho Bo",
+    "image": "https://images.unsplash.com/photo-1555126634-323283e090fa?w=300&h=300&fit=crop",
+    "price": 13.0,
+    "category": "noodles",
+    "description": "Premium Vietnamese beef noodle soup with bone marrow.",
+    "options": {
+      "extras": [
+        { "name": "Standard", "price": 0 },
+        { "name": "Extra Meat", "price": 2.0 },
+        { "name": "Bone Marrow", "price": 1.5 }
+      ]
+    }
+  },
+  {
+    "id": 200,
+    "name": "Carbonara Gnocchi",
+    "image": "https://images.unsplash.com/photo-1551892374-ecf8754cf8b0?w=300&h=300&fit=crop",
+    "price": 14.75,
+    "category": "noodles",
+    "description": "Potato gnocchi with carbonara sauce and pancetta.",
+    "options": {
+      "meat": [
+        { "name": "Pancetta", "price": 0 },
+        { "name": "Bacon", "price": 0 },
+        { "name": "Guanciale", "price": 0.5 }
+      ]
+    }
+  }
+]
