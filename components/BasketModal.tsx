@@ -106,7 +106,7 @@ export function BasketModal({ open, onClose }: { open: boolean; onClose: () => v
     doc.setFontSize(titleFontSize)
     doc.setTextColor("#8d5524")
     doc.setFont("helvetica", "bold")
-    doc.text("Slow Drip", 150, 32, { align: "center" })
+    doc.text("Daro Coffee", 150, 32, { align: "center" })
     doc.setFontSize(smallFontSize)
     doc.setFont("helvetica", "normal")
     doc.setTextColor("#8d5524")
@@ -162,7 +162,7 @@ export function BasketModal({ open, onClose }: { open: boolean; onClose: () => v
     y += 12
     doc.setFontSize(smallFontSize - 1)
     doc.setTextColor("#bfa16b")
-    doc.text("Slow Drip · Heart of the city", 150, y, { align: "center" })
+    doc.text("Daro Coffee · Heart of the city", 150, y, { align: "center" })
 
     // Return PDF as DataURL for preview
     return doc.output("dataurlstring")
@@ -214,7 +214,7 @@ export function BasketModal({ open, onClose }: { open: boolean; onClose: () => v
       ctx.fillStyle = '#8d5524'
       ctx.font = 'bold 32px Arial'
       ctx.textAlign = 'center'
-      ctx.fillText('Slow Drip', displayWidth / 2, 50)
+      ctx.fillText('Daro Coffee', displayWidth / 2, 50)
       
       ctx.font = '20px Arial'
       ctx.fillText('Order Receipt', displayWidth / 2, 85)
@@ -297,7 +297,7 @@ export function BasketModal({ open, onClose }: { open: boolean; onClose: () => v
       
       ctx.fillStyle = '#bfa16b'
       ctx.font = '16px Arial'
-      ctx.fillText('Slow Drip · Heart of the city', displayWidth / 2, y)
+      ctx.fillText('Daro Coffee · Heart of the city', displayWidth / 2, y)
 
       // Convert to blob and download
       canvas.toBlob((blob) => {
