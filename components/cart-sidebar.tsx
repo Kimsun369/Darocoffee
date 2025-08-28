@@ -4,6 +4,7 @@ import { Minus, Plus, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Badge } from "@/components/ui/badge"
+import { useState } from "react"
 
 interface CartItem {
   id: string
@@ -36,6 +37,24 @@ export function CartSidebar({
 }: CartSidebarProps) {
   const totalPrice = cartItems.reduce((sum, item) => sum + item.price, 0)
 
+  // Pickup time state
+  const [pickupOption, setPickupOption] = useState<"now" | "15" | "30" | "45" | "60" | "other">("now")
+  const [customMinutes, setCustomMinutes] = useState<number>(5)
+
+  // Calculate pick up time string
+  const getPickupTimeString = () => {
+    if (pickupOption === "now") return language === "en" ? "Now" : "ឥឡូវនេះ"
+    const now = new Date()
+    let minutesToAdd = 0
+    if (pickupOption === "other") {
+      minutesToAdd = customMinutes
+    } else {
+      minutesToAdd = parseInt(pickupOption, 10)
+    }
+    const pickupDate = new Date(now.getTime() + minutesToAdd * 60000)
+    return pickupDate.toLocaleTimeString("en-GB", { hour12: false })
+  }
+
   const formatOptions = (options: Record<string, string>) => {
     return Object.entries(options)
       .map(([key, value]) => `${key}: ${value}`)
@@ -46,6 +65,7 @@ export function CartSidebar({
     const now = new Date()
     const dateStr = now.toLocaleDateString("en-GB")
     const timeStr = now.toLocaleTimeString("en-GB", { hour12: false })
+    const pickupTimeStr = getPickupTimeString()
 
     let message = `Order\nTime: ${dateStr}, ${timeStr}\n\n`
 
@@ -58,7 +78,7 @@ export function CartSidebar({
         message += `   ${formattedKey}: ${value}\n`
       })
 
-      message += `   Pick up time: Now\n\n`
+      message += `   Pick up time: ${pickupTimeStr}\n\n`
     })
 
     message += "Thank you!"
@@ -144,6 +164,67 @@ export function CartSidebar({
                     </div>
                   </div>
                 ))}
+              </div>
+
+              {/* Pick up time selector */}
+              <div className="mb-4">
+                <label className="block font-medium mb-2">
+                  {language === "en" ? "Pick up time:" : "ពេលយក:"}
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant={pickupOption === "now" ? "default" : "outline"}
+                    onClick={() => setPickupOption("now")}
+                  >
+                    {language === "en" ? "Now" : "ឥឡូវនេះ"}
+                  </Button>
+                  <Button
+                    variant={pickupOption === "15" ? "default" : "outline"}
+                    onClick={() => setPickupOption("15")}
+                  >
+                    15 {language === "en" ? "minutes" : "នាទី"}
+                  </Button>
+                  <Button
+                    variant={pickupOption === "30" ? "default" : "outline"}
+                    onClick={() => setPickupOption("30")}
+                  >
+                    30 {language === "en" ? "minutes" : "នាទី"}
+                  </Button>
+                  <Button
+                    variant={pickupOption === "45" ? "default" : "outline"}
+                    onClick={() => setPickupOption("45")}
+                  >
+                    45 {language === "en" ? "minutes" : "នាទី"}
+                  </Button>
+                  <Button
+                    variant={pickupOption === "60" ? "default" : "outline"}
+                    onClick={() => setPickupOption("60")}
+                  >
+                    1 {language === "en" ? "hour" : "ម៉ោង"}
+                  </Button>
+                  <Button
+                    variant={pickupOption === "other" ? "default" : "outline"}
+                    onClick={() => setPickupOption("other")}
+                  >
+                    {language === "en" ? "Other" : "ផ្សេងទៀត"}
+                  </Button>
+                  {pickupOption === "other" && (
+                    <input
+                      type="number"
+                      min={1}
+                      max={180}
+                      value={customMinutes}
+                      onChange={e => setCustomMinutes(Number(e.target.value))}
+                      className="ml-2 border rounded px-2 py-1 w-20"
+                      placeholder={language === "en" ? "Minutes" : "នាទី"}
+                    />
+                  )}
+                </div>
+                <div className="mt-2 text-sm text-muted-foreground">
+                  {language === "en"
+                    ? `Pick up at: ${getPickupTimeString()}`
+                    : `យកនៅម៉ោង: ${getPickupTimeString()}`}
+                </div>
               </div>
 
               {/* Cart Summary */}
