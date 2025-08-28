@@ -135,7 +135,7 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
                   {categoryProducts.map((product) => (
                     <Card
                       key={product.id}
@@ -147,32 +147,34 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
                           <img
                             src={product.image || "/placeholder.svg"}
                             alt={product.name}
-                            className="h-36 md:h-44 lg:h-48 w-full object-cover transition-all duration-500 group-hover:scale-110"
+                            className="h-32 sm:h-36 md:h-44 lg:h-48 w-full object-cover transition-all duration-500 group-hover:scale-110"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                          <div className="absolute top-3 right-3">
-                            <Badge className="bg-white/95 dark:bg-gray-900/95 text-amber-800 dark:text-amber-200 border border-amber-200/50 dark:border-amber-600/50 font-bold text-sm shadow-lg backdrop-blur-sm px-3 py-1 rounded-full">
+                          <div className="absolute top-2 sm:top-3 right-2 sm:right-3">
+                            <Badge className="bg-white/95 dark:bg-gray-900/95 text-amber-800 dark:text-amber-200 border border-amber-200/50 dark:border-amber-600/50 font-bold text-xs sm:text-sm shadow-lg backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full">
                               ${product.price.toFixed(2)}
                             </Badge>
                           </div>
                         </div>
-                        <div className="p-4 space-y-3">
-                          <h4 className="font-bold text-base md:text-lg text-gray-900 dark:text-gray-100 line-clamp-2 text-balance leading-tight group-hover:text-amber-800 dark:group-hover:text-amber-200 transition-colors duration-300">
+                        <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
+                          <h4 className="font-bold text-sm sm:text-base md:text-lg text-gray-900 dark:text-gray-100 line-clamp-2 text-balance leading-tight group-hover:text-amber-800 dark:group-hover:text-amber-200 transition-colors duration-300">
                             {product.name}
                           </h4>
-                          <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed hidden md:block">
+                          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed hidden sm:block">
                             {product.description}
                           </p>
                           <Button
                             size="sm"
-                            className="w-full h-9 md:h-10 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold text-sm shadow-lg shadow-amber-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/40 rounded-xl border-0 hover:scale-105"
+                            className="w-full h-8 sm:h-9 md:h-10 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold text-xs sm:text-sm shadow-lg shadow-amber-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/40 rounded-xl border-0 hover:scale-105"
                             onClick={(e) => {
                               e.stopPropagation()
                               onProductClick(product)
                             }}
                           >
-                            <Plus className="h-4 w-4 mr-2 flex-shrink-0" />
-                            <span className="truncate">{language === "en" ? "Add to Cart" : "បន្ថែមទៅកន្ត្រក"}</span>
+                            <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 flex-shrink-0" />
+                            <span className="truncate text-xs sm:text-sm">
+                              {language === "en" ? "Add to Cart" : "បន្ថែមទៅកន្ត្រក"}
+                            </span>
                           </Button>
                         </div>
                       </CardContent>
