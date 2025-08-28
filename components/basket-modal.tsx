@@ -194,7 +194,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
           <div className="space-y-3">
             <Button
               variant="outline"
-              className="w-full"
+              className="w-full bg-transparent"
               onClick={() => {
                 // Open add more item modal
               }}

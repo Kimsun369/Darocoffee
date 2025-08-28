@@ -45,7 +45,9 @@ interface ProductModalProps {
 export function ProductModal({ product, isOpen, onClose, onAddToCart, language }: ProductModalProps) {
   const [subItems, setSubItems] = useState<SubItem[]>([])
 
-  const getDefaultOptions = (product: Product | null): { options: Record<string, string>; optionsPricing: Record<string, number> } => {
+  const getDefaultOptions = (
+    product: Product | null,
+  ): { options: Record<string, string>; optionsPricing: Record<string, number> } => {
     const defaultOptions: Record<string, string> = {}
     const defaultPricing: Record<string, number> = {}
 
@@ -64,35 +66,41 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
   useEffect(() => {
     if (product && isOpen) {
       const defaults = getDefaultOptions(product)
-      setSubItems([{
-        ...defaults,
-        quantity: 1
-      }])
+      setSubItems([
+        {
+          ...defaults,
+          quantity: 1,
+        },
+      ])
     }
   }, [product, isOpen])
 
   if (!product) return null
 
   const handleOptionChange = (subItemIndex: number, optionType: string, optionName: string, optionPrice: number) => {
-    setSubItems(prev => prev.map((item, idx) => {
-      if (idx === subItemIndex) {
-        return {
-          ...item,
-          options: { ...item.options, [optionType]: optionName },
-          optionsPricing: { ...item.optionsPricing, [optionType]: optionPrice }
+    setSubItems((prev) =>
+      prev.map((item, idx) => {
+        if (idx === subItemIndex) {
+          return {
+            ...item,
+            options: { ...item.options, [optionType]: optionName },
+            optionsPricing: { ...item.optionsPricing, [optionType]: optionPrice },
+          }
         }
-      }
-      return item
-    }))
+        return item
+      }),
+    )
   }
 
   const handleQuantityChange = (subItemIndex: number, newQuantity: number) => {
-    setSubItems(prev => prev.map((item, idx) => {
-      if (idx === subItemIndex) {
-        return { ...item, quantity: Math.max(1, newQuantity) }
-      }
-      return item
-    }))
+    setSubItems((prev) =>
+      prev.map((item, idx) => {
+        if (idx === subItemIndex) {
+          return { ...item, quantity: Math.max(1, newQuantity) }
+        }
+        return item
+      }),
+    )
   }
 
   const calculateItemPrice = (subItem: SubItem) => {
@@ -107,17 +115,17 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
 
   const handleAddSubItem = () => {
     const defaults = getDefaultOptions(product)
-    setSubItems(prev => [...prev, { ...defaults, quantity: 1 }])
+    setSubItems((prev) => [...prev, { ...defaults, quantity: 1 }])
   }
 
   const handleRemoveSubItem = (index: number) => {
     if (subItems.length > 1) {
-      setSubItems(prev => prev.filter((_, idx) => idx !== index))
+      setSubItems((prev) => prev.filter((_, idx) => idx !== index))
     }
   }
 
   const handleAddAllToCart = () => {
-    subItems.forEach(subItem => {
+    subItems.forEach((subItem) => {
       const cartItem: CartItem = {
         id: `${product.id}-${Date.now()}-${Math.random()}`,
         productId: product.id,
@@ -152,8 +160,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
           {optionType === "bread" && language === "kh" && "ប្រភេទនំបុ័ង"}
           {optionType === "toppings" && language === "en" && "Toppings"}
           {optionType === "toppings" && language === "kh" && "គ្រឿងលាប"}
-          {!["size", "sugar", "milk", "shots", "whipped", "bread", "toppings"].includes(optionType) &&
-            optionType}
+          {!["size", "sugar", "milk", "shots", "whipped", "bread", "toppings"].includes(optionType) && optionType}
         </h4>
         <RadioGroup
           value={subItem.options[optionType]}
@@ -166,9 +173,12 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
           className="space-y-3"
         >
           {options.map((option) => (
-            <div key={option.name} className="flex items-center space-x-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-              <RadioGroupItem 
-                value={option.name} 
+            <div
+              key={option.name}
+              className="flex items-center space-x-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
+              <RadioGroupItem
+                value={option.name}
                 id={`${subItemIndex}-${optionType}-${option.name}`}
                 className="border-2 border-gray-300 dark:border-gray-600"
               />
@@ -234,7 +244,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
                   {language === "en" ? "Customize Your Items" : "កំណត់ទំនិញរបស់អ្នក"}
                 </h3>
               </div>
-              
+
               {subItems.map((subItem, subItemIndex) => (
                 <div
                   key={subItemIndex}
@@ -242,7 +252,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
                 >
                   {/* Background decoration */}
                   <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[var(--coffee-primary)]/5 to-transparent rounded-bl-full pointer-events-none" />
-                  
+
                   <div className="flex items-center justify-between mb-6 relative z-10">
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 rounded-full bg-[var(--coffee-primary)] flex items-center justify-center text-white font-bold text-sm">
@@ -282,9 +292,9 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
                       <span className="text-2xl sm:text-3xl font-bold w-12 sm:w-16 text-center text-[var(--coffee-primary)]">
                         {subItem.quantity}
                       </span>
-                      <Button 
-                        variant="outline" 
-                        size="icon" 
+                      <Button
+                        variant="outline"
+                        size="icon"
                         onClick={() => handleQuantityChange(subItemIndex, subItem.quantity + 1)}
                         className="rounded-full h-10 w-10 sm:h-12 sm:w-12 border-2 border-gray-300 dark:border-gray-600 hover:border-[var(--coffee-primary)] transition-colors"
                       >
@@ -294,9 +304,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
                   </div>
 
                   {/* Options */}
-                  <div className="space-y-6">
-                    {renderOptionsForSubItem(subItemIndex, subItem)}
-                  </div>
+                  <div className="space-y-6">{renderOptionsForSubItem(subItemIndex, subItem)}</div>
 
                   {/* Item Total */}
                   <div className="mt-6 pt-6 border-t-2 border-gray-200 dark:border-gray-700">
@@ -319,7 +327,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
                 <Button
                   onClick={handleAddSubItem}
                   variant="outline"
-                  className="border-2 border-[var(--coffee-primary)] text-[var(--coffee-primary)] hover:bg-[var(--coffee-primary)] hover:text-white rounded-full px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-semibold transition-all duration-300 hover:scale-105 shadow-lg"
+                  className="border-2 border-[var(--coffee-primary)] text-[var(--coffee-primary)] hover:bg-[var(--coffee-primary)] hover:text-white rounded-full px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-semibold transition-all duration-300 hover:scale-105 shadow-lg bg-transparent"
                 >
                   <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                   {language === "en" ? "Add Another Item" : "បន្ថែមទំនិញមួយទៀត"}
@@ -332,12 +340,8 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
               <div className="space-y-4 sm:space-y-6">
                 <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl sm:rounded-2xl p-4 sm:p-6">
                   <div className="flex justify-between items-center text-xl sm:text-2xl md:text-3xl font-bold">
-                    <span className="text-gray-800 dark:text-gray-200">
-                      {language === "en" ? "Total:" : "សរុប:"}
-                    </span>
-                    <span className="text-[var(--coffee-primary)]">
-                      ${calculateTotalPrice().toFixed(2)}
-                    </span>
+                    <span className="text-gray-800 dark:text-gray-200">{language === "en" ? "Total:" : "សរុប:"}</span>
+                    <span className="text-[var(--coffee-primary)]">${calculateTotalPrice().toFixed(2)}</span>
                   </div>
                 </div>
                 <Button
