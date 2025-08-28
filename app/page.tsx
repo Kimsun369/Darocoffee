@@ -99,7 +99,20 @@ export default function HomePage() {
       <main>
         <DiscountBanner />
 
-        <MenuSection products={productsData as Product[]} onProductClick={handleProductClick} language={language} />
+        <MenuSection
+          products={
+            (productsData as any[]).map((product) => ({
+              ...product,
+              options: product.options
+                ? Object.fromEntries(
+                    Object.entries(product.options).filter(([_, v]) => Array.isArray(v))
+                  )
+                : undefined,
+            })) as Product[]
+          }
+          onProductClick={handleProductClick}
+          language={language}
+        />
       </main>
 
       <Footer language={language} />
