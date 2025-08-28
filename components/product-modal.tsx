@@ -245,85 +245,89 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
                 </h3>
               </div>
 
-              {subItems.map((subItem, subItemIndex) => (
-                <div
-                  key={subItemIndex}
-                  className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border-2 border-gray-100 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden"
-                >
-                  {/* Background decoration */}
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[var(--coffee-primary)]/5 to-transparent rounded-bl-full pointer-events-none" />
+              {/* Mobile Card Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                {subItems.map((subItem, subItemIndex) => (
+                  <div
+                    key={subItemIndex}
+                    className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border-2 border-gray-100 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden flex flex-col"
+                  >
+                    {/* Background decoration */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[var(--coffee-primary)]/5 to-transparent rounded-bl-full pointer-events-none" />
 
-                  <div className="flex items-center justify-between mb-6 relative z-10">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded-full bg-[var(--coffee-primary)] flex items-center justify-center text-white font-bold text-sm">
-                        {subItemIndex + 1}
+                    {/* Item Header */}
+                    <div className="flex items-center justify-between mb-4 relative z-10">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-full bg-[var(--coffee-primary)] flex items-center justify-center text-white font-bold text-sm">
+                          {subItemIndex + 1}
+                        </div>
+                        <h4 className="font-bold text-base sm:text-lg text-gray-800 dark:text-gray-200">
+                          {language === "en" ? `Item ${subItemIndex + 1}` : `ទំនិញ ${subItemIndex + 1}`}
+                        </h4>
                       </div>
-                      <h4 className="font-bold text-base sm:text-lg md:text-xl text-gray-800 dark:text-gray-200">
-                        {language === "en" ? `Item ${subItemIndex + 1}` : `ទំនិញ ${subItemIndex + 1}`}
+                      {subItems.length > 1 && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 rounded-full h-8 w-8"
+                          onClick={() => handleRemoveSubItem(subItemIndex)}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+
+                    {/* Quantity Controls */}
+                    <div className="bg-white dark:bg-gray-800 rounded-xl p-4 mb-4 border border-gray-200 dark:border-gray-700">
+                      <h4 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-gray-200 mb-4">
+                        {language === "en" ? "Quantity" : "បរិមាណ"}
                       </h4>
-                    </div>
-                    {subItems.length > 1 && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 rounded-full h-8 w-8 sm:h-10 sm:w-10"
-                        onClick={() => handleRemoveSubItem(subItemIndex)}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-
-                  {/* Quantity */}
-                  <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-4 sm:p-5 mb-6 border border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-gray-200 mb-4">
-                      {language === "en" ? "Quantity" : "បរិមាណ"}
-                    </h4>
-                    <div className="flex items-center justify-center space-x-4 sm:space-x-6">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handleQuantityChange(subItemIndex, subItem.quantity - 1)}
-                        disabled={subItem.quantity <= 1}
-                        className="rounded-full h-10 w-10 sm:h-12 sm:w-12 border-2 border-gray-300 dark:border-gray-600 hover:border-[var(--coffee-primary)] transition-colors"
-                      >
-                        <Minus className="h-4 w-4 sm:h-5 sm:w-5" />
-                      </Button>
-                      <span className="text-2xl sm:text-3xl font-bold w-12 sm:w-16 text-center text-[var(--coffee-primary)]">
-                        {subItem.quantity}
-                      </span>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handleQuantityChange(subItemIndex, subItem.quantity + 1)}
-                        className="rounded-full h-10 w-10 sm:h-12 sm:w-12 border-2 border-gray-300 dark:border-gray-600 hover:border-[var(--coffee-primary)] transition-colors"
-                      >
-                        <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Options */}
-                  <div className="space-y-6">{renderOptionsForSubItem(subItemIndex, subItem)}</div>
-
-                  {/* Item Total */}
-                  <div className="mt-6 pt-6 border-t-2 border-gray-200 dark:border-gray-700">
-                    <div className="bg-gradient-to-r from-[var(--coffee-primary)]/10 to-orange-100/50 dark:from-[var(--coffee-primary)]/20 dark:to-orange-900/30 rounded-xl p-4 sm:p-5">
-                      <div className="flex justify-between items-center font-bold text-base sm:text-lg">
-                        <span className="text-gray-800 dark:text-gray-200">
-                          {language === "en" ? "Item Total:" : "សរុបទំនិញ:"}
+                      <div className="flex items-center justify-center space-x-4 sm:space-x-6">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => handleQuantityChange(subItemIndex, subItem.quantity - 1)}
+                          disabled={subItem.quantity <= 1}
+                          className="rounded-full h-10 w-10 sm:h-12 sm:w-12 border-2 border-gray-300 dark:border-gray-600 hover:border-[var(--coffee-primary)] transition-colors"
+                        >
+                          <Minus className="h-4 w-4 sm:h-5 sm:w-5" />
+                        </Button>
+                        <span className="text-2xl sm:text-3xl font-bold w-12 sm:w-16 text-center text-[var(--coffee-primary)]">
+                          {subItem.quantity}
                         </span>
-                        <span className="text-[var(--coffee-primary)] text-xl sm:text-2xl">
-                          ${calculateItemPrice(subItem).toFixed(2)}
-                        </span>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => handleQuantityChange(subItemIndex, subItem.quantity + 1)}
+                          className="rounded-full h-10 w-10 sm:h-12 sm:w-12 border-2 border-gray-300 dark:border-gray-600 hover:border-[var(--coffee-primary)] transition-colors"
+                        >
+                          <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Options */}
+                    <div className="flex-grow space-y-4">{renderOptionsForSubItem(subItemIndex, subItem)}</div>
+
+                    {/* Item Total */}
+                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                      <div className="bg-gradient-to-r from-[var(--coffee-primary)]/10 to-orange-100/50 dark:from-[var(--coffee-primary)]/20 dark:to-orange-900/30 rounded-xl p-3">
+                        <div className="flex justify-between items-center font-bold">
+                          <span className="text-gray-800 dark:text-gray-200 text-sm">
+                            {language === "en" ? "Item Total:" : "សរុបទំនិញ:"}
+                          </span>
+                          <span className="text-[var(--coffee-primary)] text-lg">
+                            ${calculateItemPrice(subItem).toFixed(2)}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
 
               {/* Add Another Item Button */}
-              <div className="flex justify-center">
+              <div className="flex justify-center pt-4">
                 <Button
                   onClick={handleAddSubItem}
                   variant="outline"
