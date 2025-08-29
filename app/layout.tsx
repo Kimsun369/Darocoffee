@@ -1,4 +1,5 @@
 import type React from "react"
+import { useState } from "react"
 import type { Metadata } from "next"
 import { Playfair_Display, Inter, Dancing_Script } from "next/font/google"
 import "./globals.css"
@@ -22,6 +23,11 @@ const dancingScript = Dancing_Script({
   variable: "--font-dancing-script",
 })
 
+const KhmerOSsiemreap = {
+  fontFamily: "KhmerOSsiemreap",
+  variable: "--font-khmer",
+}
+
 export const metadata: Metadata = {
   title: "Signature Coffee - Premium Coffee Experience",
   description: "Experience the finest coffee blends and artisanal beverages at Signature Coffee Shop",
@@ -33,21 +39,28 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const [language, setLanguage] = useState<"en" | "kh">("en")
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={language} suppressHydrationWarning>
       <head>
-        <link 
-          rel="stylesheet" 
+        <link
+          rel="stylesheet"
           href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
           integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
           crossOrigin=""
         />
       </head>
-      <body className={`font-sans ${inter.variable} ${playfair.variable} ${dancingScript.variable} antialiased`}>
+      <body
+        className={`font-sans ${inter.variable} ${playfair.variable} ${
+          dancingScript.variable
+        } ${language === "kh" ? "font-khmer" : ""} antialiased`}
+      >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          {children}
+          {React.cloneElement(children as React.ReactElement, { language, setLanguage })}
         </ThemeProvider>
       </body>
     </html>
   )
+}
 }
