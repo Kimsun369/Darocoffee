@@ -16,11 +16,11 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+    <header className="sticky top-0 z-50 w-full bg-white dark:bg-gray-900 border-b-2 border-amber-600">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 sm:h-18 items-center justify-between">
           <div className="flex items-center space-x-3 sm:space-x-4">
-            <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg bg-amber-600 flex items-center justify-center">
+            <div className="h-10 w-10 sm:h-12 sm:w-12 bg-amber-600 flex items-center justify-center">
               <Coffee className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
             </div>
             <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-amber-800 dark:text-amber-200">
@@ -29,12 +29,12 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange 
           </div>
 
           <div className="flex items-center space-x-2 sm:space-x-3">
-            <div className="hidden sm:flex items-center space-x-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 border border-gray-200 dark:border-gray-700">
+            <div className="hidden sm:flex items-center space-x-1 bg-gray-100 dark:bg-gray-800 p-1 border border-gray-300 dark:border-gray-600">
               <Button
                 variant={language === "en" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => onLanguageChange("en")}
-                className={`text-xs px-3 h-8 rounded-md ${
+                className={`text-xs px-3 h-8 ${
                   language === "en"
                     ? "bg-amber-600 hover:bg-amber-700 text-white"
                     : "hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
@@ -46,7 +46,7 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange 
                 variant={language === "kh" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => onLanguageChange("kh")}
-                className={`text-xs px-3 h-8 rounded-md ${
+                className={`text-xs px-3 h-8 ${
                   language === "kh"
                     ? "bg-amber-600 hover:bg-amber-700 text-white"
                     : "hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
@@ -60,11 +60,11 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange 
               variant="ghost"
               size="icon"
               onClick={onCartClick}
-              className="relative h-10 w-10 sm:h-11 sm:w-11 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="relative h-10 w-10 sm:h-11 sm:w-11 hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6 text-amber-700 dark:text-amber-300" />
               {cartItemCount > 0 && (
-                <Badge className="absolute -right-2 -top-2 h-5 w-5 sm:h-6 sm:w-6 rounded-full p-0 text-xs font-bold bg-red-600 text-white border-2 border-white dark:border-gray-900">
+                <Badge className="absolute -right-2 -top-2 h-5 w-5 sm:h-6 sm:w-6 p-0 text-xs font-bold bg-red-600 text-white border-2 border-white dark:border-gray-900">
                   {cartItemCount > 99 ? "99+" : cartItemCount}
                 </Badge>
               )}
@@ -74,7 +74,7 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange 
               variant="ghost"
               size="icon"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="sm:hidden h-10 w-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="sm:hidden h-10 w-10 hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               {mobileMenuOpen ? (
                 <X className="h-5 w-5 text-amber-700 dark:text-amber-300" />
@@ -95,7 +95,7 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange 
                   onLanguageChange("en")
                   setMobileMenuOpen(false)
                 }}
-                className={`rounded-lg ${
+                className={`${
                   language === "en"
                     ? "bg-amber-600 hover:bg-amber-700 text-white"
                     : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
@@ -110,7 +110,7 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange 
                   onLanguageChange("kh")
                   setMobileMenuOpen(false)
                 }}
-                className={`rounded-lg ${
+                className={`${
                   language === "kh"
                     ? "bg-amber-600 hover:bg-amber-700 text-white"
                     : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"

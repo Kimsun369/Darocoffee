@@ -25,7 +25,7 @@ export function Footer({ language }: FooterProps) {
           </div>
 
           {/* Map Section */}
-          <div className="lg:col-span-3 h-[300px] rounded-xl overflow-hidden border-4 border-amber-600/30">
+          <div className="lg:col-span-3 h-[300px] overflow-hidden border-4 border-amber-600/30">
             <Map center={[11.5564, 104.9282]} />
           </div>
 

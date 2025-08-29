@@ -51,22 +51,22 @@ export function DiscountBanner() {
   }
 
   return (
-    <section className="relative h-[33vh] min-h-[250px] overflow-hidden">
+    <section className="relative h-[33vh] min-h-[250px] overflow-hidden bg-gray-100">
       <div className="relative h-full">
         {bannerImages.map((banner, index) => (
           <div
             key={banner.id}
-            className={`absolute inset-0 transition-opacity duration-500 ${
+            className={`absolute inset-0 transition-opacity duration-1000 ${
               index === currentSlide ? "opacity-100" : "opacity-0"
             }`}
           >
             <div className="relative h-full">
               <img src={banner.image || "/placeholder.svg"} alt={banner.title} className="h-full w-full object-cover" />
-              <div className="absolute inset-0 bg-black/40" />
+              <div className="absolute inset-0 bg-black/50" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center text-white">
-                  <h2 className="font-serif text-3xl md:text-5xl font-bold mb-2 text-balance">{banner.title}</h2>
-                  <p className="text-lg md:text-xl text-balance">{banner.subtitle}</p>
+                <div className="text-center text-white max-w-2xl px-4">
+                  <h2 className="font-serif text-2xl md:text-4xl font-bold mb-4">{banner.title}</h2>
+                  <p className="text-lg md:text-xl">{banner.subtitle}</p>
                 </div>
               </div>
             </div>
@@ -79,7 +79,7 @@ export function DiscountBanner() {
         variant="ghost"
         size="icon"
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white"
+        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 hover:text-gray-900"
       >
         <ChevronLeft className="h-6 w-6" />
       </Button>
@@ -87,18 +87,20 @@ export function DiscountBanner() {
         variant="ghost"
         size="icon"
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white"
+        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 hover:text-gray-900"
       >
         <ChevronRight className="h-6 w-6" />
       </Button>
 
       {/* Dots Indicator */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-3">
         {bannerImages.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`h-2 w-2 rounded-full transition-colors ${index === currentSlide ? "bg-white" : "bg-white/50"}`}
+            className={`h-3 w-3 border-2 border-white transition-colors ${
+              index === currentSlide ? "bg-white" : "bg-transparent"
+            }`}
           />
         ))}
       </div>
