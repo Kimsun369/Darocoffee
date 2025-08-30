@@ -29,12 +29,11 @@ interface CartItem {
   optionsPricing: Record<string, number>
 }
 
-export default function HomePage() {
+export default function HomePage({ language, setLanguage }: { language: "en" | "kh"; setLanguage: (lang: "en" | "kh") => void }) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [isProductModalOpen, setIsProductModalOpen] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [cartItems, setCartItems] = useState<CartItem[]>([])
-  const [language, setLanguage] = useState<"en" | "kh">("en")
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -99,7 +98,20 @@ export default function HomePage() {
       <main>
         <DiscountBanner />
 
-        <MenuSection products={productsData as Product[]} onProductClick={handleProductClick} language={language} />
+        <MenuSection
+          products={
+            (productsData as any[]).map((product) => ({
+              ...product,
+              options: product.options
+                ? Object.fromEntries(
+                    Object.entries(product.options).filter(([_, v]) => Array.isArray(v))
+                  )
+                : undefined,
+            })) as Product[]
+          }
+          onProductClick={handleProductClick}
+          language={language}
+        />
       </main>
 
       <Footer language={language} />
