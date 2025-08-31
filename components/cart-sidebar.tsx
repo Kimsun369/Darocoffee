@@ -95,29 +95,28 @@ export function CartSidebar({
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className="w-full sm:max-w-lg bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700">
-        <SheetHeader className="pb-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 -mx-6 px-6 pt-6 mb-6">
-          <SheetTitle className="font-serif text-2xl text-amber-600 flex items-center">
-            <div className="w-3 h-8 bg-amber-600 mr-3"></div>
+      <SheetContent className="w-full sm:max-w-lg bg-white border-l border-gray-200 shadow-lg">
+        <SheetHeader className="pb-6 border-b border-gray-200 mb-6">
+          <SheetTitle className="text-2xl md:text-3xl text-gray-900 flex items-center">
             {language === "en" ? "Your Cart" : "កន្ត្រករបស់អ្នក"}
-            <ShoppingBag className="ml-auto h-6 w-6 text-amber-600" />
+            <ShoppingBag className="ml-auto h-6 w-6 text-gray-600" />
           </SheetTitle>
         </SheetHeader>
 
         <div className="flex flex-col h-full">
           {cartItems.length === 0 ? (
             <div className="flex-1 flex items-center justify-center">
-              <div className="text-center bg-gray-50 dark:bg-gray-800 p-10 border border-gray-200 dark:border-gray-700 max-w-sm">
-                <div className="w-20 h-20 bg-amber-600 flex items-center justify-center mx-auto mb-6">
-                  <ShoppingBag className="text-white h-8 w-8" />
+              <div className="text-center bg-gray-50 rounded-lg p-10 border border-gray-200 max-w-sm">
+                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <ShoppingBag className="text-gray-400 h-8 w-8" />
                 </div>
-                <p className="text-gray-600 dark:text-gray-400 text-lg mb-8 font-medium leading-relaxed">
+                <p className="text-gray-600 text-lg mb-8 font-medium">
                   {language === "en" ? "Your cart is empty" : "កន្ត្រករបស់អ្នកទទេ"}
                 </p>
                 <Button
                   onClick={onClose}
                   variant="outline"
-                  className="border-amber-300 text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/30 px-8 py-3 bg-transparent"
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg px-8 py-3 bg-transparent"
                 >
                   {language === "en" ? "Continue Shopping" : "បន្តទិញ"}
                 </Button>
@@ -127,16 +126,13 @@ export function CartSidebar({
             <>
               {/* Cart Items */}
               <div className="flex-1 overflow-y-auto py-6 space-y-4">
-                {cartItems.map((item, index) => (
-                  <div
-                    key={item.id}
-                    className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 space-y-4"
-                  >
+                {cartItems.map((item) => (
+                  <div key={item.id} className="bg-white border border-gray-200 rounded-lg p-4 space-y-4 shadow-sm">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
-                        <h4 className="font-bold text-lg text-gray-900 dark:text-gray-100">{item.name}</h4>
+                        <h4 className="font-semibold text-lg text-gray-900">{item.name}</h4>
                         {Object.keys(item.options).length > 0 && (
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 bg-gray-50 dark:bg-gray-800 px-4 py-2 border border-gray-200 dark:border-gray-700">
+                          <p className="text-sm text-gray-600 mt-2 bg-gray-50 rounded-lg px-3 py-2 inline-block border border-gray-200">
                             {formatOptions(item.options)}
                           </p>
                         )}
@@ -145,34 +141,34 @@ export function CartSidebar({
                         variant="ghost"
                         size="icon"
                         onClick={() => onRemoveItem(item.id)}
-                        className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 h-10 w-10"
+                        className="text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg h-10 w-10"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
 
                     <div className="flex justify-between items-center">
-                      <div className="flex items-center space-x-4 bg-gray-50 dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center space-x-3 bg-gray-50 rounded-lg p-2 border border-gray-200">
                         <Button
                           variant="outline"
                           size="icon"
                           onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
                           disabled={item.quantity <= 1}
-                          className="h-9 w-9 border-gray-300 dark:border-gray-600"
+                          className="h-8 w-8 rounded-md border-gray-300 hover:bg-gray-100 disabled:opacity-50"
                         >
                           <Minus className="h-4 w-4" />
                         </Button>
-                        <span className="font-bold w-10 text-center text-amber-600 text-lg">{item.quantity}</span>
+                        <span className="font-semibold w-8 text-center text-gray-900">{item.quantity}</span>
                         <Button
                           variant="outline"
                           size="icon"
                           onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                          className="h-9 w-9 border-gray-300 dark:border-gray-600"
+                          className="h-8 w-8 rounded-md border-gray-300 hover:bg-gray-100"
                         >
                           <Plus className="h-4 w-4" />
                         </Button>
                       </div>
-                      <Badge className="bg-amber-600 text-white font-bold text-lg px-4 py-2">
+                      <Badge className="bg-amber-600 text-white font-semibold text-lg px-3 py-1 rounded-lg">
                         ${item.price.toFixed(2)}
                       </Badge>
                     </div>
@@ -180,48 +176,29 @@ export function CartSidebar({
                 ))}
               </div>
 
-              {/* Pick up time selector */}
-              <div className="mb-6 bg-gray-50 dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700">
-                <label className="block font-bold mb-5 text-gray-900 dark:text-gray-100 flex items-center text-lg">
-                  <Clock className="w-5 h-5 text-amber-600 mr-3" />
+              <div className="mb-6 bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <label className="block font-semibold mb-4 text-gray-900 flex items-center text-lg">
+                  <Clock className="w-5 h-5 text-gray-600 mr-3" />
                   {language === "en" ? "Pick up time:" : "ពេលយក:"}
                 </label>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-2">
                   {[
-                    {
-                      value: "now",
-                      label: language === "en" ? "Now" : "ឥឡូវនេះ",
-                    },
-                    {
-                      value: "15",
-                      label: `15 ${language === "en" ? "min" : "នាទី"}`,
-                    },
-                    {
-                      value: "30",
-                      label: `30 ${language === "en" ? "min" : "នាទី"}`,
-                    },
-                    {
-                      value: "45",
-                      label: `45 ${language === "en" ? "min" : "នាទី"}`,
-                    },
-                    {
-                      value: "60",
-                      label: `1 ${language === "en" ? "hr" : "ម៉ោង"}`,
-                    },
-                    {
-                      value: "other",
-                      label: language === "en" ? "Other" : "ផ្សេងទៀត",
-                    },
+                    { value: "now", label: language === "en" ? "Now" : "ឥឡូវនេះ" },
+                    { value: "15", label: `15 ${language === "en" ? "min" : "នាទី"}` },
+                    { value: "30", label: `30 ${language === "en" ? "min" : "នាទី"}` },
+                    { value: "45", label: `45 ${language === "en" ? "min" : "នាទី"}` },
+                    { value: "60", label: `1 ${language === "en" ? "hr" : "ម៉ោង"}` },
+                    { value: "other", label: language === "en" ? "Other" : "ផ្សេងទៀត" },
                   ].map((option) => (
                     <Button
                       key={option.value}
                       variant={pickupOption === option.value ? "default" : "outline"}
                       size="sm"
                       onClick={() => setPickupOption(option.value as any)}
-                      className={`text-sm font-medium px-4 py-2 ${
+                      className={`rounded-lg text-sm font-medium px-3 py-2 ${
                         pickupOption === option.value
                           ? "bg-amber-600 hover:bg-amber-700 text-white"
-                          : "border-amber-300 text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/30 bg-white dark:bg-gray-800"
+                          : "border-gray-300 text-gray-700 hover:bg-gray-50 bg-white"
                       }`}
                     >
                       {option.label}
@@ -229,43 +206,38 @@ export function CartSidebar({
                   ))}
                 </div>
                 {pickupOption === "other" && (
-                  <div className="mt-4 flex items-center space-x-3 bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700">
+                  <div className="mt-3 flex items-center space-x-3 bg-white rounded-lg p-3 border border-gray-200">
                     <input
                       type="number"
                       min={1}
                       max={180}
                       value={customMinutes}
                       onChange={(e) => setCustomMinutes(Number(e.target.value))}
-                      className="border border-gray-300 dark:border-gray-600 px-4 py-3 w-24 text-center bg-white dark:bg-gray-800 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 font-medium"
+                      className="border border-gray-300 rounded-lg px-3 py-2 w-20 text-center bg-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
                       placeholder="5"
                     />
-                    <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-                      {language === "en" ? "minutes" : "នាទី"}
-                    </span>
+                    <span className="text-sm text-gray-600 font-medium">{language === "en" ? "minutes" : "នាទី"}</span>
                   </div>
                 )}
-                <div className="mt-4 text-sm text-gray-700 dark:text-gray-300 bg-amber-50 dark:bg-amber-900/30 px-4 py-3 border border-amber-200 dark:border-amber-600 font-medium">
+                <div className="mt-3 text-sm text-gray-700 bg-white rounded-lg px-3 py-2 border border-gray-200">
                   {language === "en" ? `Pick up at: ${getPickupTimeString()}` : `យកនៅម៉ោង: ${getPickupTimeString()}`}
                 </div>
               </div>
 
-              {/* Cart Summary */}
-              <div className="border-t border-gray-200 dark:border-gray-700 pt-6 space-y-6">
-                <div className="bg-amber-50 dark:bg-amber-900/30 p-6 border border-amber-200 dark:border-amber-600">
+              <div className="border-t border-gray-200 pt-6 space-y-4">
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <div className="flex justify-between items-center text-xl font-bold">
-                    <span className="text-gray-900 dark:text-gray-100 text-2xl">
-                      {language === "en" ? "Total:" : "សរុប:"}
-                    </span>
-                    <span className="text-3xl text-amber-600 font-black">${totalPrice.toFixed(2)}</span>
+                    <span className="text-gray-900">{language === "en" ? "Total:" : "សរុប:"}</span>
+                    <span className="text-2xl text-amber-600">${totalPrice.toFixed(2)}</span>
                   </div>
                 </div>
                 <Button
                   onClick={handleTelegramOrder}
-                  className="w-full bg-amber-600 hover:bg-amber-700 text-white text-lg py-7 font-bold"
+                  className="w-full bg-amber-600 hover:bg-amber-700 text-white text-lg py-6 rounded-lg font-semibold"
                 >
                   {language === "en" ? "Order via Telegram" : "បញ្ជាទិញតាម Telegram"}
                 </Button>
-                <p className="text-xs text-gray-500 dark:text-gray-400 text-center leading-relaxed bg-gray-50 dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700">
+                <p className="text-xs text-gray-500 text-center bg-gray-50 rounded-lg p-3 border border-gray-200">
                   {language === "en"
                     ? "You will be redirected to Telegram to complete your order"
                     : "អ្នកនឹងត្រូវបានបញ្ជូនទៅ Telegram ដើម្បីបញ្ចប់ការបញ្ជាទិញ"}
