@@ -18,45 +18,59 @@ export function Footer({ language }: FooterProps) {
               </div>
               <span className="font-serif text-2xl md:text-3xl font-bold text-white">Daro's Coffee</span>
             </div>
-            <p className="text-gray-300 text-base md:text-lg">hello@daroscoffee.com</p>
+            <p className="text-gray-300 text-base md:text-lg font-sans">hello@daroscoffee.com</p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-6 md:gap-8 w-full lg:w-auto">
             <div className="flex items-start space-x-3">
               <span className="text-amber-500 mt-1 text-lg">🇰🇭</span>
               <div>
-                <h4 className="text-white font-semibold mb-1">Cambodia</h4>
-                <p className="text-gray-300 text-sm">123 Coffee Street,</p>
-                <p className="text-gray-300 text-sm">Phnom Penh, Cambodia</p>
+                <h4 className="text-white font-semibold mb-1 font-sans">Cambodia</h4>
+                <p className="text-gray-300 text-sm font-sans">123 Coffee Street,</p>
+                <p className="text-gray-300 text-sm font-sans">Phnom Penh, Cambodia</p>
               </div>
             </div>
             <div className="flex items-start space-x-3">
               <span className="text-amber-500 mt-1 text-lg">📞</span>
               <div>
-                <h4 className="text-white font-semibold mb-1">Contact</h4>
-                <p className="text-gray-300 text-sm">+855 12 345 678</p>
+                <h4 className="text-white font-semibold mb-1 font-sans">Contact</h4>
+                <p className="text-gray-300 text-sm font-sans">+855 12 345 678</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8 mb-8 md:mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8 mb-8 md:mb-12">
           {/* About Column */}
           <div className="sm:col-span-1">
-            <h3 className="text-gray-400 font-semibold text-sm uppercase tracking-wider mb-4 md:mb-6">
+            <h3
+              className={`text-gray-400 font-semibold text-sm uppercase tracking-wider mb-4 md:mb-6 ${language === "kh" ? "font-mono" : "font-sans"}`}
+            >
               {language === "en" ? "About" : "អំពី"}
             </h3>
             <div className="space-y-2 md:space-y-3">
-              <a href="#" className="block text-white hover:text-amber-400 transition-colors text-sm md:text-base">
+              <a
+                href="#"
+                className={`block text-white hover:text-amber-400 transition-colors text-sm md:text-base ${language === "kh" ? "font-mono" : "font-sans"}`}
+              >
                 {language === "en" ? "Our Story" : "រឿងរ៉ាវរបស់យើង"}
               </a>
-              <a href="#" className="block text-white hover:text-amber-400 transition-colors text-sm md:text-base">
+              <a
+                href="#"
+                className={`block text-white hover:text-amber-400 transition-colors text-sm md:text-base ${language === "kh" ? "font-mono" : "font-sans"}`}
+              >
                 {language === "en" ? "Our Coffee" : "កាហ្វេរបស់យើង"}
               </a>
-              <a href="#" className="block text-white hover:text-amber-400 transition-colors text-sm md:text-base">
+              <a
+                href="#"
+                className={`block text-white hover:text-amber-400 transition-colors text-sm md:text-base ${language === "kh" ? "font-mono" : "font-sans"}`}
+              >
                 {language === "en" ? "Sustainability" : "ចីរភាព"}
               </a>
-              <a href="#" className="block text-white hover:text-amber-400 transition-colors text-sm md:text-base">
+              <a
+                href="#"
+                className={`block text-white hover:text-amber-400 transition-colors text-sm md:text-base ${language === "kh" ? "font-mono" : "font-sans"}`}
+              >
                 {language === "en" ? "Careers" : "ការងារ"}
               </a>
             </div>
@@ -64,20 +78,34 @@ export function Footer({ language }: FooterProps) {
 
           {/* Menu Column */}
           <div className="sm:col-span-1">
-            <h3 className="text-gray-400 font-semibold text-sm uppercase tracking-wider mb-4 md:mb-6">
+            <h3
+              className={`text-gray-400 font-semibold text-sm uppercase tracking-wider mb-4 md:mb-6 ${language === "kh" ? "font-mono" : "font-sans"}`}
+            >
               {language === "en" ? "Menu" : "ម៉ឺនុយ"}
             </h3>
             <div className="space-y-2 md:space-y-3">
-              <a href="#" className="block text-white hover:text-amber-400 transition-colors text-sm md:text-base">
+              <a
+                href="#"
+                className={`block text-white hover:text-amber-400 transition-colors text-sm md:text-base ${language === "kh" ? "font-mono" : "font-sans"}`}
+              >
                 {language === "en" ? "Coffee" : "កាហ្វេ"}
               </a>
-              <a href="#" className="block text-white hover:text-amber-400 transition-colors text-sm md:text-base">
+              <a
+                href="#"
+                className={`block text-white hover:text-amber-400 transition-colors text-sm md:text-base ${language === "kh" ? "font-mono" : "font-sans"}`}
+              >
                 {language === "en" ? "Tea" : "តែ"}
               </a>
-              <a href="#" className="block text-white hover:text-amber-400 transition-colors text-sm md:text-base">
+              <a
+                href="#"
+                className={`block text-white hover:text-amber-400 transition-colors text-sm md:text-base ${language === "kh" ? "font-mono" : "font-sans"}`}
+              >
                 {language === "en" ? "Pastries" : "នំ"}
               </a>
-              <a href="#" className="block text-white hover:text-amber-400 transition-colors text-sm md:text-base">
+              <a
+                href="#"
+                className={`block text-white hover:text-amber-400 transition-colors text-sm md:text-base ${language === "kh" ? "font-mono" : "font-sans"}`}
+              >
                 {language === "en" ? "Breakfast" : "អាហារពេលព្រឹក"}
               </a>
             </div>
@@ -85,20 +113,34 @@ export function Footer({ language }: FooterProps) {
 
           {/* Services Column */}
           <div className="sm:col-span-1">
-            <h3 className="text-gray-400 font-semibold text-sm uppercase tracking-wider mb-4 md:mb-6">
+            <h3
+              className={`text-gray-400 font-semibold text-sm uppercase tracking-wider mb-4 md:mb-6 ${language === "kh" ? "font-mono" : "font-sans"}`}
+            >
               {language === "en" ? "Services" : "សេវាកម្ម"}
             </h3>
             <div className="space-y-2 md:space-y-3">
-              <a href="#" className="block text-white hover:text-amber-400 transition-colors text-sm md:text-base">
+              <a
+                href="#"
+                className={`block text-white hover:text-amber-400 transition-colors text-sm md:text-base ${language === "kh" ? "font-mono" : "font-sans"}`}
+              >
                 {language === "en" ? "Catering" : "ការផ្គត់ផ្គង់"}
               </a>
-              <a href="#" className="block text-white hover:text-amber-400 transition-colors text-sm md:text-base">
+              <a
+                href="#"
+                className={`block text-white hover:text-amber-400 transition-colors text-sm md:text-base ${language === "kh" ? "font-mono" : "font-sans"}`}
+              >
                 {language === "en" ? "Events" : "ព្រឹត្តិការណ៍"}
               </a>
-              <a href="#" className="block text-white hover:text-amber-400 transition-colors text-sm md:text-base">
+              <a
+                href="#"
+                className={`block text-white hover:text-amber-400 transition-colors text-sm md:text-base ${language === "kh" ? "font-mono" : "font-sans"}`}
+              >
                 {language === "en" ? "Private Parties" : "ពិធីជប់លៀងឯកជន"}
               </a>
-              <a href="#" className="block text-white hover:text-amber-400 transition-colors text-sm md:text-base">
+              <a
+                href="#"
+                className={`block text-white hover:text-amber-400 transition-colors text-sm md:text-base ${language === "kh" ? "font-mono" : "font-sans"}`}
+              >
                 {language === "en" ? "Corporate Orders" : "ការបញ្ជាទិញក្រុមហ៊ុន"}
               </a>
             </div>
@@ -106,40 +148,52 @@ export function Footer({ language }: FooterProps) {
 
           {/* Hours Column */}
           <div className="sm:col-span-1">
-            <h3 className="text-gray-400 font-semibold text-sm uppercase tracking-wider mb-4 md:mb-6">
+            <h3
+              className={`text-gray-400 font-semibold text-sm uppercase tracking-wider mb-4 md:mb-6 ${language === "kh" ? "font-mono" : "font-sans"}`}
+            >
               {language === "en" ? "Hours" : "ម៉ោងបើក"}
             </h3>
             <div className="space-y-2 md:space-y-3 text-sm">
               <div>
-                <p className="text-white font-medium">{language === "en" ? "Mon - Fri" : "ច័ន្ទ - សុក្រ"}</p>
-                <p className="text-gray-300">6:00 AM - 9:00 PM</p>
+                <p className={`text-white font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                  {language === "en" ? "Mon - Fri" : "ច័ន្ទ - សុក្រ"}
+                </p>
+                <p className="text-gray-300 font-sans">6:00 AM - 9:00 PM</p>
               </div>
               <div>
-                <p className="text-white font-medium">{language === "en" ? "Saturday" : "សៅរ៍"}</p>
-                <p className="text-gray-300">7:00 AM - 10:00 PM</p>
+                <p className={`text-white font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                  {language === "en" ? "Saturday" : "សៅរ៍"}
+                </p>
+                <p className="text-gray-300 font-sans">7:00 AM - 10:00 PM</p>
               </div>
               <div>
-                <p className="text-white font-medium">{language === "en" ? "Sunday" : "អាទិត្យ"}</p>
-                <p className="text-gray-300">7:00 AM - 8:00 PM</p>
+                <p className={`text-white font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                  {language === "en" ? "Sunday" : "អាទិត្យ"}
+                </p>
+                <p className="text-gray-300 font-sans">7:00 AM - 8:00 PM</p>
               </div>
             </div>
           </div>
 
           {/* Newsletter Column */}
           <div className="sm:col-span-2 md:col-span-1">
-            <h3 className="text-gray-400 font-semibold text-sm uppercase tracking-wider mb-4 md:mb-6">
+            <h3
+              className={`text-gray-400 font-semibold text-sm uppercase tracking-wider mb-4 md:mb-6 ${language === "kh" ? "font-mono" : "font-sans"}`}
+            >
               {language === "en" ? "Newsletter" : "ព័ត៌មានថ្មី"}
             </h3>
-            <p className="text-gray-300 text-sm mb-4">
+            <p className={`text-gray-300 text-sm mb-4 ${language === "kh" ? "font-mono" : "font-sans"}`}>
               {language === "en" ? "Subscribe for updates and exclusive offers!" : "ចុះឈ្មោះដើម្បីទទួលបានព័ត៌មានថ្មីៗ!"}
             </p>
             <div className="space-y-3">
               <input
                 type="email"
                 placeholder={language === "en" ? "Your email" : "អ៊ីមែលរបស់អ្នក"}
-                className="w-full px-3 py-2 rounded bg-slate-700 border border-slate-600 focus:outline-none focus:border-amber-500 text-white placeholder-gray-400 text-sm"
+                className={`w-full px-3 py-2 rounded bg-slate-700 border border-slate-600 focus:outline-none focus:border-amber-500 text-white placeholder-gray-400 text-sm ${language === "kh" ? "font-mono" : "font-sans"}`}
               />
-              <button className="w-full px-3 py-2 rounded bg-amber-600 hover:bg-amber-700 text-white font-medium text-sm transition-colors">
+              <button
+                className={`w-full px-3 py-2 rounded bg-amber-600 hover:bg-amber-700 text-white font-medium text-sm transition-colors ${language === "kh" ? "font-mono" : "font-sans"}`}
+              >
                 {language === "en" ? "Subscribe" : "ចុះឈ្មោះ"}
               </button>
             </div>
@@ -154,18 +208,29 @@ export function Footer({ language }: FooterProps) {
 
         <div className="border-t border-slate-700 pt-6 md:pt-8 flex flex-col space-y-4 md:space-y-0 md:flex-row md:justify-between md:items-center">
           <div className="flex flex-wrap gap-4 md:gap-6 justify-center md:justify-start">
-            <a href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
+            <a
+              href="#"
+              className={`text-gray-300 hover:text-white text-sm transition-colors ${language === "kh" ? "font-mono" : "font-sans"}`}
+            >
               {language === "en" ? "Privacy Policy" : "គោលការណ៍ភាពឯកជន"}
             </a>
-            <a href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
+            <a
+              href="#"
+              className={`text-gray-300 hover:text-white text-sm transition-colors ${language === "kh" ? "font-mono" : "font-sans"}`}
+            >
               {language === "en" ? "Terms of Service" : "លក្ខខណ្ឌសេវាកម្ម"}
             </a>
-            <a href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
+            <a
+              href="#"
+              className={`text-gray-300 hover:text-white text-sm transition-colors ${language === "kh" ? "font-mono" : "font-sans"}`}
+            >
               {language === "en" ? "Contact" : "ទាក់ទង"}
             </a>
           </div>
 
-          <p className="text-gray-400 text-sm text-center order-last md:order-none">
+          <p
+            className={`text-gray-400 text-sm text-center order-last md:order-none ${language === "kh" ? "font-mono" : "font-sans"}`}
+          >
             {language === "en" ? "© 2025 Daro's Coffee, All rights reserved" : "© ២០២៥ Daro's Coffee។ រក្សាសិទ្ធិគ្រប់យ៉ាង។"}
           </p>
 

@@ -92,7 +92,7 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
   return (
     <section className="py-8 px-4 bg-gray-50">
       <div className="container mx-auto max-w-7xl">
-        <div className="top-16 sm:top-18 z-40 bg-gray-50 py-6 mb-8">
+        <div className="sticky top-16 sm:top-18 z-40 bg-gray-50 py-6 mb-8">
           <div className="mb-6">
             <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 px-2">
               {categories.map((category) => (
@@ -104,7 +104,7 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
                     selectedCategory === category.id
                       ? "bg-amber-500 hover:bg-amber-600 text-white border-amber-500"
                       : "border-amber-200 text-amber-600 bg-white hover:bg-amber-50 hover:border-amber-300"
-                  }`}
+                  } ${language === "kh" ? "font-mono" : "font-sans"}`}
                 >
                   {category.name[language]}
                 </Button>
@@ -119,14 +119,14 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
                 placeholder={language === "en" ? "Search menus..." : "ស្វែងរកម្ហូបអាហារ..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 pr-4 py-3 border-gray-200 focus:border-amber-300 focus:ring-amber-200 rounded-lg bg-white focus:bg-white text-base"
+                className={`pl-12 pr-4 py-3 border-gray-200 focus:border-amber-300 focus:ring-amber-200 rounded-lg bg-white focus:bg-white text-base ${language === "kh" ? "font-mono" : "font-sans"}`}
               />
             </div>
           </div>
         </div>
 
         <div className="text-center mb-8">
-          <p className="text-gray-600 text-sm">
+          <p className={`text-gray-600 text-sm ${language === "kh" ? "font-mono" : "font-sans"}`}>
             {Object.values(productsByCategory).flat().length} {language === "en" ? "items found" : "ធាតុបានរកឃើញ"}
           </p>
         </div>
@@ -143,7 +143,11 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
                 <div className="text-center relative">
                   <div className="flex items-center justify-center">
                     <div className="flex-1 h-px bg-gray-300 max-w-32"></div>
-                    <h3 className="font-bold text-xl md:text-2xl text-black mx-6 tracking-wider">{categoryName}</h3>
+                    <h3
+                      className={`font-bold text-xl md:text-2xl text-black mx-6 tracking-wider ${language === "kh" ? "font-mono" : "font-serif"}`}
+                    >
+                      {categoryName}
+                    </h3>
                     <div className="flex-1 h-px bg-gray-300 max-w-32"></div>
                   </div>
                 </div>
@@ -179,13 +183,17 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
                         </div>
 
                         <div className="p-4 space-y-2">
-                          <p className="text-xs text-gray-500 font-medium">ID: {String(product.id).padStart(4, "0")}</p>
+                          <p className="text-xs text-gray-500 font-medium font-sans">
+                            ID: {String(product.id).padStart(4, "0")}
+                          </p>
 
-                          <h4 className="font-bold text-base text-black line-clamp-2 leading-relaxed uppercase">
+                          <h4
+                            className={`font-bold text-base text-black line-clamp-2 leading-relaxed uppercase ${language === "kh" ? "font-mono" : "font-sans"}`}
+                          >
                             {product.name}
                           </h4>
 
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 font-sans">
                             <span className="text-lg font-bold text-red-500">${product.price.toFixed(2)}</span>
                             <span className="text-sm text-red-500 font-medium">
                               KHR {(product.price * 4000).toLocaleString()}
@@ -197,7 +205,7 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
                               e.stopPropagation()
                               onProductClick(product)
                             }}
-                            className="w-full mt-3 bg-black hover:bg-gray-900 text-white text-sm font-medium py-2 rounded-md transition-colors duration-200"
+                            className={`w-full mt-3 bg-black hover:bg-gray-900 text-white text-sm font-medium py-2 rounded-md transition-colors duration-200 ${language === "kh" ? "font-mono" : "font-sans"}`}
                           >
                             {language === "en" ? "Add to Cart" : "បន្ថែមទៅកន្ត្រក"}
                           </Button>
@@ -217,7 +225,7 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="h-8 w-8 text-gray-400" />
               </div>
-              <p className="text-gray-600 text-lg">
+              <p className={`text-gray-600 text-lg ${language === "kh" ? "font-mono" : "font-sans"}`}>
                 {language === "en" ? "No items found matching your search." : "រកមិនឃើញអ្វីដែលត្រូវនឹងការស្វែងរករបស់អ្នកទេ។"}
               </p>
             </div>

@@ -201,7 +201,11 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl w-[95vw] sm:w-[90vw] max-h-[95vh] overflow-hidden bg-white border border-gray-200">
         <DialogHeader className="px-6 pt-6 pb-4 border-b border-gray-100">
-          <DialogTitle className="text-2xl font-medium text-gray-900 text-center">{product.name}</DialogTitle>
+          <DialogTitle
+            className={`text-2xl font-medium text-gray-900 text-center ${language === "kh" ? "font-mono" : "font-sans"}`}
+          >
+            {product.name}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="overflow-y-auto max-h-[calc(95vh-120px)] px-6 pb-6">
@@ -223,11 +227,17 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
             </div>
 
             <div className="text-center">
-              <p className="text-gray-600 leading-relaxed max-w-2xl mx-auto">{product.description}</p>
+              <p
+                className={`text-gray-600 leading-relaxed max-w-2xl mx-auto ${language === "kh" ? "font-mono" : "font-sans"}`}
+              >
+                {product.description}
+              </p>
             </div>
 
             <div className="space-y-6">
-              <h3 className="text-lg font-medium text-gray-900 text-center border-b border-gray-200 pb-4">
+              <h3
+                className={`text-lg font-medium text-gray-900 text-center border-b border-gray-200 pb-4 ${language === "kh" ? "font-mono" : "font-sans"}`}
+              >
                 {language === "en" ? "Customize Your Order" : "កំណត់ការបញ្ជាទិញរបស់អ្នក"}
               </h3>
 
@@ -236,7 +246,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
                   <div key={subItemIndex} className="border border-gray-200 p-6 bg-white">
                     {/* Item Header */}
                     <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
-                      <h4 className="font-medium text-gray-900">
+                      <h4 className={`font-medium text-gray-900 ${language === "kh" ? "font-mono" : "font-sans"}`}>
                         {language === "en" ? `Item ${subItemIndex + 1}` : `ទំនិញ ${subItemIndex + 1}`}
                       </h4>
                       {subItems.length > 1 && (
@@ -252,7 +262,9 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
                     </div>
 
                     <div className="mb-6">
-                      <h4 className="font-medium text-sm text-gray-900 uppercase tracking-wide mb-4">
+                      <h4
+                        className={`font-medium text-sm text-gray-900 uppercase tracking-wide mb-4 ${language === "kh" ? "font-mono" : "font-sans"}`}
+                      >
                         {language === "en" ? "Quantity" : "បរិមាណ"}
                       </h4>
                       <div className="flex items-center space-x-4">
@@ -282,8 +294,10 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
 
                     <div className="mt-6 pt-4 border-t border-gray-100">
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-600">{language === "en" ? "Item Total:" : "សរុបទំនិញ:"}</span>
-                        <span className="text-lg font-medium text-gray-900">
+                        <span className={`text-gray-600 ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                          {language === "en" ? "Item Total:" : "សរុបទំនិញ:"}
+                        </span>
+                        <span className="text-lg font-medium text-gray-900 font-sans">
                           ${calculateItemPrice(subItem).toFixed(2)}
                         </span>
                       </div>
@@ -296,7 +310,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
                 <Button
                   onClick={handleAddSubItem}
                   variant="outline"
-                  className="border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-3 bg-transparent"
+                  className={`border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-3 bg-transparent ${language === "kh" ? "font-mono" : "font-sans"}`}
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   {language === "en" ? "Add Another Item" : "បន្ថែមទំនិញមួយទៀត"}
@@ -306,12 +320,14 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
 
             <div className="border-t border-gray-200 pt-6 space-y-4">
               <div className="flex justify-between items-center text-xl font-medium">
-                <span className="text-gray-900">{language === "en" ? "Total:" : "សរុប:"}</span>
-                <span className="text-gray-900">${calculateTotalPrice().toFixed(2)}</span>
+                <span className={`text-gray-900 ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                  {language === "en" ? "Total:" : "សរុប:"}
+                </span>
+                <span className="text-gray-900 font-sans">${calculateTotalPrice().toFixed(2)}</span>
               </div>
               <Button
                 onClick={handleAddAllToCart}
-                className="w-full bg-gray-900 text-white hover:bg-gray-800 py-4 text-lg font-medium"
+                className={`w-full bg-gray-900 text-white hover:bg-gray-800 py-4 text-lg font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}
               >
                 {language === "en" ? "Add All to Cart" : "បន្ថែមទាំងអស់ទៅកន្ត្រក"}
               </Button>

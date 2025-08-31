@@ -1,25 +1,27 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Playfair_Display, Inter, Dancing_Script } from "next/font/google"
+import { Playfair_Display} from "next/font/google"
+import { Work_Sans } from "next/font/google"
+import { Kantumruy_Pro as Kantumruy } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 
-const playfair = Playfair_Display({
+const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-playfair",
+  variable: "--font-playfair-display",
 })
 
-const inter = Inter({
+const workSans = Work_Sans({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-inter",
+  variable: "--font-work-sans",
 })
 
-const dancingScript = Dancing_Script({
-  subsets: ["latin"],
+const kantumruy = Kantumruy({
+  subsets: ["khmer"],
   display: "swap",
-  variable: "--font-dancing-script",
+  variable: "--font-kantumruy",
 })
 
 export const metadata: Metadata = {
@@ -43,7 +45,7 @@ export default function RootLayout({
           crossOrigin=""
         />
       </head>
-      <body className={`font-sans ${inter.variable} ${playfair.variable} ${dancingScript.variable} antialiased`}>
+      <body className={`font-sans ${workSans.variable} ${playfairDisplay.variable} ${kantumruy.variable}`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           {children}
         </ThemeProvider>
