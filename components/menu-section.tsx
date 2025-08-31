@@ -92,7 +92,7 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
   return (
     <section className="py-8 px-4 bg-gray-50">
       <div className="container mx-auto max-w-7xl">
-        <div className="sticky top-16 sm:top-18 z-40 bg-gray-50 py-6 mb-8">
+        <div className="top-16 sm:top-18 z-40 bg-gray-50 py-6 mb-8">
           <div className="mb-6">
             <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 px-2">
               {categories.map((category) => (
