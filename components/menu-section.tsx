@@ -60,7 +60,6 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
     const grouped: Record<string, Product[]> = {}
 
     if (selectedCategory === "all") {
-      // Group all products by their categories
       filteredProducts.forEach((product) => {
         if (!grouped[product.category]) {
           grouped[product.category] = []
@@ -68,7 +67,6 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
         grouped[product.category].push(product)
       })
     } else {
-      // Show only selected category
       grouped[selectedCategory] = filteredProducts.filter((product) => product.category === selectedCategory)
     }
 
@@ -78,9 +76,9 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
   return (
     <section className="py-8 px-4 bg-gradient-to-b from-amber-50/30 via-white to-amber-50/20 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
       <div className="container mx-auto max-w-7xl">
-        <div className="sticky top-16 sm:top-18 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-amber-200/30 dark:border-gray-700/30 rounded-2xl py-6 mb-8 shadow-xl shadow-amber-100/20 dark:shadow-gray-900/20">
+        <div className="sticky top-0 z-50 -mx-4 px-4 bg-white/98 dark:bg-gray-900/98 backdrop-blur-xl border-b border-amber-200/30 dark:border-gray-700/30 py-6 mb-8 shadow-xl shadow-amber-100/20 dark:shadow-gray-900/20">
           {/* Category Filter */}
-          <div className="mb-6 px-6">
+          <div className="mb-6 px-2">
             <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 px-1">
               {categories.map((category) => (
                 <Button
@@ -100,7 +98,7 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
           </div>
 
           {/* Search Bar */}
-          <div className="max-w-md mx-auto px-6">
+          <div className="max-w-md mx-auto px-2">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-amber-600/70 dark:text-amber-400/70" />
               <Input
@@ -113,7 +111,7 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
           </div>
         </div>
 
-        <div className="space-y-16">
+        <div className="space-y-16 pt-4">
           {Object.entries(productsByCategory).map(([categoryId, categoryProducts]) => {
             if (categoryProducts.length === 0) return null
 
