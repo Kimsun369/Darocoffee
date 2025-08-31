@@ -1,11 +1,12 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useMemo } from "react"
-import { Search, Plus } from "lucide-react"
+import { Search, Heart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 
 interface Product {
   id: number
@@ -15,6 +16,7 @@ interface Product {
   category: string
   description: string
   options?: Record<string, Array<{ name: string; price: number }>>
+  discount?: number // Added discount property for discount badges
 }
 
 interface MenuSectionProps {
@@ -41,6 +43,7 @@ const categories = [
 export function MenuSection({ products, onProductClick, language }: MenuSectionProps) {
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
+  const [favorites, setFavorites] = useState<Set<number>>(new Set())
 
   const filteredProducts = useMemo(() => {
     let filtered = products
@@ -60,7 +63,6 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
     const grouped: Record<string, Product[]> = {}
 
     if (selectedCategory === "all") {
-      // Group all products by their categories
       filteredProducts.forEach((product) => {
         if (!grouped[product.category]) {
           grouped[product.category] = []
@@ -68,18 +70,29 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
         grouped[product.category].push(product)
       })
     } else {
-      // Show only selected category
       grouped[selectedCategory] = filteredProducts.filter((product) => product.category === selectedCategory)
     }
 
     return grouped
   }, [filteredProducts, selectedCategory])
 
+  const toggleFavorite = (productId: number, e: React.MouseEvent) => {
+    e.stopPropagation()
+    setFavorites((prev) => {
+      const newFavorites = new Set(prev)
+      if (newFavorites.has(productId)) {
+        newFavorites.delete(productId)
+      } else {
+        newFavorites.add(productId)
+      }
+      return newFavorites
+    })
+  }
+
   return (
-    <section className="py-8 px-4 bg-white">
+    <section className="py-8 px-4 bg-gray-50">
       <div className="container mx-auto max-w-7xl">
-        <div className="sticky top-16 sm:top-18 z-40 bg-white border-b border-gray-100 py-6 mb-8">
-          {/* Category Filter - RedBox Restaurant Style */}
+        <div className="sticky top-16 sm:top-18 z-40 bg-gray-50 py-6 mb-8">
           <div className="mb-6">
             <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 px-2">
               {categories.map((category) => (
@@ -99,7 +112,6 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
             </div>
           </div>
 
-          {/* Search Bar */}
           <div className="max-w-md mx-auto px-2">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -107,10 +119,16 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
                 placeholder={language === "en" ? "Search menus..." : "ស្វែងរកម្ហូបអាហារ..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 pr-4 py-3 border-gray-200 focus:border-amber-300 focus:ring-amber-200 rounded-lg bg-gray-50 focus:bg-white text-base"
+                className="pl-12 pr-4 py-3 border-gray-200 focus:border-amber-300 focus:ring-amber-200 rounded-lg bg-white focus:bg-white text-base"
               />
             </div>
           </div>
+        </div>
+
+        <div className="text-center mb-8">
+          <p className="text-gray-600 text-sm">
+            {Object.values(productsByCategory).flat().length} {language === "en" ? "items found" : "ធាតុបានរកឃើញ"}
+          </p>
         </div>
 
         <div className="space-y-12">
@@ -122,50 +140,66 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
 
             return (
               <div key={categoryId} className="space-y-6">
-                <div className="text-center">
-                  <h3 className="font-bold text-2xl md:text-3xl text-gray-900 mb-2">{categoryName}</h3>
-                  <div className="w-16 h-1 bg-amber-500 mx-auto rounded-full"></div>
+                <div className="text-center relative">
+                  <div className="flex items-center justify-center">
+                    <div className="flex-1 h-px bg-gray-300 max-w-32"></div>
+                    <h3 className="font-bold text-xl md:text-2xl text-black mx-6 tracking-wider">{categoryName}</h3>
+                    <div className="flex-1 h-px bg-gray-300 max-w-32"></div>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                   {categoryProducts.map((product) => (
                     <Card
                       key={product.id}
-                      className="group cursor-pointer transition-all duration-300 hover:shadow-lg border border-gray-200 hover:border-gray-300 bg-white rounded-lg overflow-hidden"
+                      className="group cursor-pointer transition-all duration-200 hover:shadow-lg border-0 bg-white rounded-lg overflow-hidden shadow-sm"
                       onClick={() => onProductClick(product)}
                     >
                       <CardContent className="p-0">
-                        <div className="relative overflow-hidden">
+                        <div className="relative overflow-hidden bg-gray-100">
+                          {product.discount && (
+                            <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+                              {product.discount}% OFF
+                            </div>
+                          )}
+
                           <img
                             src={product.image || "/placeholder.svg"}
                             alt={product.name}
-                            className="h-32 sm:h-36 md:h-44 lg:h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            className="h-48 sm:h-56 md:h-64 w-full object-cover"
                           />
-                          <div className="absolute top-2 sm:top-3 right-2 sm:right-3">
-                            <Badge className="bg-white text-gray-900 border border-gray-200 font-semibold text-xs sm:text-sm shadow-sm px-2 sm:px-3 py-1 rounded-full">
-                              ${product.price.toFixed(2)}
-                            </Badge>
-                          </div>
+                          <button
+                            onClick={(e) => toggleFavorite(product.id, e)}
+                            className="absolute bottom-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:shadow-md transition-shadow"
+                          >
+                            <Heart
+                              className={`h-4 w-4 ${favorites.has(product.id) ? "fill-red-500 text-red-500" : "text-gray-400"}`}
+                            />
+                          </button>
                         </div>
-                        <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
-                          <h4 className="font-semibold text-sm sm:text-base md:text-lg text-gray-900 line-clamp-2 leading-tight">
+
+                        <div className="p-4 space-y-2">
+                          <p className="text-xs text-gray-500 font-medium">ID: {String(product.id).padStart(4, "0")}</p>
+
+                          <h4 className="font-bold text-base text-black line-clamp-2 leading-relaxed uppercase">
                             {product.name}
                           </h4>
-                          <p className="text-xs sm:text-sm text-gray-600 line-clamp-2 leading-relaxed hidden sm:block">
-                            {product.description}
-                          </p>
+
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg font-bold text-red-500">${product.price.toFixed(2)}</span>
+                            <span className="text-sm text-red-500 font-medium">
+                              KHR {(product.price * 4000).toLocaleString()}
+                            </span>
+                          </div>
+
                           <Button
-                            size="sm"
-                            className="w-full h-8 sm:h-9 md:h-10 bg-amber-500 hover:bg-amber-600 text-white font-medium text-xs sm:text-sm rounded-lg border-0"
                             onClick={(e) => {
                               e.stopPropagation()
                               onProductClick(product)
                             }}
+                            className="w-full mt-3 bg-black hover:bg-gray-900 text-white text-sm font-medium py-2 rounded-md transition-colors duration-200"
                           >
-                            <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 flex-shrink-0" />
-                            <span className="truncate text-xs sm:text-sm">
-                              {language === "en" ? "Add to Cart" : "បន្ថែមទៅកន្ត្រក"}
-                            </span>
+                            {language === "en" ? "Add to Cart" : "បន្ថែមទៅកន្ត្រក"}
                           </Button>
                         </div>
                       </CardContent>

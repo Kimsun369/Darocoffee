@@ -1,10 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Minus, Plus, X } from "lucide-react"
+import { Minus, Plus, X, Heart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Badge } from "@/components/ui/badge"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 
@@ -145,7 +144,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
 
     return Object.entries(product.options).map(([optionType, options]) => (
       <div key={optionType} className="space-y-3">
-        <h4 className="font-semibold text-base text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2">
+        <h4 className="font-medium text-sm text-gray-900 uppercase tracking-wide">
           {optionType === "size" && language === "en" && "Size"}
           {optionType === "size" && language === "kh" && "ទំហំ"}
           {optionType === "sugar" && language === "en" && "Sugar Level"}
@@ -175,22 +174,20 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
           {options.map((option) => (
             <div
               key={option.name}
-              className="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
+              className="flex items-center space-x-3 p-3 border border-gray-200 hover:border-gray-300 transition-colors"
             >
               <RadioGroupItem
                 value={option.name}
                 id={`${subItemIndex}-${optionType}-${option.name}`}
-                className="border-2 border-gray-300 dark:border-gray-600"
+                className="border-gray-300"
               />
               <Label
                 htmlFor={`${subItemIndex}-${optionType}-${option.name}`}
-                className="flex-1 cursor-pointer flex justify-between items-center text-gray-700 dark:text-gray-300"
+                className="flex-1 cursor-pointer flex justify-between items-center text-gray-700"
               >
                 <span className="text-sm font-medium">{option.name}</span>
                 {option.price > 0 && (
-                  <span className="text-amber-600 font-semibold bg-amber-50 dark:bg-amber-900/30 px-2 py-1 text-sm">
-                    +${option.price.toFixed(2)}
-                  </span>
+                  <span className="text-gray-900 font-medium text-sm">+${option.price.toFixed(2)}</span>
                 )}
               </Label>
             </div>
@@ -202,69 +199,51 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl w-[95vw] sm:w-[90vw] max-h-[95vh] overflow-hidden bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
-        <DialogHeader className="px-4 sm:px-6 pt-4 sm:pt-6 pb-2">
-          <DialogTitle className="font-serif text-xl sm:text-2xl text-amber-600 leading-tight pr-8">
-            {product.name}
-          </DialogTitle>
+      <DialogContent className="max-w-4xl w-[95vw] sm:w-[90vw] max-h-[95vh] overflow-hidden bg-white border border-gray-200">
+        <DialogHeader className="px-6 pt-6 pb-4 border-b border-gray-100">
+          <DialogTitle className="text-2xl font-medium text-gray-900 text-center">{product.name}</DialogTitle>
         </DialogHeader>
 
-        <div className="overflow-y-auto max-h-[calc(95vh-120px)] px-4 sm:px-6 pb-4 sm:pb-6">
-          <div className="space-y-6">
-            {/* Product Image */}
+        <div className="overflow-y-auto max-h-[calc(95vh-120px)] px-6 pb-6">
+          <div className="space-y-8">
             <div className="relative">
-              <div className="overflow-hidden">
+              <div className="aspect-[4/3] overflow-hidden bg-gray-50">
                 <img
                   src={product.image || "/placeholder.svg"}
                   alt={product.name}
-                  className="w-full h-48 sm:h-64 object-cover"
+                  className="w-full h-full object-cover"
                 />
               </div>
-              <Badge
-                variant="secondary"
-                className="absolute top-3 right-3 bg-white text-amber-600 text-base font-bold px-3 py-2 border border-amber-200"
-              >
+              <button className="absolute top-4 right-4 p-2 bg-white border border-gray-200 hover:bg-gray-50 transition-colors">
+                <Heart className="h-5 w-5 text-gray-600" />
+              </button>
+              <div className="absolute bottom-4 left-4 bg-white px-3 py-1 text-lg font-medium text-gray-900">
                 ${product.price.toFixed(2)}
-              </Badge>
-            </div>
-
-            {/* Description */}
-            <div className="bg-gray-50 dark:bg-gray-800 p-4 border border-gray-200 dark:border-gray-700">
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-sm sm:text-base">
-                {product.description}
-              </p>
-            </div>
-
-            {/* Sub Items */}
-            <div className="space-y-6">
-              <div className="flex items-center space-x-2">
-                <div className="h-1 w-8 bg-amber-600"></div>
-                <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200">
-                  {language === "en" ? "Customize Your Items" : "កំណត់ទំនិញរបស់អ្នក"}
-                </h3>
               </div>
+            </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="text-center">
+              <p className="text-gray-600 leading-relaxed max-w-2xl mx-auto">{product.description}</p>
+            </div>
+
+            <div className="space-y-6">
+              <h3 className="text-lg font-medium text-gray-900 text-center border-b border-gray-200 pb-4">
+                {language === "en" ? "Customize Your Order" : "កំណត់ការបញ្ជាទិញរបស់អ្នក"}
+              </h3>
+
+              <div className="space-y-6">
                 {subItems.map((subItem, subItemIndex) => (
-                  <div
-                    key={subItemIndex}
-                    className="bg-white dark:bg-gray-800 p-4 border-2 border-gray-200 dark:border-gray-700 relative"
-                  >
+                  <div key={subItemIndex} className="border border-gray-200 p-6 bg-white">
                     {/* Item Header */}
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-amber-600 flex items-center justify-center text-white font-bold text-sm">
-                          {subItemIndex + 1}
-                        </div>
-                        <h4 className="font-bold text-base text-gray-800 dark:text-gray-200">
-                          {language === "en" ? `Item ${subItemIndex + 1}` : `ទំនិញ ${subItemIndex + 1}`}
-                        </h4>
-                      </div>
+                    <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+                      <h4 className="font-medium text-gray-900">
+                        {language === "en" ? `Item ${subItemIndex + 1}` : `ទំនិញ ${subItemIndex + 1}`}
+                      </h4>
                       {subItems.length > 1 && (
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 h-8 w-8"
+                          className="text-gray-400 hover:text-gray-600 h-8 w-8"
                           onClick={() => handleRemoveSubItem(subItemIndex)}
                         >
                           <X className="h-4 w-4" />
@@ -272,27 +251,26 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
                       )}
                     </div>
 
-                    {/* Quantity Controls */}
-                    <div className="bg-gray-50 dark:bg-gray-800 p-4 mb-4 border border-gray-200 dark:border-gray-700">
-                      <h4 className="font-semibold text-base text-gray-800 dark:text-gray-200 mb-4">
+                    <div className="mb-6">
+                      <h4 className="font-medium text-sm text-gray-900 uppercase tracking-wide mb-4">
                         {language === "en" ? "Quantity" : "បរិមាណ"}
                       </h4>
-                      <div className="flex items-center justify-center space-x-4">
+                      <div className="flex items-center space-x-4">
                         <Button
                           variant="outline"
                           size="icon"
                           onClick={() => handleQuantityChange(subItemIndex, subItem.quantity - 1)}
                           disabled={subItem.quantity <= 1}
-                          className="h-10 w-10 border-2 border-gray-300 dark:border-gray-600"
+                          className="h-10 w-10 border-gray-300"
                         >
                           <Minus className="h-4 w-4" />
                         </Button>
-                        <span className="text-2xl font-bold w-12 text-center text-amber-600">{subItem.quantity}</span>
+                        <span className="text-xl font-medium w-12 text-center text-gray-900">{subItem.quantity}</span>
                         <Button
                           variant="outline"
                           size="icon"
                           onClick={() => handleQuantityChange(subItemIndex, subItem.quantity + 1)}
-                          className="h-10 w-10 border-2 border-gray-300 dark:border-gray-600"
+                          className="h-10 w-10 border-gray-300"
                         >
                           <Plus className="h-4 w-4" />
                         </Button>
@@ -300,29 +278,25 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
                     </div>
 
                     {/* Options */}
-                    <div className="space-y-4">{renderOptionsForSubItem(subItemIndex, subItem)}</div>
+                    <div className="space-y-6">{renderOptionsForSubItem(subItemIndex, subItem)}</div>
 
-                    {/* Item Total */}
-                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                      <div className="bg-amber-50 dark:bg-amber-900/30 p-3 border border-amber-200 dark:border-amber-600">
-                        <div className="flex justify-between items-center font-bold">
-                          <span className="text-gray-800 dark:text-gray-200 text-sm">
-                            {language === "en" ? "Item Total:" : "សរុបទំនិញ:"}
-                          </span>
-                          <span className="text-amber-600 text-lg">${calculateItemPrice(subItem).toFixed(2)}</span>
-                        </div>
+                    <div className="mt-6 pt-4 border-t border-gray-100">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">{language === "en" ? "Item Total:" : "សរុបទំនិញ:"}</span>
+                        <span className="text-lg font-medium text-gray-900">
+                          ${calculateItemPrice(subItem).toFixed(2)}
+                        </span>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* Add Another Item Button */}
-              <div className="flex justify-center pt-4">
+              <div className="text-center">
                 <Button
                   onClick={handleAddSubItem}
                   variant="outline"
-                  className="border-2 border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white px-6 py-3 text-sm font-semibold bg-transparent"
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-3 bg-transparent"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   {language === "en" ? "Add Another Item" : "បន្ថែមទំនិញមួយទៀត"}
@@ -330,17 +304,14 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
               </div>
             </div>
 
-            {/* Total Price & Add to Cart */}
-            <div className="border-t-2 border-gray-200 dark:border-gray-700 pt-6 space-y-4">
-              <div className="bg-gray-50 dark:bg-gray-800 p-4 border border-gray-200 dark:border-gray-700">
-                <div className="flex justify-between items-center text-xl font-bold">
-                  <span className="text-gray-800 dark:text-gray-200">{language === "en" ? "Total:" : "សរុប:"}</span>
-                  <span className="text-amber-600">${calculateTotalPrice().toFixed(2)}</span>
-                </div>
+            <div className="border-t border-gray-200 pt-6 space-y-4">
+              <div className="flex justify-between items-center text-xl font-medium">
+                <span className="text-gray-900">{language === "en" ? "Total:" : "សរុប:"}</span>
+                <span className="text-gray-900">${calculateTotalPrice().toFixed(2)}</span>
               </div>
               <Button
                 onClick={handleAddAllToCart}
-                className="w-full bg-amber-600 hover:bg-amber-700 text-white text-lg font-bold py-6"
+                className="w-full bg-gray-900 text-white hover:bg-gray-800 py-4 text-lg font-medium"
               >
                 {language === "en" ? "Add All to Cart" : "បន្ថែមទាំងអស់ទៅកន្ត្រក"}
               </Button>
