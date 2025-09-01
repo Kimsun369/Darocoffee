@@ -52,7 +52,7 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange 
         </div>
       </div>
 
-      <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200 shadow-sm">
+      <header className="sticky top-0 z-50 w-full bg-[#F5F1E9] border-b border-gray-200 shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 sm:h-18 items-center justify-between">
             <nav className="hidden lg:flex items-center space-x-8">
