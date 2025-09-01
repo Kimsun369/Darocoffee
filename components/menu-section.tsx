@@ -153,18 +153,25 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
                 <div className="flex items-center justify-between px-2">
                   <div className="flex-1">
                     <h3
-                      className={`font-bold text-xl md:text-2xl text-gray-800 ${language === "kh" ? "font-mono" : "font-serif"}`}
+                      className={`font-bold text-xl md:text-2xl text-gray-800 ${
+                        language === "kh" ? "font-mono" : "font-serif"
+                      }`}
                     >
                       {categoryName}
                     </h3>
                     <div className="w-10 h-0.5 bg-amber-500 rounded-full mt-1"></div>
                   </div>
                   <div className="text-right">
-                    <div className="bg-amber-100 text-amber-800 px-2 py-1 rounded text-xs font-medium">
+                    <div
+                      className={`bg-amber-100 text-amber-800 px-2 py-1 rounded text-xs font-medium ${
+                        language === "kh" ? "font-mono" : "font-sans"
+                      }`}
+                    >
                       {categoryProducts.length} {language === "en" ? "items" : "ធាតុ"}
                     </div>
                   </div>
                 </div>
+
 
                 {/* Products grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 ">
@@ -251,13 +258,18 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
                     <Button
                       variant="outline"
                       onClick={() => handleSeeMore(categoryId)}
-                      className="border-amber-300 text-amber-600 hover:bg-amber-50 hover:text-amber-700 rounded-full px-6 py-2"
+                      className={`border-amber-300 text-amber-600 hover:bg-amber-50 hover:text-amber-700 rounded-full px-6 py-2 ${
+                        language === "kh" ? "font-mono" : "font-sans"
+                      }`}
                     >
-                      <span className="mr-1">{language === "en" ? "See More" : "មើលបន្ថែម"}</span>
+                      <span className="mr-1">
+                        {language === "en" ? "See More" : "មើលបន្ថែម"}
+                      </span>
                       <ChevronRight className="h-4 w-4" />
                     </Button>
                   </div>
                 )}
+
               </div>
             )
           })}
