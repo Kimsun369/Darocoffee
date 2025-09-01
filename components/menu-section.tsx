@@ -100,7 +100,7 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
       <div className="container mx-auto max-w-7xl">
         {/* Sticky header with filters and search */}
         <div className="sticky top-16 z-40 bg-gray-50 py-3 mb-4">
-          {/* Improved category filter design */}
+           {/* Improved category filter design */}
           <div className="mb-3">
             <div className="flex gap-1 overflow-x-auto scrollbar-hide pb-2 px-1">
               {categories.map((category) => (
