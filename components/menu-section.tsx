@@ -167,7 +167,7 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
                 </div>
 
                 {/* Products grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 ">
                   {displayProducts.map((product) => (
                     <Card
                       key={product.id}
