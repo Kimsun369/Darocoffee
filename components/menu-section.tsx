@@ -91,39 +91,41 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
 
   return (
     <section className="py-8 px-4 bg-gray-50">
-      <div className="container mx-auto max-w-7xl">
-        <div className="sticky top-16 sm:top-18 z-40 bg-gray-50 py-6 mb-8">
-          <div className="mb-6">
-            <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 px-2">
-              {categories.map((category) => (
-                <Button
-                  key={category.id}
-                  variant="ghost"
-                  onClick={() => setSelectedCategory(category.id)}
-                  className={`rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 px-6 py-2.5 h-auto transition-all duration-200 border-2 ${
-                    selectedCategory === category.id
-                      ? "bg-amber-500 hover:bg-amber-600 text-white border-amber-500"
-                      : "border-amber-200 text-amber-600 bg-white hover:bg-amber-50 hover:border-amber-300"
-                  } ${language === "kh" ? "font-mono" : "font-sans"}`}
-                >
-                  {category.name[language]}
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          <div className="max-w-md mx-auto px-2">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <Input
-                placeholder={language === "en" ? "Search menus..." : "ស្វែងរកម្ហូបអាហារ..."}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className={`pl-12 pr-4 py-3 border-gray-200 focus:border-amber-300 focus:ring-amber-200 rounded-lg bg-white focus:bg-white text-base ${language === "kh" ? "font-mono" : "font-sans"}`}
-              />
-            </div>
-          </div>
+  <div className="container mx-auto max-w-7xl">
+    <div className="sticky top-16 sm:top-18 z-40 bg-gray-50 py-6 mb-8">
+      {/* Improved filter buttons */}
+      <div className="mb-6">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-3 px-1">
+          {categories.map((category) => (
+            <Button
+              key={category.id}
+              variant="ghost"
+              onClick={() => setSelectedCategory(category.id)}
+              className={`rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 px-4 py-2 h-auto transition-all duration-200 border ${
+                selectedCategory === category.id
+                  ? "bg-amber-500 hover:bg-amber-600 text-white border-amber-500 shadow-md"
+                  : "border-amber-200 text-amber-600 bg-white hover:bg-amber-50 hover:border-amber-300 hover:shadow-sm"
+              } ${language === "kh" ? "font-mono" : "font-sans"}`}
+            >
+              {category.name[language]}
+            </Button>
+          ))}
         </div>
+      </div>
+
+      {/* Improved search bar - full width on all devices */}
+      <div className="w-full px-2">
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <Input
+            placeholder={language === "en" ? "Search menus..." : "ស្វែងរកម្ហូបអាហារ..."}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className={`w-full pl-12 pr-4 py-3 border-gray-200 focus:border-amber-300 focus:ring-amber-200 rounded-lg bg-white focus:bg-white text-base ${language === "kh" ? "font-mono" : "font-sans"} shadow-sm focus:shadow-md transition-shadow`}
+          />
+        </div>
+      </div>
+    </div>
 
         <div className="text-center mb-8">
           <p className={`text-gray-600 text-sm ${language === "kh" ? "font-mono" : "font-sans"}`}>
