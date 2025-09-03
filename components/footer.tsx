@@ -1,5 +1,8 @@
-import { Map } from "./Map"
+import dynamic from "next/dynamic"
 import { IoLogoInstagram, IoLogoFacebook, IoLogoTwitter } from "react-icons/io5"
+
+// Dynamically import Map with SSR disabled and use named export
+const Map = dynamic(() => import("./Map").then(mod => mod.Map), { ssr: false })
 
 interface FooterProps {
   language: "en" | "kh"

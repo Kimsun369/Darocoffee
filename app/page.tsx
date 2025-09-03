@@ -154,8 +154,8 @@ export default function HomePage() {
             </h3>
             <p className="text-amber-700">
               {language === "en" 
-                ? "Please check your Google Sheet configuration or try again later."
-                : "សូមពិនិត្យមើលការកំណត់ Google Sheet របស់អ្នក ឬព្យាយាមម្តងទៀតនៅពេលក្រោយ។"
+                ? "Could not load menu from Google Sheet. Please check your Sheet ID, tab name, and publish settings. Try renaming your tab to 'Sheet1' and ensure it is published to the web."
+                : "មិនអាចទាញយកម៉ឺនុយពី Google Sheet។ សូមពិនិត្យ Sheet ID, ឈ្មោះ tab, និង publish settings។ សូមសាកល្បងប្ដូរឈ្មោះ tab ទៅជា 'Sheet1' និងបង្ហោះទៅ web។"
               }
             </p>
           </div>
