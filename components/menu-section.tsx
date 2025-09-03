@@ -17,6 +17,8 @@ interface Product {
   category_kh: string
   description: string
   description_kh: string
+  category_description?: string 
+  category_description_kh?: string // ADD this
   options?: Record<string, Array<{ name: string; price: number }>>
   discount?: number
 }
