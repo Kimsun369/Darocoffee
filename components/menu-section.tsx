@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useMemo } from "react"
 import { Search, Heart, Plus, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -124,17 +123,43 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
     return grouped
   }, [filteredProducts, selectedCategory])
 
-  // Get available categories from actual products
+  // Get available categories from actual products (both mapped and unmapped)
   const availableCategories = useMemo(() => {
     const uniqueCategories = new Set<string>();
     products.forEach(product => {
-      uniqueCategories.add(mapCategoryToId(product.category));
+      const mappedId = mapCategoryToId(product.category);
+      uniqueCategories.add(mappedId);
+      
+      // Also include the original category for display
+      if (!categories.find(cat => cat.id === mappedId)) {
+        uniqueCategories.add(product.category.toLowerCase());
+      }
     });
     return Array.from(uniqueCategories);
   }, [products]);
 
+  // Create dynamic categories that include both predefined and Google Sheet categories
+  const dynamicCategories = useMemo(() => {
+    const dynamicCats = [...categories];
+    
+    // Add categories from Google Sheets that aren't in predefined list
+    availableCategories.forEach(categoryId => {
+      if (!dynamicCats.find(cat => cat.id === categoryId) && categoryId !== "all") {
+        dynamicCats.push({
+          id: categoryId,
+          name: { 
+            en: categoryId.charAt(0).toUpperCase() + categoryId.slice(1),
+            kh: categoryId
+          }
+        });
+      }
+    });
+    
+    return dynamicCats;
+  }, [availableCategories]);
+
   // Filter categories to only show those that have products
-  const visibleCategories = categories.filter(cat => 
+  const visibleCategories = dynamicCategories.filter(cat => 
     cat.id === "all" || availableCategories.includes(cat.id)
   );
 
@@ -153,6 +178,17 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
 
   const handleSeeMore = (categoryId: string) => {
     setSelectedCategory(categoryId)
+  }
+
+  // Get display name for category (fallback to original if not found in predefined)
+  const getCategoryDisplayName = (categoryId: string) => {
+    const predefinedCategory = categories.find(cat => cat.id === categoryId);
+    if (predefinedCategory) {
+      return predefinedCategory.name[language];
+    }
+    
+    // Fallback: capitalize the first letter for display
+    return categoryId.charAt(0).toUpperCase() + categoryId.slice(1);
   }
 
   return (
@@ -174,7 +210,7 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
                       : "border-amber-200 text-amber-600 bg-white hover:bg-amber-50 hover:border-amber-300 hover:shadow-sm"
                   } ${language === "kh" ? "font-mono" : "font-sans"}`}
                 >
-                  {category.name[language]}
+                  {category.name[language] || getCategoryDisplayName(category.id)}
                 </Button>
               ))}
             </div>
@@ -198,9 +234,7 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
           {Object.entries(productsByCategory).map(([categoryId, categoryProducts]) => {
             if (categoryProducts.length === 0) return null
 
-            const categoryInfo = categories.find((cat) => cat.id === categoryId) || 
-                               { id: categoryId, name: { en: categoryId, kh: categoryId } };
-            const categoryName = categoryInfo.name[language] || categoryId.toUpperCase()
+            const categoryName = getCategoryDisplayName(categoryId);
             
             // Limit to 4 products per category when viewing "All"
             const displayProducts = selectedCategory === "all" 
