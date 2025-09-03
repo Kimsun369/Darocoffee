@@ -3,7 +3,7 @@ async function fetchProductsFromGoogleSheet() {
   try {
     // Use the correct Sheet ID from your edit URL
     const SHEET_ID = '1IxeuobNv6Qk7-EbGn4qzTxT4xRwoMqH_1hT2-pRSpPU';
-    const SHEET_NAMES = ['signature coffee', 'signature_coffee', 'Sheet1']; // Try multiple tab names
+    const SHEET_NAMES = ['Sheet1']; // Try multiple tab names
 
     for (const SHEET_NAME of SHEET_NAMES) {
       const url = `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`;
