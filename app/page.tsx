@@ -55,24 +55,29 @@ export default function HomePage() {
   }, [cartItems])
 
   // Load products data on client-side only
-
-useEffect(() => {
-  async function loadProducts() {
-    setIsLoading(true)
-    try {
-      // Use dynamic import for the data file
-      const mod = await import("@/data/google-sheet.data")
-      const products = await mod.fetchProductsFromGoogleSheet()
-      setProductsData(products)
-    } catch (error) {
-      console.error("Error loading products from Google Sheets:", error)
-      setProductsData([])
-    } finally {
-      setIsLoading(false)
+  useEffect(() => {
+    async function loadProducts() {
+      setIsLoading(true)
+      try {
+        // Use dynamic import for the data file
+        const mod = await import("@/data/google-sheet.data")
+        const products = await mod.fetchProductsFromGoogleSheet()
+        
+        // Debug: Check what categories and images we're getting
+        console.log('Loaded products:', products)
+        console.log('Categories found:', [...new Set(products.map(p => p.category))])
+        console.log('Sample images:', products.slice(0, 3).map(p => ({ name: p.name, image: p.image })))
+        
+        setProductsData(products)
+      } catch (error) {
+        console.error("Error loading products from Google Sheets:", error)
+        setProductsData([])
+      } finally {
+        setIsLoading(false)
+      }
     }
-  }
-  loadProducts()
-}, [])
+    loadProducts()
+  }, [])
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product)

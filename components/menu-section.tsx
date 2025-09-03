@@ -25,6 +25,7 @@ interface MenuSectionProps {
   language: "en" | "kh"
 }
 
+// Define your categories with both English and Khmer names
 const categories = [
   { id: "all", name: { en: "All", kh: "ទាំងអស់" } },
   { id: "coffee", name: { en: "Coffee", kh: "កាហ្វេ" } },
@@ -45,6 +46,44 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
   const [searchQuery, setSearchQuery] = useState("")
   const [favorites, setFavorites] = useState<Set<number>>(new Set())
 
+  // Map Google Sheet categories to your predefined category IDs
+  const mapCategoryToId = (categoryName: string): string => {
+    const lowerCategory = categoryName.toLowerCase().trim();
+    
+    const categoryMap: Record<string, string> = {
+      'coffee': 'coffee',
+      'cafe': 'coffee',
+      'espresso': 'coffee',
+      'tea': 'tea',
+      'green tea': 'tea',
+      'black tea': 'tea',
+      'noodles': 'noodles',
+      'noodle': 'noodles',
+      'pasta': 'noodles',
+      'european breakfast': 'european-breakfast',
+      'continental breakfast': 'european-breakfast',
+      'khmer breakfast': 'khmer-breakfast',
+      'cambodian breakfast': 'khmer-breakfast',
+      'salad': 'salads',
+      'salads': 'salads',
+      'pizza': 'pizza',
+      'sandwich': 'sandwiches',
+      'sandwiches': 'sandwiches',
+      'pastry': 'pastries',
+      'pastries': 'pastries',
+      'bakery': 'pastries',
+      'dessert': 'desserts',
+      'desserts': 'desserts',
+      'sweet': 'desserts',
+      'beverage': 'beverages',
+      'beverages': 'beverages',
+      'drink': 'beverages',
+      'drinks': 'beverages'
+    };
+
+    return categoryMap[lowerCategory] || lowerCategory;
+  };
+
   const filteredProducts = useMemo(() => {
     let filtered = products
 
@@ -56,25 +95,48 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
       )
     }
 
+    if (selectedCategory !== "all") {
+      filtered = filtered.filter((product) => 
+        mapCategoryToId(product.category) === selectedCategory
+      )
+    }
+
     return filtered
-  }, [products, searchQuery])
+  }, [products, searchQuery, selectedCategory])
 
   const productsByCategory = useMemo(() => {
     const grouped: Record<string, Product[]> = {}
 
     if (selectedCategory === "all") {
       filteredProducts.forEach((product) => {
-        if (!grouped[product.category]) {
-          grouped[product.category] = []
+        const categoryId = mapCategoryToId(product.category);
+        if (!grouped[categoryId]) {
+          grouped[categoryId] = []
         }
-        grouped[product.category].push(product)
+        grouped[categoryId].push(product)
       })
     } else {
-      grouped[selectedCategory] = filteredProducts.filter((product) => product.category === selectedCategory)
+      grouped[selectedCategory] = filteredProducts.filter((product) => 
+        mapCategoryToId(product.category) === selectedCategory
+      )
     }
 
     return grouped
   }, [filteredProducts, selectedCategory])
+
+  // Get available categories from actual products
+  const availableCategories = useMemo(() => {
+    const uniqueCategories = new Set<string>();
+    products.forEach(product => {
+      uniqueCategories.add(mapCategoryToId(product.category));
+    });
+    return Array.from(uniqueCategories);
+  }, [products]);
+
+  // Filter categories to only show those that have products
+  const visibleCategories = categories.filter(cat => 
+    cat.id === "all" || availableCategories.includes(cat.id)
+  );
 
   const toggleFavorite = (productId: number, e: React.MouseEvent) => {
     e.stopPropagation()
@@ -90,8 +152,6 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
   }
 
   const handleSeeMore = (categoryId: string) => {
-    // In a real app, this would navigate to the category page
-    // For now, we'll just set the selected category to show all items
     setSelectedCategory(categoryId)
   }
 
@@ -103,7 +163,7 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
           {/* Improved category filter design */}
           <div className="mb-3">
             <div className="flex gap-1 overflow-x-auto scrollbar-hide pb-2 px-1">
-              {categories.map((category) => (
+              {visibleCategories.map((category) => (
                 <Button
                   key={category.id}
                   variant="ghost"
@@ -138,8 +198,9 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
           {Object.entries(productsByCategory).map(([categoryId, categoryProducts]) => {
             if (categoryProducts.length === 0) return null
 
-            const categoryInfo = categories.find((cat) => cat.id === categoryId)
-            const categoryName = categoryInfo?.name[language] || categoryId.toUpperCase()
+            const categoryInfo = categories.find((cat) => cat.id === categoryId) || 
+                               { id: categoryId, name: { en: categoryId, kh: categoryId } };
+            const categoryName = categoryInfo.name[language] || categoryId.toUpperCase()
             
             // Limit to 4 products per category when viewing "All"
             const displayProducts = selectedCategory === "all" 
@@ -172,9 +233,8 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
                   </div>
                 </div>
 
-
                 {/* Products grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 ">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {displayProducts.map((product) => (
                     <Card
                       key={product.id}
@@ -269,7 +329,6 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
                     </Button>
                   </div>
                 )}
-
               </div>
             )
           })}
