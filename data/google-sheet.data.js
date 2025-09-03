@@ -28,10 +28,13 @@ async function fetchProductsFromGoogleSheet() {
         const productsFromSheet = data.map((item, index) => {
           // Handle different possible column names
           const name = item.Name || item.name || item['Product Name'] || '';
+          const name_kh = item['Name_KH'] || item.name_kh || item['Khmer Name'] || name;
           const image = item.Image || item.image || item.Photo || item.Picture || '/api/placeholder/300/200';
           const price = parseFloat(item.Price || item.price || item.Cost || 0);
           const category = item.Category || item.category || item.Type || 'Uncategorized';
+          const category_kh = item['Category_KH'] || item.category_kh || item['Khmer Category'] || category;
           const description = item.Description || item.description || item.Desc || '';
+          const description_kh = item['Description_KH'] || item.description_kh || item['Khmer Description'] || description;
           
           // Parse JSON options or use empty object
           let options = {};
@@ -45,10 +48,13 @@ async function fetchProductsFromGoogleSheet() {
           return {
             id: index + 1,
             name: name,
+            name_kh: name_kh,
             image: image,
             price: price,
             category: category,
+            category_kh: category_kh,
             description: description,
+            description_kh: description_kh,
             options: options
           };
         });

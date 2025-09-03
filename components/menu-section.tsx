@@ -10,10 +10,13 @@ import { Card, CardContent } from "@/components/ui/card"
 interface Product {
   id: number
   name: string
+  name_kh: string
   image: string
   price: number
   category: string
+  category_kh: string
   description: string
+  description_kh: string
   options?: Record<string, Array<{ name: string; price: number }>>
   discount?: number
 }
@@ -84,24 +87,26 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
   };
 
   const filteredProducts = useMemo(() => {
-    let filtered = products
+      let filtered = products
 
-    if (searchQuery) {
-      filtered = filtered.filter(
-        (product) =>
-          product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          product.description.toLowerCase().includes(searchQuery.toLowerCase()),
-      )
-    }
+      if (searchQuery) {
+        filtered = filtered.filter(
+          (product) =>
+            product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            product.name_kh.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            product.description_kh.toLowerCase().includes(searchQuery.toLowerCase()),
+        )
+      }
 
-    if (selectedCategory !== "all") {
-      filtered = filtered.filter((product) => 
-        mapCategoryToId(product.category) === selectedCategory
-      )
-    }
+      if (selectedCategory !== "all") {
+        filtered = filtered.filter((product) => 
+          mapCategoryToId(product.category) === selectedCategory
+        )
+      }
 
-    return filtered
-  }, [products, searchQuery, selectedCategory])
+      return filtered
+    }, [products, searchQuery, selectedCategory])
 
   const productsByCategory = useMemo(() => {
     const grouped: Record<string, Product[]> = {}
@@ -182,14 +187,20 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
 
   // Get display name for category (fallback to original if not found in predefined)
   const getCategoryDisplayName = (categoryId: string) => {
-    const predefinedCategory = categories.find(cat => cat.id === categoryId);
-    if (predefinedCategory) {
-      return predefinedCategory.name[language];
+      const predefinedCategory = categories.find(cat => cat.id === categoryId);
+      if (predefinedCategory) {
+        return predefinedCategory.name[language];
+      }
+      
+      // Try to find a product with this category to get the Khmer name
+      const productWithCategory = products.find(p => mapCategoryToId(p.category) === categoryId);
+      if (productWithCategory) {
+        return language === "kh" ? productWithCategory.category_kh : productWithCategory.category;
+      }
+      
+      // Fallback: capitalize the first letter for display
+      return categoryId.charAt(0).toUpperCase() + categoryId.slice(1);
     }
-    
-    // Fallback: capitalize the first letter for display
-    return categoryId.charAt(0).toUpperCase() + categoryId.slice(1);
-  }
 
   return (
     <section className="py-4 px-2 bg-#F5F1E9">
@@ -321,8 +332,11 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
                           <h4
                             className={`font-semibold text-sm text-gray-800 line-clamp-2 leading-tight ${language === "kh" ? "font-mono" : "font-sans"}`}
                           >
-                            {product.name}
+                            {language === "kh" ? product.name_kh : product.name}
                           </h4>
+                          <p className={`text-xs text-gray-600 line-clamp-2 ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                            {language === "kh" ? product.description_kh : product.description}
+                          </p>
 
                           <div className="flex items-center gap-1">
                             <span className="text-base font-bold text-amber-700">${product.price.toFixed(2)}</span>

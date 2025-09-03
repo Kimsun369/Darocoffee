@@ -11,10 +11,13 @@ import { Footer } from "@/components/footer"
 interface Product {
   id: number
   name: string
+  name_kh: string
   image: string
   price: number
   category: string
+  category_kh: string
   description: string
+  description_kh: string
   options?: Record<string, Array<{ name: string; price: number }>>
 }
 
