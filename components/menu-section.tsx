@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Search, Heart, Plus, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -47,6 +47,32 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
   const [favorites, setFavorites] = useState<Set<number>>(new Set())
+  const [categoriesFromSheet, setCategoriesFromSheet] = useState<any[]>([])
+
+  // this useEffect to load categories from Google Sheets
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const SHEET_ID = '1IxeuobNv6Qk7-EbGn4qzTxT4xRwoMqH_1hT2-pRSpPU';
+        const url = `https://opensheet.elk.sh/${SHEET_ID}/Categories`;
+        
+        const response = await fetch(url);
+        
+        if (response.ok) {
+          const data = await response.json();
+          setCategoriesFromSheet(data);
+          console.log('Categories loaded from sheet:', data);
+        } else {
+          console.error('Failed to load categories sheet');
+        }
+      } catch (error) {
+        console.error('Error loading categories from sheet:', error);
+      }
+    }
+    
+    loadCategories();
+  }, []);
+
 
   // Map Google Sheet categories to your predefined category IDs
   const mapCategoryToId = (categoryName: string): string => {
@@ -134,11 +160,6 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
     products.forEach(product => {
       const mappedId = mapCategoryToId(product.category);
       uniqueCategories.add(mappedId);
-      
-      // Also include the original category for display
-      if (!categories.find(cat => cat.id === mappedId)) {
-        uniqueCategories.add(product.category.toLowerCase());
-      }
     });
     return Array.from(uniqueCategories);
   }, [products]);
@@ -147,21 +168,28 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
   const dynamicCategories = useMemo(() => {
     const dynamicCats = [...categories];
     
-    // Add categories from Google Sheets that aren't in predefined list
+    // Add categories from available products that aren't in predefined list
     availableCategories.forEach(categoryId => {
       if (!dynamicCats.find(cat => cat.id === categoryId) && categoryId !== "all") {
+        // Try to find this category in the sheet data
+        const sheetCategory = categoriesFromSheet.find(
+          cat => mapCategoryToId(cat.Category || cat.category) === categoryId
+        );
+        
         dynamicCats.push({
           id: categoryId,
           name: { 
-            en: categoryId.charAt(0).toUpperCase() + categoryId.slice(1),
-            kh: categoryId
+            en: sheetCategory?.Category || sheetCategory?.category || 
+                categoryId.charAt(0).toUpperCase() + categoryId.slice(1),
+            kh: sheetCategory?.category_kh || sheetCategory?.['Category_KH'] || 
+                sheetCategory?.Category || sheetCategory?.category || categoryId
           }
         });
       }
     });
     
     return dynamicCats;
-  }, [availableCategories]);
+  }, [availableCategories, categoriesFromSheet]); // ADD categoriesFromSheet to dependencies
 
   // Filter categories to only show those that have products
   const visibleCategories = dynamicCategories.filter(cat => 
@@ -187,20 +215,26 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
 
   // Get display name for category (fallback to original if not found in predefined)
   const getCategoryDisplayName = (categoryId: string) => {
-      const predefinedCategory = categories.find(cat => cat.id === categoryId);
-      if (predefinedCategory) {
-        return predefinedCategory.name[language];
-      }
-      
-      // Try to find a product with this category to get the Khmer name
-      const productWithCategory = products.find(p => mapCategoryToId(p.category) === categoryId);
-      if (productWithCategory) {
-        return language === "kh" ? productWithCategory.category_kh : productWithCategory.category;
-      }
-      
-      // Fallback: capitalize the first letter for display
-      return categoryId.charAt(0).toUpperCase() + categoryId.slice(1);
+    // First check predefined categories
+    const predefinedCategory = categories.find(cat => cat.id === categoryId);
+    if (predefinedCategory) {
+      return predefinedCategory.name[language];
     }
+    
+    // Then check sheet categories
+    const sheetCategory = categoriesFromSheet.find(
+      cat => mapCategoryToId(cat.Category || cat.category) === categoryId
+    );
+    
+    if (sheetCategory) {
+      return language === "kh" 
+        ? sheetCategory.category_kh || sheetCategory['Category_KH'] || sheetCategory.Category || sheetCategory.category
+        : sheetCategory.Category || sheetCategory.category;
+    }
+    
+    // Fallback: capitalize the first letter for display
+    return categoryId.charAt(0).toUpperCase() + categoryId.slice(1);
+  }
 
   return (
     <section className="py-4 px-2 bg-#F5F1E9">
