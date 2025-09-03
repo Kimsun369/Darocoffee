@@ -7,7 +7,6 @@ import { MenuSection } from "@/components/menu-section"
 import { ProductModal } from "@/components/product-modal"
 import { CartSidebar } from "@/components/cart-sidebar"
 import { Footer } from "@/components/footer"
-import productsData from "@/data/products.json"
 
 interface Product {
   id: number
@@ -35,6 +34,8 @@ export default function HomePage() {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [language, setLanguage] = useState<"en" | "kh">("en")
+  const [productsData, setProductsData] = useState<Product[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -52,6 +53,26 @@ export default function HomePage() {
   useEffect(() => {
     localStorage.setItem("daros-coffee-cart", JSON.stringify(cartItems))
   }, [cartItems])
+
+  // Load products data on client-side only
+
+useEffect(() => {
+  async function loadProducts() {
+    setIsLoading(true)
+    try {
+      // Use dynamic import for the data file
+      const mod = await import("@/data/google-sheet.data")
+      const products = await mod.fetchProductsFromGoogleSheet()
+      setProductsData(products)
+    } catch (error) {
+      console.error("Error loading products from Google Sheets:", error)
+      setProductsData([])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+  loadProducts()
+}, [])
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product)
@@ -83,6 +104,7 @@ export default function HomePage() {
   const handleCheckout = () => {
     setCartItems([])
     setIsCartOpen(false)
+    alert(language === "en" ? "Order placed successfully!" : "ការកម្មង់ទទួលបានជោគជ័យ!")
   }
 
   const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
@@ -99,20 +121,40 @@ export default function HomePage() {
       <main>
         <DiscountBanner />
 
-        <MenuSection
-          products={
-            (productsData as any[]).map((product) => ({
+        {isLoading ? (
+          <div className="text-center py-20">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mb-4"></div>
+            <p className="text-amber-800">
+              {language === "en" ? "Loading menu..." : "កំពុងដំណើរការ menu..."}
+            </p>
+          </div>
+        ) : productsData.length > 0 ? (
+          <MenuSection
+            products={productsData.map((product) => ({
               ...product,
               options: product.options
                 ? Object.fromEntries(
                     Object.entries(product.options).filter(([_, v]) => Array.isArray(v))
                   )
                 : undefined,
-            })) as Product[]
-          }
-          onProductClick={handleProductClick}
-          language={language}
-        />
+            }))}
+            onProductClick={handleProductClick}
+            language={language}
+          />
+        ) : (
+          <div className="text-center py-20">
+            <div className="text-amber-600 text-6xl mb-4">☕</div>
+            <h3 className="text-amber-800 text-xl font-semibold mb-2">
+              {language === "en" ? "Menu Not Available" : "Menu មិនអាចប្រើបាន"}
+            </h3>
+            <p className="text-amber-700">
+              {language === "en" 
+                ? "Please check your Google Sheet configuration or try again later."
+                : "សូមពិនិត្យមើលការកំណត់ Google Sheet របស់អ្នក ឬព្យាយាមម្តងទៀតនៅពេលក្រោយ។"
+              }
+            </p>
+          </div>
+        )}
       </main>
 
       <Footer language={language} />
