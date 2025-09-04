@@ -10,9 +10,10 @@ interface HeaderProps {
   onCartClick: () => void
   language: "en" | "kh"
   onLanguageChange: (lang: "en" | "kh") => void
+  onScrollToSection: (section: string) => void
 }
 
-export function Header({ cartItemCount, onCartClick, language, onLanguageChange }: HeaderProps) {
+export function Header({ cartItemCount, onCartClick, language, onLanguageChange, onScrollToSection }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const promotionalItems = [
@@ -30,12 +31,18 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange 
     },
   ]
 
+  // Updated navigation to use anchor links for single page
   const mainNavigation = [
-    { name: language === "en" ? "HOME" : "ទំព័រដើម", href: "#home" },
-    { name: language === "en" ? "MENU" : "ម៉ឺនុយ", href: "#menu" },
-    { name: language === "en" ? "ABOUT" : "អំពីយើង", href: "#about" },
-    { name: language === "en" ? "CONTACT" : "ទំនាក់ទំនង", href: "#contact", special: true },
+    { name: language === "en" ? "HOME" : "ទំព័រដើម", href: "#top", section: "top" },
+    { name: language === "en" ? "MENU" : "ម៉ឺនុយ", href: "#menu", section: "menu" },
+    { name: language === "en" ? "CONTACT" : "ទំនាក់ទំនង", href: "#contact", section: "contact", special: true },
   ]
+
+  const handleNavigationClick = (section: string, e: React.MouseEvent) => {
+    e.preventDefault()
+    setMobileMenuOpen(false)
+    onScrollToSection(section)
+  }
 
   return (
     <>
@@ -60,7 +67,8 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange 
                 <a
                   key={item.href}
                   href={item.href}
-                  className={`text-sm font-medium transition-colors hover:text-amber-600 ${
+                  onClick={(e) => handleNavigationClick(item.section, e)}
+                  className={`text-sm font-medium transition-colors hover:text-amber-600 cursor-pointer ${
                     item.special ? "text-red-500 hover:text-red-600" : "text-gray-900"
                   } ${language === "kh" ? "font-mono" : "font-sans"}`}
                 >
@@ -70,10 +78,16 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange 
             </nav>
 
             <div className="flex items-center space-x-3">
-              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg bg-amber-600 flex items-center justify-center">
-                <Coffee className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-              </div>
-              <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">DARO'S</h1>
+              <a 
+                href="#top" 
+                onClick={(e) => handleNavigationClick("top", e)}
+                className="flex items-center space-x-3 cursor-pointer"
+              >
+                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg bg-amber-600 flex items-center justify-center">
+                  <Coffee className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+                </div>
+                <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">DARO'S</h1>
+              </a>
             </div>
 
             <div className="flex items-center space-x-2 sm:space-x-3">
@@ -141,12 +155,16 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange 
             <div className="flex h-full flex-col">
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                <div className="flex items-center space-x-3">
+                <a 
+                  href="#top" 
+                  className="flex items-center space-x-3 cursor-pointer"
+                  onClick={(e) => handleNavigationClick("top", e)}
+                >
                   <div className="h-8 w-8 rounded-lg bg-amber-600 flex items-center justify-center">
                     <Coffee className="h-4 w-4 text-white" />
                   </div>
                   <span className="font-serif text-lg font-bold text-gray-900">DARO'S</span>
-                </div>
+                </a>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -164,10 +182,10 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange 
                     <a
                       key={item.href}
                       href={item.href}
-                      className={`block py-3 px-4 text-lg font-medium rounded-lg transition-colors ${
+                      onClick={(e) => handleNavigationClick(item.section, e)}
+                      className={`block py-3 px-4 text-lg font-medium rounded-lg transition-colors cursor-pointer ${
                         item.special ? "text-red-500 hover:bg-red-50" : "text-gray-900 hover:bg-gray-50"
                       } ${language === "kh" ? "font-mono" : "font-sans"}`}
-                      onClick={() => setMobileMenuOpen(false)}
                     >
                       {item.name}
                     </a>

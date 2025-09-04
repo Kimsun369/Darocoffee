@@ -40,6 +40,24 @@ export default function HomePage() {
   const [productsData, setProductsData] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
+  const handleScrollToSection = (section: string) => {
+    if (section === "top") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else if (section === "menu") {
+      // Find the menu section and scroll to it
+      const menuSection = document.getElementById("menu-section");
+      if (menuSection) {
+        menuSection.scrollIntoView({ behavior: "smooth" });
+      }
+    } else if (section === "contact") {
+      // Scroll to footer/contact section
+      const footer = document.querySelector("footer");
+      if (footer) {
+        footer.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
+
   // Load cart from localStorage on mount
   useEffect(() => {
     const savedCart = localStorage.getItem("daros-coffee-cart")
@@ -124,45 +142,63 @@ export default function HomePage() {
         onCartClick={() => setIsCartOpen(true)}
         language={language}
         onLanguageChange={setLanguage}
+        onScrollToSection={handleScrollToSection}
       />
+
+      {/* Hero/Top Section */}
+      <section id="top" className="pt-8 pb-12 px-4">
+        <div className="container mx-auto text-center">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-amber-900 mb-4">
+            {language === "en" ? "Welcome to DARO'S Coffee" : "សូមស្វាគមន៍មកកាន់ DARO'S Coffee"}
+          </h1>
+          <p className="text-lg md:text-xl text-amber-800 max-w-2xl mx-auto">
+            {language === "en" 
+              ? "Experience the finest coffee crafted with passion and expertise"
+              : "សូមភ្លក្សរសជាតិកាហ្វេដ៏ឆ្ងាញ់ពិសារដែលត្រូវបានធ្វើឡើងដោយការខិតខំប្រឹងប្រែងនិងជំនាញ"}
+          </p>
+        </div>
+      </section>
 
       <main>
         <DiscountBanner />
 
-        {isLoading ? (
-          <div className="text-center py-20">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mb-4"></div>
-            <p className="text-amber-800">
-              {language === "en" ? "Loading menu..." : "កំពុងដំណើរការ menu..."}
-            </p>
-          </div>
-        ) : productsData.length > 0 ? (
-          <MenuSection
-            products={productsData.map((product) => ({
-              ...product,
-              options: product.options
-                ? Object.fromEntries(
-                    Object.entries(product.options).filter(([_, v]) => Array.isArray(v))
-                  )
-                : undefined,
-            }))}
-            onProductClick={handleProductClick}
-            language={language}
-          />
-        ) : (
-          <div className="text-center py-20">
-            <div className="text-amber-600 text-6xl mb-4">☕</div>
-            <h3 className="text-amber-800 text-xl font-semibold mb-2">
-              {language === "en" ? "Menu Not Available" : "Menu មិនអាចប្រើបាន"}
-            </h3>
-            <p className="text-amber-700">
-              {language === "en" 
-                ? "Could not load menu from Google Sheet. Please check your Sheet ID, tab name, and publish settings. Try renaming your tab to 'Sheet1' and ensure it is published to the web."
-                : "មិនអាចទាញយកម៉ឺនុយពី Google Sheet។ សូមពិនិត្យ Sheet ID, ឈ្មោះ tab, និង publish settings។ សូមសាកល្បងប្ដូរឈ្មោះ tab ទៅជា 'Sheet1' និងបង្ហោះទៅ web។"
-              }
-            </p>
-          </div>
-        )}
+        {/* Menu Section with ID for scrolling */}
+        <div id="menu-section">
+          {isLoading ? (
+            <div className="text-center py-20">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mb-4"></div>
+              <p className="text-amber-800">
+                {language === "en" ? "Loading menu..." : "កំពុងដំណើរការ menu..."}
+              </p>
+            </div>
+          ) : productsData.length > 0 ? (
+            <MenuSection
+              products={productsData.map((product) => ({
+                ...product,
+                options: product.options
+                  ? Object.fromEntries(
+                      Object.entries(product.options).filter(([_, v]) => Array.isArray(v))
+                    )
+                  : undefined,
+              }))}
+              onProductClick={handleProductClick}
+              language={language}
+            />
+          ) : (
+            <div className="text-center py-20">
+              <div className="text-amber-600 text-6xl mb-4">☕</div>
+              <h3 className="text-amber-800 text-xl font-semibold mb-2">
+                {language === "en" ? "Menu Not Available" : "Menu មិនអាចប្រើបាន"}
+              </h3>
+              <p className="text-amber-700">
+                {language === "en" 
+                  ? "Could not load menu from Google Sheet. Please check your Sheet ID, tab name, and publish settings. Try renaming your tab to 'Sheet1' and ensure it is published to the web."
+                  : "មិនអាចទាញយកម៉ឺនុយពី Google Sheet។ សូមពិនិត្យ Sheet ID, ឈ្មោះ tab, និង publish settings។ សូមសាកល្បងប្ដូរឈ្មោះ tab ទៅជា 'Sheet1' និងបង្ហោះទៅ web។"
+                }
+              </p>
+            </div>
+          )}
+        </div>
       </main>
 
       <Footer language={language} />
