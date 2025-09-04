@@ -99,24 +99,27 @@ export function CartSidebar({
         <SheetHeader className="pb-4 mx-4">
           <SheetTitle className="text-xl font-bold flex items-center">
             <ShoppingBag className="mr-2 h-5 w-5 text-amber-600" />
-            {language === "en" ? "Your Cart" : "កន្ត្រករបស់អ្នក"}
+            <span className={language === "kh" ? "font-mono" : "font-sans"}>
+              {language === "en" ? "Your Cart" : "កន្ត្រករបស់អ្នក"}
+            </span>
           </SheetTitle>
         </SheetHeader>
 
-        <div className="flex flex-col h-full">
+
+<div className="flex flex-col h-full">
           {cartItems.length === 0 ? (
             <div className="flex-1 flex items-center justify-center mx-4">
               <div className="text-center p-6 max-w-sm w-full">
                 <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <ShoppingBag className="text-amber-600 h-6 w-6" />
                 </div>
-                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                <p className={`text-gray-600 dark:text-gray-400 mb-6 ${language === "kh" ? "font-mono" : "font-sans"}`}>
                   {language === "en" ? "Your cart is empty" : "កន្ត្រករបស់អ្នកទទេ"}
                 </p>
                 <Button
                   onClick={onClose}
                   variant="outline"
-                  className="border-amber-300 text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                  className={`border-amber-300 text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/20 ${language === "kh" ? "font-mono" : "font-sans"}`}
                 >
                   {language === "en" ? "Continue Shopping" : "បន្តទិញ"}
                 </Button>
@@ -133,11 +136,11 @@ export function CartSidebar({
                   >
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
-                        <h4 className="font-semibold text-gray-900 dark:text-gray-100">
+                        <h4 className={`font-semibold text-gray-900 dark:text-gray-100 ${language === "kh" ? "font-mono" : "font-sans"}`}>
                           {item.name}
                         </h4>
                         {Object.keys(item.options).length > 0 && (
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 bg-amber-50 dark:bg-amber-900/20 rounded-md px-2 py-1">
+                          <p className={`text-sm text-gray-600 dark:text-gray-400 mt-1 bg-amber-50 dark:bg-amber-900/20 rounded-md px-2 py-1 ${language === "kh" ? "font-mono" : "font-sans"}`}>
                             {formatOptions(item.options)}
                           </p>
                         )}
@@ -152,7 +155,8 @@ export function CartSidebar({
                       </Button>
                     </div>
 
-                    <div className="flex justify-between items-center">
+
+<div className="flex justify-between items-center">
                       <div className="flex items-center space-x-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg p-2">
                         <Button
                           variant="outline"
@@ -163,7 +167,7 @@ export function CartSidebar({
                         >
                           <Minus className="h-3 w-3" />
                         </Button>
-                        <span className="font-medium w-6 text-center text-amber-800 dark:text-amber-200">
+                        <span className={`font-medium w-6 text-center text-amber-800 dark:text-amber-200 ${language === "kh" ? "font-mono" : "font-sans"}`}>
                           {item.quantity}
                         </span>
                         <Button
@@ -175,7 +179,7 @@ export function CartSidebar({
                           <Plus className="h-3 w-3" />
                         </Button>
                       </div>
-                      <Badge className="bg-amber-600 text-white font-medium px-3 py-1">
+                      <Badge className={`bg-amber-600 text-white font-medium px-3 py-1 ${language === "kh" ? "font-mono" : "font-sans"}`}>
                         ${item.price.toFixed(2)}
                       </Badge>
                     </div>
@@ -183,9 +187,10 @@ export function CartSidebar({
                 ))}
               </div>
 
-              {/* Pick up time selector */}
+
+{/* Pick up time selector */}
               <div className="mb-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4 mx-4">
-                <label className="block font-medium mb-3 text-gray-900 dark:text-gray-100 flex items-center">
+                <label className={`block font-medium mb-3 text-gray-900 dark:text-gray-100 flex items-center ${language === "kh" ? "font-mono" : "font-sans"}`}>
                   <Clock className="w-4 h-4 text-amber-600 mr-2" />
                   {language === "en" ? "Pick up time:" : "ពេលយក:"}
                 </label>
@@ -203,7 +208,7 @@ export function CartSidebar({
                       variant={pickupOption === option.value ? "default" : "outline"}
                       size="sm"
                       onClick={() => setPickupOption(option.value as any)}
-                      className={`text-xs h-8 ${
+                      className={`text-xs h-8 ${language === "kh" ? "font-mono" : "font-sans"} ${
                         pickupOption === option.value
                           ? "bg-amber-600 hover:bg-amber-700 text-white"
                           : "border-amber-300 text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/20"
@@ -221,36 +226,37 @@ export function CartSidebar({
                       max={180}
                       value={customMinutes}
                       onChange={(e) => setCustomMinutes(Number(e.target.value))}
-                      className="border border-amber-300 rounded-md px-2 py-1 w-16 text-center bg-white dark:bg-gray-800 focus:border-amber-500"
+                      className={`border border-amber-300 rounded-md px-2 py-1 w-16 text-center bg-white dark:bg-gray-800 focus:border-amber-500 ${language === "kh" ? "font-mono" : "font-sans"}`}
                       placeholder="5"
                     />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                    <span className={`text-sm text-gray-600 dark:text-gray-400 ${language === "kh" ? "font-mono" : "font-sans"}`}>
                       {language === "en" ? "minutes" : "នាទី"}
                     </span>
                   </div>
                 )}
-                <div className="mt-3 text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 rounded-md px-3 py-2">
+                <div className={`mt-3 text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 rounded-md px-3 py-2 ${language === "kh" ? "font-mono" : "font-sans"}`}>
                   {language === "en" ? `Pick up at: ${getPickupTimeString()}` : `យកនៅម៉ោង: ${getPickupTimeString()}`}
                 </div>
               </div>
 
-              {/* Cart Summary */}
+
+{/* Cart Summary */}
               <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-4 mx-4">
                 <div className="flex justify-between items-center text-lg font-semibold">
-                  <span className="text-gray-900 dark:text-gray-100">
+                  <span className={`text-gray-900 dark:text-gray-100 ${language === "kh" ? "font-mono" : "font-sans"}`}>
                     {language === "en" ? "Total:" : "សរុប:"}
                   </span>
-                  <span className="text-amber-700 dark:text-amber-300">
+                  <span className={`text-amber-700 dark:text-amber-300 ${language === "kh" ? "font-mono" : "font-sans"}`}>
                     ${totalPrice.toFixed(2)}
                   </span>
                 </div>
                 <Button
                   onClick={handleTelegramOrder}
-                  className="w-full bg-amber-600 hover:bg-amber-700 text-white py-3"
+                  className={`w-full bg-amber-600 hover:bg-amber-700 text-white py-3 ${language === "kh" ? "font-mono" : "font-sans"}`}
                 >
                   {language === "en" ? "Order via Telegram" : "បញ្ជាទិញតាម Telegram"}
                 </Button>
-                <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                <p className={`text-xs text-gray-500 dark:text-gray-400 text-center ${language === "kh" ? "font-mono" : "font-sans"}`}>
                   {language === "en"
                     ? "You will be redirected to Telegram to complete your order"
                     : "អ្នកនឹងត្រូវបានបញ្ជូនទៅ Telegram ដើម្បីបញ្ចប់ការបញ្ជាទិញ"}
