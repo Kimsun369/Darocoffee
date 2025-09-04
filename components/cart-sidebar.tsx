@@ -97,19 +97,20 @@ export function CartSidebar({
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className="w-full sm:max-w-lg bg-white dark:bg-gray-900">
-        <SheetHeader className="pb-4 mx-4">
-          <SheetTitle className="text-xl font-bold flex items-center">
-            <ShoppingBag className="mr-2 h-5 w-5 text-amber-600" />
-            <span className={language === "kh" ? "font-mono" : "font-sans"}>
-              {language === "en" ? "Your Cart" : "កន្ត្រករបស់អ្នក"}
-            </span>
-          </SheetTitle>
-        </SheetHeader>
-
+      <SheetContent className="w-full sm:max-w-lg bg-white dark:bg-gray-900 p-0 flex flex-col">
         <div className="flex flex-col h-full">
+          {/* Header */}
+          <div className="px-4 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center">
+              <ShoppingBag className="mr-2 h-5 w-5 text-amber-600" />
+              <h2 className={`text-xl font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                {language === "en" ? "Your Cart" : "កន្ត្រករបស់អ្នក"}
+              </h2>
+            </div>
+          </div>
+
           {cartItems.length === 0 ? (
-            <div className="flex-1 flex items-center justify-center mx-4">
+            <div className="flex-1 flex items-center justify-center p-4">
               <div className="text-center p-6 max-w-sm w-full">
                 <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <ShoppingBag className="text-amber-600 h-6 w-6" />
@@ -128,8 +129,8 @@ export function CartSidebar({
             </div>
           ) : (
             <>
-              {/* Cart Items */}
-              <div className="flex-1 overflow-y-auto py-4 space-y-4 mx-4">
+              {/* Scrollable Cart Items */}
+              <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
                 {cartItems.map((item) => (
                   <div
                     key={item.id}
@@ -192,83 +193,86 @@ export function CartSidebar({
                 ))}
               </div>
 
-              {/* Pick up time selector */}
-              <div className="mb-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4 mx-4">
-                <label className={`block font-medium mb-3 text-gray-900 dark:text-gray-100 flex items-center ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                  <Clock className="w-4 h-4 text-amber-600 mr-2" />
-                  {language === "en" ? "Pick up time:" : "ពេលយក:"}
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { value: "now", label: language === "en" ? "Now" : "ឥឡូវនេះ" },
-                    { value: "15", label: `15 ${language === "en" ? "min" : "នាទី"}` },
-                    { value: "30", label: `30 ${language === "en" ? "min" : "នាទី"}` },
-                    { value: "45", label: `45 ${language === "en" ? "min" : "នាទី"}` },
-                    { value: "60", label: `1 ${language === "en" ? "hr" : "ម៉ោង"}` },
-                    { value: "other", label: language === "en" ? "Other" : "ផ្សេងទៀត" },
-                  ].map((option) => (
-                    <Button
-                      key={option.value}
-                      variant={pickupOption === option.value ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setPickupOption(option.value as any)}
-                      className={`text-xs h-8 ${language === "kh" ? "font-mono" : "font-sans"} ${
-                        pickupOption === option.value
-                          ? "bg-amber-600 hover:bg-amber-700 text-white"
-                          : "border-amber-300 text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/20"
-                      }`}
-                    >
-                      {option.label}
-                    </Button>
-                  ))}
-                </div>
-                {pickupOption === "other" && (
-                  <div className="mt-3 flex items-center space-x-2 bg-white dark:bg-gray-800 rounded-md p-2">
-                    <input
-                      type="number"
-                      min={1}
-                      max={180}
-                      value={customMinutes}
-                      onChange={(e) => setCustomMinutes(Number(e.target.value))}
-                      className={`border border-amber-300 rounded-md px-2 py-1 w-16 text-center bg-white dark:bg-gray-800 focus:border-amber-500 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                      placeholder="5"
-                    />
-                    <span className={`text-sm text-gray-600 dark:text-gray-400 ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                      {language === "en" ? "minutes" : "នាទី"}
-                    </span>
+              {/* Fixed Bottom Section */}
+              <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
+                {/* Pick up time selector */}
+                <div className="mb-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4">
+                  <label className={`block font-medium mb-3 text-gray-900 dark:text-gray-100 flex items-center ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                    <Clock className="w-4 h-4 text-amber-600 mr-2" />
+                    {language === "en" ? "Pick up time:" : "ពេលយក:"}
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { value: "now", label: language === "en" ? "Now" : "ឥឡូវនេះ" },
+                      { value: "15", label: `15 ${language === "en" ? "min" : "នាទី"}` },
+                      { value: "30", label: `30 ${language === "en" ? "min" : "នាទី"}` },
+                      { value: "45", label: `45 ${language === "en" ? "min" : "នាទី"}` },
+                      { value: "60", label: `1 ${language === "en" ? "hr" : "ម៉ោង"}` },
+                      { value: "other", label: language === "en" ? "Other" : "ផ្សេងទៀត" },
+                    ].map((option) => (
+                      <Button
+                        key={option.value}
+                        variant={pickupOption === option.value ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setPickupOption(option.value as any)}
+                        className={`text-xs h-8 ${language === "kh" ? "font-mono" : "font-sans"} ${
+                          pickupOption === option.value
+                            ? "bg-amber-600 hover:bg-amber-700 text-white"
+                            : "border-amber-300 text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                        }`}
+                      >
+                        {option.label}
+                      </Button>
+                    ))}
                   </div>
-                )}
-                <div className={`mt-3 text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 rounded-md px-3 py-2 ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                  {language === "en" ? `Pick up at: ${getPickupTimeString()}` : `យកនៅម៉ោង: ${getPickupTimeString()}`}
+                  {pickupOption === "other" && (
+                    <div className="mt-3 flex items-center space-x-2 bg-white dark:bg-gray-800 rounded-md p-2">
+                      <input
+                        type="number"
+                        min={1}
+                        max={180}
+                        value={customMinutes}
+                        onChange={(e) => setCustomMinutes(Number(e.target.value))}
+                        className={`border border-amber-300 rounded-md px-2 py-1 w-16 text-center bg-white dark:bg-gray-800 focus:border-amber-500 ${language === "kh" ? "font-mono" : "font-sans"}`}
+                        placeholder="5"
+                      />
+                      <span className={`text-sm text-gray-600 dark:text-gray-400 ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                        {language === "en" ? "minutes" : "នាទី"}
+                      </span>
+                    </div>
+                  )}
+                  <div className={`mt-3 text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 rounded-md px-3 py-2 ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                    {language === "en" ? `Pick up at: ${getPickupTimeString()}` : `យកនៅម៉ោង: ${getPickupTimeString()}`}
+                  </div>
                 </div>
-              </div>
 
-              {/* Cart Summary */}
-              <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-4 mx-4">
-                <div className="flex justify-between items-center text-lg font-semibold">
-                  <span className={`text-gray-900 dark:text-gray-100 ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                    {language === "en" ? "Total:" : "សរុប:"}
-                  </span>
-                  <div className="flex flex-col items-end">
-                    <span className={`text-amber-700 dark:text-amber-300 ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                      ${totalPrice.toFixed(2)}
+                {/* Cart Summary */}
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center text-lg font-semibold">
+                    <span className={`text-gray-900 dark:text-gray-100 ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                      {language === "en" ? "Total:" : "សរុប:"}
                     </span>
-                    <span className={`text-sm text-amber-600 font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                      KHR {totalPriceKHR.toLocaleString()}
-                    </span>
+                    <div className="flex flex-col items-end">
+                      <span className={`text-amber-700 dark:text-amber-300 ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                        ${totalPrice.toFixed(2)}
+                      </span>
+                      <span className={`text-sm text-amber-600 font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                        KHR {totalPriceKHR.toLocaleString()}
+                      </span>
+                    </div>
                   </div>
+                  <Button
+                    onClick={handleTelegramOrder}
+                    className={`w-full bg-amber-600 hover:bg-amber-700 text-white py-3 ${language === "kh" ? "font-mono" : "font-sans"}`}
+                  >
+                    {language === "en" ? "Order via Telegram" : "បញ្ជាទិញតាម Telegram"}
+                  </Button>
+                  <p className={`text-xs text-gray-500 dark:text-gray-400 text-center ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                    {language === "en"
+                      ? "You will be redirected to Telegram to complete your order"
+                      : "អ្នកនឹងត្រូវបានបញ្ជូនទៅ Telegram ដើម្បីបញ្ចប់ការបញ្ជាទិញ"}
+                  </p>
                 </div>
-                <Button
-                  onClick={handleTelegramOrder}
-                  className={`w-full bg-amber-600 hover:bg-amber-700 text-white py-3 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                >
-                  {language === "en" ? "Order via Telegram" : "បញ្ជាទិញតាម Telegram"}
-                </Button>
-                <p className={`text-xs text-gray-500 dark:text-gray-400 text-center ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                  {language === "en"
-                    ? "You will be redirected to Telegram to complete your order"
-                    : "អ្នកនឹងត្រូវបានបញ្ជូនទៅ Telegram ដើម្បីបញ្ចប់ការបញ្ជាទិញ"}
-                </p>
               </div>
             </>
           )}
