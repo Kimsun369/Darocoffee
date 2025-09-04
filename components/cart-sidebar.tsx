@@ -37,6 +37,7 @@ export function CartSidebar({
   language,
 }: CartSidebarProps) {
   const totalPrice = cartItems.reduce((sum, item) => sum + item.price, 0)
+  const totalPriceKHR = totalPrice * 4000 // Convert USD to KHR
 
   // Pickup time state
   const [pickupOption, setPickupOption] = useState<"now" | "15" | "30" | "45" | "60" | "other">("now")
@@ -106,8 +107,7 @@ export function CartSidebar({
           </SheetTitle>
         </SheetHeader>
 
-
-<div className="flex flex-col h-full">
+        <div className="flex flex-col h-full">
           {cartItems.length === 0 ? (
             <div className="flex-1 flex items-center justify-center mx-4">
               <div className="text-center p-6 max-w-sm w-full">
@@ -156,8 +156,7 @@ export function CartSidebar({
                       </Button>
                     </div>
 
-
-<div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center">
                       <div className="flex items-center space-x-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg p-2">
                         <Button
                           variant="outline"
@@ -180,16 +179,20 @@ export function CartSidebar({
                           <Plus className="h-3 w-3" />
                         </Button>
                       </div>
-                      <Badge className={`bg-amber-600 text-white font-medium px-3 py-1 ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                        ${item.price.toFixed(2)}
-                      </Badge>
+                      <div className="flex flex-col items-end">
+                        <Badge className={`bg-amber-600 text-white font-medium px-3 py-1 mb-1 ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                          ${item.price.toFixed(2)}
+                        </Badge>
+                        <span className={`text-xs text-amber-600 font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                          KHR {(item.price * 4000).toLocaleString()}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
 
-
-{/* Pick up time selector */}
+              {/* Pick up time selector */}
               <div className="mb-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4 mx-4">
                 <label className={`block font-medium mb-3 text-gray-900 dark:text-gray-100 flex items-center ${language === "kh" ? "font-mono" : "font-sans"}`}>
                   <Clock className="w-4 h-4 text-amber-600 mr-2" />
@@ -240,16 +243,20 @@ export function CartSidebar({
                 </div>
               </div>
 
-
-{/* Cart Summary */}
+              {/* Cart Summary */}
               <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-4 mx-4">
                 <div className="flex justify-between items-center text-lg font-semibold">
                   <span className={`text-gray-900 dark:text-gray-100 ${language === "kh" ? "font-mono" : "font-sans"}`}>
                     {language === "en" ? "Total:" : "សរុប:"}
                   </span>
-                  <span className={`text-amber-700 dark:text-amber-300 ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                    ${totalPrice.toFixed(2)}
-                  </span>
+                  <div className="flex flex-col items-end">
+                    <span className={`text-amber-700 dark:text-amber-300 ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                      ${totalPrice.toFixed(2)}
+                    </span>
+                    <span className={`text-sm text-amber-600 font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                      KHR {totalPriceKHR.toLocaleString()}
+                    </span>
+                  </div>
                 </div>
                 <Button
                   onClick={handleTelegramOrder}
