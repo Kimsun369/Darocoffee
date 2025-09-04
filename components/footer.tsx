@@ -203,8 +203,8 @@ export function Footer({ language }: FooterProps) {
           </div>
         </div>
 
-        <div className="mb-8 md:mb-12">
-          <div className="bg-slate-700 rounded-lg p-2 md:p-4 h-[200px] md:h-[300px]">
+        <div className="w-full lg:w-2/3">
+          <div className="bg-slate-700 rounded-lg p-2 h-[300px] md:h-[400px] relative z-10"> {/* Added z-10 */}
             <Map 
               center={[11.61616823412506, 104.90097788247442]} 
               locationName="My Coffee Shop" 

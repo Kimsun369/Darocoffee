@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -8,13 +8,17 @@ interface MapProps {
 }
 
 export function Map({ center, locationName = "Daro's Coffee" }: MapProps) {
+  const mapRef = useRef<L.Map | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const map = L.map('map').setView(center, 16);
+    if (typeof window !== 'undefined' && mapContainerRef.current && !mapRef.current) {
+      // Initialize the map only once
+      mapRef.current = L.map(mapContainerRef.current).setView(center, 16);
       
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
-      }).addTo(map);
+      }).addTo(mapRef.current);
 
       const customIcon = L.icon({
         iconUrl: '/coffee-marker.png',
@@ -24,7 +28,7 @@ export function Map({ center, locationName = "Daro's Coffee" }: MapProps) {
 
       // Create marker with popup
       const marker = L.marker(center, { icon: customIcon })
-        .addTo(map)
+        .addTo(mapRef.current)
         .bindPopup(`
           <div style="text-align: center;">
             <strong>${locationName}</strong>
@@ -50,14 +54,21 @@ export function Map({ center, locationName = "Daro's Coffee" }: MapProps) {
         openNavigationApp(center[0], center[1], locationName);
       };
 
-      map.on('click', handleMapClick);
+      mapRef.current.on('click', handleMapClick);
       
-      // Cleanup function
-      return () => {
-        map.off('click', handleMapClick);
-        map.remove();
-      };
+      // Fix map rendering after container is properly sized
+      setTimeout(() => {
+        mapRef.current?.invalidateSize();
+      }, 100);
     }
+
+    // Cleanup function
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
   }, [center, locationName]);
 
   // Function to handle opening navigation apps
@@ -74,5 +85,11 @@ export function Map({ center, locationName = "Daro's Coffee" }: MapProps) {
     }
   };
 
-  return <div id="map" className="h-full w-full rounded-xl overflow-hidden" style={{ cursor: 'pointer' }} />;
+  return (
+    <div 
+      ref={mapContainerRef} 
+      className="h-full w-full rounded-xl overflow-hidden" 
+      style={{ cursor: 'pointer' }} 
+    />
+  );
 }
