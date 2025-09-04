@@ -145,19 +145,7 @@ export default function HomePage() {
         onScrollToSection={handleScrollToSection}
       />
 
-      {/* Hero/Top Section */}
-      <section id="top" className="pt-8 pb-12 px-4">
-        <div className="container mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-amber-900 mb-4">
-            {language === "en" ? "Welcome to DARO'S Coffee" : "សូមស្វាគមន៍មកកាន់ DARO'S Coffee"}
-          </h1>
-          <p className="text-lg md:text-xl text-amber-800 max-w-2xl mx-auto">
-            {language === "en" 
-              ? "Experience the finest coffee crafted with passion and expertise"
-              : "សូមភ្លក្សរសជាតិកាហ្វេដ៏ឆ្ងាញ់ពិសារដែលត្រូវបានធ្វើឡើងដោយការខិតខំប្រឹងប្រែងនិងជំនាញ"}
-          </p>
-        </div>
-      </section>
+    
 
       <main>
         <DiscountBanner />
