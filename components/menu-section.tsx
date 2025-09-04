@@ -18,7 +18,7 @@ interface Product {
   description: string
   description_kh: string
   category_description?: string 
-  category_description_kh?: string // ADD this
+  category_description_kh?: string
   options?: Record<string, Array<{ name: string; price: number }>>
   discount?: number
 }
@@ -26,6 +26,7 @@ interface Product {
 interface MenuSectionProps {
   products: Product[]
   onProductClick: (product: Product) => void
+  onAddToCart: (product: Product) => void // ADDED: Direct add to cart function
   language: "en" | "kh"
 }
 
@@ -45,7 +46,7 @@ const categories = [
   { id: "beverages", name: { en: "Beverages", kh: "ភេសជ្ជៈ" } },
 ]
 
-export function MenuSection({ products, onProductClick, language }: MenuSectionProps) {
+export function MenuSection({ products, onProductClick, onAddToCart, language }: MenuSectionProps) {
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
   const [favorites, setFavorites] = useState<Set<number>>(new Set())
@@ -74,7 +75,6 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
     
     loadCategories();
   }, []);
-
 
   // Map Google Sheet categories to your predefined category IDs
   const mapCategoryToId = (categoryName: string): string => {
@@ -191,7 +191,7 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
     });
     
     return dynamicCats;
-  }, [availableCategories, categoriesFromSheet]); // ADD categoriesFromSheet to dependencies
+  }, [availableCategories, categoriesFromSheet]);
 
   // Filter categories to only show those that have products
   const visibleCategories = dynamicCategories.filter(cat => 
@@ -352,11 +352,11 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
                             />
                           </button>
                           
-                          {/* Plus button for better UX */}
+                          {/* Plus button for adding to cart directly */}
                           <button
                             onClick={(e) => {
                               e.stopPropagation()
-                              onProductClick(product)
+                              onAddToCart(product) // CHANGED: Now adds directly to cart
                             }}
                             className="absolute bottom-2 right-2 w-8 h-8 bg-amber-600 hover:bg-amber-700 rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-all"
                           >
@@ -384,7 +384,7 @@ export function MenuSection({ products, onProductClick, language }: MenuSectionP
                           <Button
                             onClick={(e) => {
                               e.stopPropagation()
-                              onProductClick(product)
+                              onAddToCart(product) // CHANGED: Now adds directly to cart
                             }}
                             className={`w-full mt-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-medium py-1.5 rounded transition-colors duration-200 ${language === "kh" ? "font-mono" : "font-sans"}`}
                           >

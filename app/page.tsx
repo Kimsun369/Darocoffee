@@ -25,6 +25,7 @@ interface CartItem {
   id: string
   productId: number
   name: string
+  name_kh: string // ADDED: Khmer name for cart items
   price: number
   quantity: number
   options: Record<string, string>
@@ -44,13 +45,11 @@ export default function HomePage() {
     if (section === "top") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else if (section === "menu") {
-      // Find the menu section and scroll to it
       const menuSection = document.getElementById("menu-section");
       if (menuSection) {
         menuSection.scrollIntoView({ behavior: "smooth" });
       }
     } else if (section === "contact") {
-      // Scroll to footer/contact section
       const footer = document.querySelector("footer");
       if (footer) {
         footer.scrollIntoView({ behavior: "smooth" });
@@ -80,11 +79,9 @@ export default function HomePage() {
     async function loadProducts() {
       setIsLoading(true)
       try {
-        // Use dynamic import for the data file
         const mod = await import("@/data/google-sheet.data")
         const products = await mod.fetchProductsFromGoogleSheet()
         
-        // Debug: Check what categories and images we're getting
         console.log('Loaded products:', products)
         console.log('Categories found:', [...new Set(products.map(p => p.category))])
         console.log('Sample images:', products.slice(0, 3).map(p => ({ name: p.name, image: p.image })))
@@ -103,6 +100,25 @@ export default function HomePage() {
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product)
     setIsProductModalOpen(true)
+  }
+
+  // NEW: Function to handle direct add to cart from menu
+  const handleAddToCartFromMenu = (product: Product) => {
+    const cartItem: CartItem = {
+      id: `${product.id}-${Date.now()}`,
+      productId: product.id,
+      name: product.name,
+      name_kh: product.name_kh, // ADDED: Include Khmer name
+      price: product.price,
+      quantity: 1,
+      options: {}, // Default empty options
+      optionsPricing: {} // Default empty options pricing
+    };
+    
+    setCartItems((prev) => [...prev, cartItem]);
+    
+    // Show a quick notification (you can replace with a proper toast)
+    // alert(`${language === "en" ? "Added to cart" : "បានបន្ថែមទៅកន្ត្រក"}: ${language === "kh" ? product.name_kh : product.name}`);
   }
 
   const handleAddToCart = (item: CartItem) => {
@@ -145,8 +161,6 @@ export default function HomePage() {
         onScrollToSection={handleScrollToSection}
       />
 
-    
-
       <main>
         <DiscountBanner />
 
@@ -170,6 +184,7 @@ export default function HomePage() {
                   : undefined,
               }))}
               onProductClick={handleProductClick}
+              onAddToCart={handleAddToCartFromMenu} // ADDED: New prop for direct add to cart
               language={language}
             />
           ) : (

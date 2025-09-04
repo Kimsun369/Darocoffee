@@ -10,6 +10,7 @@ interface CartItem {
   id: string
   productId: number
   name: string
+  name_kh: string
   price: number
   quantity: number
   options: Record<string, string>
@@ -137,7 +138,7 @@ export function CartSidebar({
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <h4 className={`font-semibold text-gray-900 dark:text-gray-100 ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                          {item.name}
+                          {language === "kh" && item.name_kh ? item.name_kh : item.name}
                         </h4>
                         {Object.keys(item.options).length > 0 && (
                           <p className={`text-sm text-gray-600 dark:text-gray-400 mt-1 bg-amber-50 dark:bg-amber-900/20 rounded-md px-2 py-1 ${language === "kh" ? "font-mono" : "font-sans"}`}>
