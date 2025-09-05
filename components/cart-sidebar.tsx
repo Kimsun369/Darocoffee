@@ -81,13 +81,38 @@ export function CartSidebar({
     })
     const pickupTimeStr = getPickupTimeString()
 
+    // Use Khmer text if language is set to Khmer
+    if (language === "kh") {
+      let message = `☕ ការកម្មង់ពី DARO'S COFFEE 📋\n\n`
+      message += `📅 ${dateStr} | ⏰ ${timeStr}\n`
+      message += `🕐 ពេលយក: ${pickupTimeStr}\n\n`
+      message += `━━━━━━━━━━━━━━━━━━━━\n\n`
+
+      cartItems.forEach((item, index) => {
+        message += `${item.quantity}x ${item.name_kh || item.name}\n`
+        message += `$${(item.price * item.quantity).toFixed(2)} | ₭${(item.price * item.quantity * 4000).toLocaleString()}\n`
+
+        if (Object.keys(item.options).length > 0) {
+          message += `ការជ្រើសរើស: ${formatOptions(item.options)}\n`
+        }
+        message += `\n`
+      })
+
+      message += `━━━━━━━━━━━━━━━━━━━━\n`
+      message += `សរុប: $${totalPrice.toFixed(2)} | ₭${totalPriceKHR.toLocaleString()}\n`
+      message += `ពេលយក: ${pickupOption === "now" ? "ភ្លាមៗ" : pickupOption === "other" ? `${customMinutes} នាទី` : `${pickupOption} នាទី`}\n\n`
+
+      return encodeURIComponent(message)
+    }
+
+    // Default to English
     let message = `☕ DARO'S COFFEE ORDER 📋\n\n`
     message += `📅 ${dateStr} | ⏰ ${timeStr}\n`
     message += `🕐 Pickup: ${pickupTimeStr}\n\n`
     message += `━━━━━━━━━━━━━━━━━━━━\n\n`
 
     cartItems.forEach((item, index) => {
-      message += `${item.quantity}x ${language === "kh" && item.name_kh ? item.name_kh : item.name}\n`
+      message += `${item.quantity}x ${item.name}\n`
       message += `$${(item.price * item.quantity).toFixed(2)} | ₭${(item.price * item.quantity * 4000).toLocaleString()}\n`
 
       if (Object.keys(item.options).length > 0) {
