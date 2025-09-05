@@ -54,7 +54,11 @@ export function CartSidebar({
       minutesToAdd = Number.parseInt(pickupOption, 10)
     }
     const pickupDate = new Date(now.getTime() + minutesToAdd * 60000)
-    return pickupDate.toLocaleTimeString("en-GB", { hour12: false })
+    return pickupDate.toLocaleTimeString("en-GB", { 
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit'
+    })
   }
 
   const formatOptions = (options: Record<string, string>) => {
@@ -65,25 +69,47 @@ export function CartSidebar({
 
   const generateTelegramMessage = () => {
     const now = new Date()
-    const dateStr = now.toLocaleDateString("en-GB")
-    const timeStr = now.toLocaleTimeString("en-GB", { hour12: false })
+    const dateStr = now.toLocaleDateString("en-GB", { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    })
+    const timeStr = now.toLocaleTimeString("en-GB", { 
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit'
+    })
     const pickupTimeStr = getPickupTimeString()
 
-    let message = `Order\nTime: ${dateStr}, ${timeStr}\n\n`
+    let message = `🛒 *ORDER FROM DARO'S COFFEE* ☕\n\n`
+    message += `📅 *Date:* ${dateStr}\n`
+    message += `⏰ *Order Time:* ${timeStr}\n`
+    message += `🕐 *Pickup Time:* ${pickupTimeStr}\n\n`
+    message += `━━━━━━━━━━━━━━━━━━━━\n\n`
 
     cartItems.forEach((item, index) => {
-      message += `Item ${index + 1}: ${item.name}\n`
-      message += `   Amount: ${item.quantity}\n`
+      message += `*${index + 1}. ${language === "kh" && item.name_kh ? item.name_kh : item.name}* \n`
+      message += `   ➕ *Quantity:* ${item.quantity}\n`
+      message += `   💵 *Price:* $${item.price.toFixed(2)} | ₭${(item.price * 4000).toLocaleString()}\n`
 
-      Object.entries(item.options).forEach(([key, value]) => {
-        const formattedKey = key.charAt(0).toUpperCase() + key.slice(1)
-        message += `   ${formattedKey}: ${value}\n`
-      })
-
-      message += `   Pick up time: ${pickupTimeStr}\n\n`
+      if (Object.keys(item.options).length > 0) {
+        message += `   ⚙️ *Options:*\n`
+        Object.entries(item.options).forEach(([key, value]) => {
+          const formattedKey = key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()
+          message += `      • ${formattedKey}: ${value}\n`
+        })
+      }
+      message += `\n`
     })
 
-    message += "Thank you!"
+    message += `━━━━━━━━━━━━━━━━━━━━\n\n`
+    message += `💰 *TOTAL AMOUNT:*\n`
+    message += `   $$ ${totalPrice.toFixed(2)} | ₭ ${totalPriceKHR.toLocaleString()}\n\n`
+    message += `📦 *Pickup Method:* Takeaway\n`
+    message += `⏱️ *Estimated Wait:* ${pickupOption === "now" ? "Immediately" : pickupOption === "other" ? `${customMinutes} minutes` : `${pickupOption} minutes`}\n\n`
+    message += `🙏 *Thank you for your order!* 🌟\n`
+    message += `We'll notify you when your order is ready for pickup!`
 
     return encodeURIComponent(message)
   }
