@@ -64,15 +64,14 @@ export function CartSidebar({
   const formatOptions = (options: Record<string, string>) => {
     return Object.entries(options)
       .map(([key, value]) => `${key}: ${value}`)
-      .join(", ")
+      .join(" • ")
   }
 
   const generateTelegramMessage = () => {
     const now = new Date()
     const dateStr = now.toLocaleDateString("en-GB", { 
-      weekday: 'long', 
       year: 'numeric', 
-      month: 'long', 
+      month: 'short', 
       day: 'numeric' 
     })
     const timeStr = now.toLocaleTimeString("en-GB", { 
@@ -82,34 +81,24 @@ export function CartSidebar({
     })
     const pickupTimeStr = getPickupTimeString()
 
-    let message = `🛒 *ORDER FROM DARO'S COFFEE* ☕\n\n`
-    message += `📅 *Date:* ${dateStr}\n`
-    message += `⏰ *Order Time:* ${timeStr}\n`
-    message += `🕐 *Pickup Time:* ${pickupTimeStr}\n\n`
+    let message = `☕ DARO'S COFFEE ORDER 📋\n\n`
+    message += `📅 ${dateStr} | ⏰ ${timeStr}\n`
+    message += `🕐 Pickup: ${pickupTimeStr}\n\n`
     message += `━━━━━━━━━━━━━━━━━━━━\n\n`
 
     cartItems.forEach((item, index) => {
-      message += `*${index + 1}. ${language === "kh" && item.name_kh ? item.name_kh : item.name}* \n`
-      message += `   ➕ *Quantity:* ${item.quantity}\n`
-      message += `   💵 *Price:* $${item.price.toFixed(2)} | ₭${(item.price * 4000).toLocaleString()}\n`
+      message += `${item.quantity}x ${language === "kh" && item.name_kh ? item.name_kh : item.name}\n`
+      message += `$${(item.price * item.quantity).toFixed(2)} | ₭${(item.price * item.quantity * 4000).toLocaleString()}\n`
 
       if (Object.keys(item.options).length > 0) {
-        message += `   ⚙️ *Options:*\n`
-        Object.entries(item.options).forEach(([key, value]) => {
-          const formattedKey = key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()
-          message += `      • ${formattedKey}: ${value}\n`
-        })
+        message += `Options: ${formatOptions(item.options)}\n`
       }
       message += `\n`
     })
 
-    message += `━━━━━━━━━━━━━━━━━━━━\n\n`
-    message += `💰 *TOTAL AMOUNT:*\n`
-    message += `   $$ ${totalPrice.toFixed(2)} | ₭ ${totalPriceKHR.toLocaleString()}\n\n`
-    message += `📦 *Pickup Method:* Takeaway\n`
-    message += `⏱️ *Estimated Wait:* ${pickupOption === "now" ? "Immediately" : pickupOption === "other" ? `${customMinutes} minutes` : `${pickupOption} minutes`}\n\n`
-    message += `🙏 *Thank you for your order!* 🌟\n`
-    message += `We'll notify you when your order is ready for pickup!`
+    message += `━━━━━━━━━━━━━━━━━━━━\n`
+    message += `TOTAL: $${totalPrice.toFixed(2)} | ₭${totalPriceKHR.toLocaleString()}\n`
+    message += `Pickup: ${pickupOption === "now" ? "ASAP" : pickupOption === "other" ? `${customMinutes} min` : `${pickupOption} min`}\n\n`
 
     return encodeURIComponent(message)
   }
