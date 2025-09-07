@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { ShoppingCart, Menu, X, Coffee, Search, Globe, User, Heart, Truck, RotateCcw } from "lucide-react"
+import { useState, useEffect } from "react"
+import { ShoppingCart, Menu, X, Coffee, Search, Globe, User, Heart, Truck, RotateCcw, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 
@@ -15,6 +15,36 @@ interface HeaderProps {
 
 export function Header({ cartItemCount, onCartClick, language, onLanguageChange, onScrollToSection }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [installPrompt, setInstallPrompt] = useState<any>(null)
+  const [isInstallable, setIsInstallable] = useState(false)
+
+  // Listen for the beforeinstallprompt event
+  useEffect(() => {
+    const handler = (e: any) => {
+      e.preventDefault()
+      setInstallPrompt(e)
+      setIsInstallable(true)
+    }
+
+    window.addEventListener("beforeinstallprompt", handler)
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handler)
+    }
+  }, [])
+
+  // Handle install button click
+  const handleInstallClick = async () => {
+    if (!installPrompt) return
+    
+    installPrompt.prompt()
+    
+    const { outcome } = await installPrompt.userChoice
+    console.log(`User response to the install prompt: ${outcome}`)
+    
+    setInstallPrompt(null)
+    setIsInstallable(false)
+  }
 
   const promotionalItems = [
     {
@@ -108,6 +138,19 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
                 </Button>
               </div>
 
+              {/* Install App button - Only show if app is installable */}
+              {isInstallable && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleInstallClick}
+                  className="hidden sm:flex h-10 w-10 rounded-lg hover:bg-gray-100"
+                  title={language === "en" ? "Install App" : "តំឡើងកម្មវិធី"}
+                >
+                  <Download className="h-5 w-5 text-gray-700" />
+                </Button>
+              )}
+
               {/* User icon */}
               <Button variant="ghost" size="icon" className="hidden sm:flex h-10 w-10 rounded-lg hover:bg-gray-100">
                 <User className="h-5 w-5 text-gray-700" />
@@ -191,6 +234,25 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
                     </a>
                   ))}
                 </nav>
+
+                {/* Install App button in mobile menu */}
+                {isInstallable && (
+                  <div className="mt-6 pt-6 border-t border-gray-200">
+                    <h3
+                      className={`text-sm font-medium text-gray-500 mb-3 ${language === "kh" ? "font-mono" : "font-sans"}`}
+                    >
+                      {language === "en" ? "APP" : "កម្មវិធី"}
+                    </h3>
+                    <Button
+                      variant="ghost"
+                      onClick={handleInstallClick}
+                      className={`w-full justify-start py-3 px-4 text-lg font-medium rounded-lg hover:bg-gray-50 text-gray-900 ${language === "kh" ? "font-mono" : "font-sans"}`}
+                    >
+                      <Download className="h-5 w-5 mr-3 text-gray-700" />
+                      {language === "en" ? "Install App" : "តំឡើងកម្មវិធី"}
+                    </Button>
+                  </div>
+                )}
 
                 {/* Mobile action icons section */}
                 <div className="mt-6 pt-6 border-t border-gray-200">
