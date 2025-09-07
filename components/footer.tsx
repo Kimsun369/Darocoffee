@@ -19,9 +19,9 @@ export function Footer({ language }: FooterProps) {
               <div className="h-10 w-10 md:h-12 md:w-12 rounded-lg bg-amber-600 flex items-center justify-center">
                 <span className="text-white font-bold text-lg md:text-xl">☕</span>
               </div>
-              <span className="font-serif text-2xl md:text-3xl font-bold text-white">Daro's Coffee</span>
+              <span className="font-serif text-2xl md:text-3xl font-bold text-white">Fresthie's Coffee</span>
             </div>
-            <p className="text-gray-300 text-base md:text-lg font-sans">hello@daroscoffee.com</p>
+            <p className="text-gray-300 text-base md:text-lg font-sans">hello@Fresthiescoffee.com</p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-6 md:gap-8 w-full lg:w-auto">
@@ -237,7 +237,7 @@ export function Footer({ language }: FooterProps) {
           <p
             className={`text-gray-400 text-sm text-center order-last md:order-none ${language === "kh" ? "font-mono" : "font-sans"}`}
           >
-            {language === "en" ? "© 2025 Daro's Coffee, All rights reserved" : "© ២០២៥ Daro's Coffee។ រក្សាសិទ្ធិគ្រប់យ៉ាង។"}
+            {language === "en" ? "© 2025 Fresthie's Coffee, All rights reserved" : "© ២០២៥ Fresthie's Coffee។ រក្សាសិទ្ធិគ្រប់យ៉ាង។"}
           </p>
 
           <div className="flex space-x-4 justify-center md:justify-end">

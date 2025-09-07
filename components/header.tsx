@@ -86,7 +86,7 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
                 <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg bg-amber-600 flex items-center justify-center">
                   <Coffee className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
-                <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">DARO'S</h1>
+                <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">Fresthie</h1>
               </a>
             </div>
 
@@ -163,7 +163,7 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
                   <div className="h-8 w-8 rounded-lg bg-amber-600 flex items-center justify-center">
                     <Coffee className="h-4 w-4 text-white" />
                   </div>
-                  <span className="font-serif text-lg font-bold text-gray-900">DARO'S</span>
+                  <span className="font-serif text-lg font-bold text-gray-900">Fresthie</span>
                 </a>
                 <Button
                   variant="ghost"
