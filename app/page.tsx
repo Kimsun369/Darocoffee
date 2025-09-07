@@ -7,6 +7,7 @@ import { MenuSection } from "@/components/menu-section"
 import { ProductModal } from "@/components/product-modal"
 import { CartSidebar } from "@/components/cart-sidebar"
 import { Footer } from "@/components/footer"
+import { InstallPrompt } from "@/components/install-prompt"
 
 interface Product {
   id: number
@@ -226,6 +227,9 @@ export default function HomePage() {
         onCheckout={handleCheckout}
         language={language}
       />
+
+      <InstallPrompt language={language} />
+      
     </div>
   )
 }
