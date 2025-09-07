@@ -83,7 +83,7 @@ export function CartSidebar({
 
     // Use Khmer text if language is set to Khmer
     if (language === "kh") {
-      let message = `☕ ការកម្មង់ពី DARO'S COFFEE 📋\n\n`
+      let message = `☕ ការកម្មង់ពី Fresthie'S COFFEE 📋\n\n`
       message += `📅 ${dateStr} | ⏰ ${timeStr}\n`
       message += `🕐 ពេលយក: ${pickupTimeStr}\n\n`
       message += `━━━━━━━━━━━━━━━━━━━━\n\n`
@@ -106,7 +106,7 @@ export function CartSidebar({
     }
 
     // Default to English
-    let message = `☕ DARO'S COFFEE ORDER 📋\n\n`
+    let message = `☕ Fresthie'S COFFEE ORDER 📋\n\n`
     message += `📅 ${dateStr} | ⏰ ${timeStr}\n`
     message += `🕐 Pickup: ${pickupTimeStr}\n\n`
     message += `━━━━━━━━━━━━━━━━━━━━\n\n`
