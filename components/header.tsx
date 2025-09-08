@@ -353,11 +353,10 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
                       onClick={() => {
                         onLanguageChange("kh")
                         setMobileMenuOpen(false)
-                      }}
-                      className={`w-full justify-start rounded-lg ${
-                        language === "kh"
-                          ? "bg-amber-600 hover:bg-amber-700 text-white"
-                          : "hover:bg-gray-100 text-gray-700"
+                      }} 
+                      className={`w-full justify-start rounded-lg ${ language === "kh" 
+                          ? "bg-amber-600 hover:bg-amber-700 text-white font-mono"
+                          : "hover:bg-gray-100 text-gray-700 font-sans"
                       }`}
                     >
                       🇰🇭 ខ្មែរ
