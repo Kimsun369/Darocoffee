@@ -8,6 +8,7 @@ import { ProductModal } from "@/components/product-modal"
 import { CartSidebar } from "@/components/cart-sidebar"
 import { Footer } from "@/components/footer"
 import { InstallPrompt } from "@/components/install-prompt"
+import { SafariDownloadPrompt } from "@/components/safari-download-prompt"
 
 interface Product {
   id: number
@@ -228,8 +229,12 @@ export default function HomePage() {
         language={language}
       />
 
+      {/* Add Install Prompt */}
       <InstallPrompt language={language} />
       
+      {/* Add Safari Download Prompt */}
+      <SafariDownloadPrompt language={language} />      
+
     </div>
   )
 }
