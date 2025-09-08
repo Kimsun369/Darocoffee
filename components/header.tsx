@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ShoppingCart, Menu, X, Coffee, Search, Globe, User, Heart, Truck, RotateCcw, Download, Smartphone } from "lucide-react"
+import { ShoppingCart, Menu, X, Coffee, Search, Globe, User, Heart, Truck, RotateCcw, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 
@@ -17,17 +17,10 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [installPrompt, setInstallPrompt] = useState<any>(null)
   const [isInstallable, setIsInstallable] = useState(false)
-  const [isSafari, setIsSafari] = useState(false)
-  const [showSafariInstructions, setShowSafariInstructions] = useState(false)
 
   // Detect browser and setup install prompt
   useEffect(() => {
-    // Check if Safari
-    const userAgent = navigator.userAgent;
-    setIsSafari(/^((?!chrome|android).)*safari/i.test(userAgent) || 
-                /iPad|iPhone|iPod/.test(userAgent));
-    
-    // Listen for the beforeinstallprompt event (non-Safari browsers)
+    // Listen for the beforeinstallprompt event
     const handler = (e: any) => {
       e.preventDefault()
       setInstallPrompt(e)
@@ -41,13 +34,8 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
     }
   }, [])
 
-  // Handle install button click for non-Safari browsers
+  // Handle install button click
   const handleInstallClick = async () => {
-    if (isSafari) {
-      setShowSafariInstructions(true);
-      return;
-    }
-    
     if (!installPrompt) return
     
     installPrompt.prompt()
@@ -58,55 +46,6 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
     setInstallPrompt(null)
     setIsInstallable(false)
   }
-
-  // Safari installation instructions modal
-  const SafariInstructionsModal = () => (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-md w-full p-6">
-        <h3 className="font-bold text-lg mb-4">
-          {language === "en" ? "Install Fresthie's Coffee" : "តំឡើង Fresthie's Coffee"}
-        </h3>
-        <div className="space-y-3 mb-6">
-          <div className="flex items-start space-x-3">
-            <div className="bg-amber-100 rounded-full p-2 mt-1">
-              <Smartphone className="h-5 w-5 text-amber-700" />
-            </div>
-            <p className="text-sm">
-              {language === "en" 
-                ? "1. Tap the Share button at the bottom of Safari" 
-                : "1. ចុចប៊ូតុង Share នៅខាងក្រោម Safari"}
-            </p>
-          </div>
-          <div className="flex items-start space-x-3">
-            <div className="bg-amber-100 rounded-full p-2 mt-1">
-              <Download className="h-5 w-5 text-amber-700" />
-            </div>
-            <p className="text-sm">
-              {language === "en" 
-                ? "2. Scroll down and tap 'Add to Home Screen'" 
-                : "2. �រងចុះក្រោម ហើយចុច 'Add to Home Screen'"}
-            </p>
-          </div>
-          <div className="flex items-start space-x-3">
-            <div className="bg-amber-100 rounded-full p-2 mt-1">
-              <Coffee className="h-5 w-5 text-amber-700" />
-            </div>
-            <p className="text-sm">
-              {language === "en" 
-                ? "3. Tap 'Add' in the top right corner" 
-                : "3. ចុច 'Add' នៅជ្រុងខាងលើផ្នែកខាងស្តាំ"}
-            </p>
-          </div>
-        </div>
-        <Button 
-          onClick={() => setShowSafariInstructions(false)}
-          className="w-full bg-amber-600 hover:bg-amber-700"
-        >
-          {language === "en" ? "Got it!" : "យល់ហើយ!"}
-        </Button>
-      </div>
-    </div>
-  );
 
   const promotionalItems = [
     {
@@ -199,18 +138,14 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
                 </Button>
               </div>
 
-              {/* Install App button - Show for all browsers but handle differently */}
-              {(isInstallable || isSafari) && (
+              {/* Install App button */}
+              {isInstallable && (
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={handleInstallClick}
                   className="hidden sm:flex h-10 w-10 rounded-lg hover:bg-gray-100"
-                  title={
-                    isSafari 
-                      ? (language === "en" ? "Install Instructions" : "ការណែនាំអំពីការដំឡើង") 
-                      : (language === "en" ? "Install App" : "តំឡើងកម្មវិធី")
-                  }
+                  title={language === "en" ? "Install App" : "តំឡើងកម្មវិធី"}
                 >
                   <Download className="h-5 w-5 text-gray-700" />
                 </Button>
@@ -254,8 +189,6 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
           </div>
         </div>
       </header>
-
-      {showSafariInstructions && <SafariInstructionsModal />}
 
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
@@ -303,7 +236,7 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
                 </nav>
 
                 {/* Install App button in mobile menu */}
-                {(isInstallable || isSafari) && (
+                {isInstallable && (
                   <div className="mt-6 pt-6 border-t border-gray-200">
                     <h3
                       className={`text-sm font-medium text-gray-500 mb-3 ${language === "kh" ? "font-mono" : "font-sans"}`}
@@ -316,10 +249,7 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
                       className={`w-full justify-start py-3 px-4 text-lg font-medium rounded-lg hover:bg-gray-50 text-gray-900 ${language === "kh" ? "font-mono" : "font-sans"}`}
                     >
                       <Download className="h-5 w-5 mr-3 text-gray-700" />
-                      {isSafari 
-                        ? (language === "en" ? "Install Instructions" : "ការណែនាំអំពីការដំឡើង") 
-                        : (language === "en" ? "Install App" : "តំឡើងកម្មវិធី")
-                      }
+                      {language === "en" ? "Install App" : "តំឡើងកម្មវិធី"}
                     </Button>
                   </div>
                 )}
@@ -364,7 +294,6 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
                   </div>
                 </div>
 
-
                 {/* Mobile action icons section */}
                 <div className="mt-6 pt-6 border-t border-gray-200">
                   <h3
@@ -399,8 +328,6 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
                     </Button>
                   </div>
                 </div>
-
-                
               </div>
             </div>
           </div>
