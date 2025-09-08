@@ -74,8 +74,9 @@ export function SafariDownloadPrompt({ language }: SafariDownloadPromptProps) {
       
       <p className="text-sm text-gray-600 mb-4">
         {language === "en" 
-          ? "For Safari: Tap Share → 'Add to Home Screen' → 'Add' to install our app for quick access to menus and orders." 
-          : "សម្រាប់ Safari: ចុច Share → 'Add to Home Screen' → 'Add' ដើម្បីតំឡើងកម្មវិធីរបស់យើងសម្រាប់ការចូលប្រើម៉ឺនុយ និងការបញ្ជាទិញយ៉ាងរហ័ស។"}
+          ? "Install our app now for more convenient. Access your menu and orders quickly from your home screen." 
+          : "តំឡើងកម្មវិធីឥឡូវនេះដើម្បីភាពងាយស្រួលជាងមុន។ ចូលប្រើម៉ឺនុយ និងការកម្មង់របស់អ្នកយ៉ាងរហ័សពីអេក្រង់ដំបូងរបស់អ្នក។"
+        }
       </p>
 
       <div className="flex gap-2">
@@ -91,7 +92,7 @@ export function SafariDownloadPrompt({ language }: SafariDownloadPromptProps) {
           variant="outline"
           className="border-gray-300"
         >
-          {language === "en" ? "Not Now" : "មិនមែនឥឡូវ"}
+          {language === "en" ? "Not Now" : "មិនទាន់"}
         </Button>
       </div>
     </div>

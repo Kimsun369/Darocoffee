@@ -71,8 +71,8 @@ export function InstallPrompt({ language }: { language: "en" | "kh" }) {
       </div>
       <p className="text-sm text-gray-600 mb-4">
         {language === "en" 
-          ? "Install our app for a better experience. Access your menu and orders quickly from your home screen." 
-          : "តំឡើងកម្មវិធីរបស់យើងសម្រាប់បទពិសោធន៍ដ៏ល្អប្រសើរ។ ចូលប្រើម៉ឺនុយ និងការកម្មង់របស់អ្នកយ៉ាងរហ័សពីអេក្រង់ដំបូងរបស់អ្នក។"
+          ? "Install our app now for more convenient. Access your menu and orders quickly from your home screen." 
+          : "តំឡើងកម្មវិធីឥឡូវនេះដើម្បីភាពងាយស្រួលជាងមុន។ ចូលប្រើម៉ឺនុយ និងការកម្មង់របស់អ្នកយ៉ាងរហ័សពីអេក្រង់ដំបូងរបស់អ្នក។"
         }
       </p>
       <div className="flex gap-2">
@@ -88,7 +88,7 @@ export function InstallPrompt({ language }: { language: "en" | "kh" }) {
           variant="outline"
           className="border-gray-300"
         >
-          {language === "en" ? "Not Now" : "មិនមែនឥឡូវ"}
+          {language === "en" ? "Not Now" : "មិនទាន់"}
         </Button>
       </div>
     </div>
