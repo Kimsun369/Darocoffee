@@ -323,42 +323,7 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
                     </Button>
                   </div>
                 )}
-
-                {/* Mobile action icons section */}
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <h3
-                    className={`text-sm font-medium text-gray-500 mb-3 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                  >
-                    {language === "en" ? "ACTIONS" : "សកម្មភាព"}
-                  </h3>
-                  <div className="space-y-2">
-                    <Button
-                      variant="ghost"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`w-full justify-start py-3 px-4 text-lg font-medium rounded-lg hover:bg-gray-50 text-gray-900 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    >
-                      <Search className="h-5 w-5 mr-3 text-gray-700" />
-                      {language === "en" ? "Search" : "ស្វែងរក"}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`w-full justify-start py-3 px-4 text-lg font-medium rounded-lg hover:bg-gray-50 text-gray-900 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    >
-                      <User className="h-5 w-5 mr-3 text-gray-700" />
-                      {language === "en" ? "Account" : "គណនី"}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`w-full justify-start py-3 px-4 text-lg font-medium rounded-lg hover:bg-gray-50 text-gray-900 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    >
-                      <Heart className="h-5 w-5 mr-3 text-gray-700" />
-                      {language === "en" ? "Favorites" : "ចូលចិត្ត"}
-                    </Button>
-                  </div>
-                </div>
-
+                
                 {/* Language selector */}
                 <div className="mt-6 pt-6 border-t border-gray-200">
                   <h3
@@ -399,6 +364,44 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
                     </Button>
                   </div>
                 </div>
+
+
+                {/* Mobile action icons section */}
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <h3
+                    className={`text-sm font-medium text-gray-500 mb-3 ${language === "kh" ? "font-mono" : "font-sans"}`}
+                  >
+                    {language === "en" ? "ACTIONS" : "សកម្មភាព"}
+                  </h3>
+                  <div className="space-y-2">
+                    <Button
+                      variant="ghost"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`w-full justify-start py-3 px-4 text-lg font-medium rounded-lg hover:bg-gray-50 text-gray-900 ${language === "kh" ? "font-mono" : "font-sans"}`}
+                    >
+                      <Search className="h-5 w-5 mr-3 text-gray-700" />
+                      {language === "en" ? "Search" : "ស្វែងរក"}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`w-full justify-start py-3 px-4 text-lg font-medium rounded-lg hover:bg-gray-50 text-gray-900 ${language === "kh" ? "font-mono" : "font-sans"}`}
+                    >
+                      <User className="h-5 w-5 mr-3 text-gray-700" />
+                      {language === "en" ? "Account" : "គណនី"}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`w-full justify-start py-3 px-4 text-lg font-medium rounded-lg hover:bg-gray-50 text-gray-900 ${language === "kh" ? "font-mono" : "font-sans"}`}
+                    >
+                      <Heart className="h-5 w-5 mr-3 text-gray-700" />
+                      {language === "en" ? "Favorites" : "ចូលចិត្ត"}
+                    </Button>
+                  </div>
+                </div>
+
+                
               </div>
             </div>
           </div>
