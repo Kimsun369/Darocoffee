@@ -125,7 +125,7 @@ function processProductsData(data, categoriesMap) {
     }
     
     // Process options from the new columns - check ALL possible column name formats
-    for (let i = 1; i <= 3; i++) {
+    for (let i = 1; i <= 10; i++) {
     // Try multiple column name formats
       const optionName = item[`Option ${i} - Name`] || item[`Option ${i} Name`] || item[`option${i}_name`] || item[`Option_${i}_Name`] || '';
       const choicesStr = item[`Option ${i} - Choices`] || item[`Option ${i} Choices`] || item[`option${i}_choices`] || item[`Option_${i}_Choices`] || '';
