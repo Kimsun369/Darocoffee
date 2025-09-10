@@ -64,6 +64,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
 
   useEffect(() => {
     if (product && isOpen) {
+      console.log('Product options:', product.options); // Add this line
       const defaults = getDefaultOptions(product)
       setSubItems([
         {

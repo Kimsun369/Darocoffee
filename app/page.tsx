@@ -9,6 +9,7 @@ import { CartSidebar } from "@/components/cart-sidebar"
 import { Footer } from "@/components/footer"
 import { InstallPrompt } from "@/components/install-prompt"
 import { SafariDownloadPrompt } from "@/components/safari-download-prompt"
+import { BottomNavigation } from "@/components/bottom-navigation"
 
 interface Product {
   id: number
@@ -27,7 +28,7 @@ interface CartItem {
   id: string
   productId: number
   name: string
-  name_kh: string // ADDED: Khmer name for cart items
+  name_kh: string
   price: number
   quantity: number
   options: Record<string, string>
@@ -42,8 +43,12 @@ export default function HomePage() {
   const [language, setLanguage] = useState<"en" | "kh">("en")
   const [productsData, setProductsData] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [currentSection, setCurrentSection] = useState("top")
+  const [showInstallPrompt, setShowInstallPrompt] = useState(false)
 
   const handleScrollToSection = (section: string) => {
+    setCurrentSection(section)
+    
     if (section === "top") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else if (section === "menu") {
@@ -56,8 +61,45 @@ export default function HomePage() {
       if (footer) {
         footer.scrollIntoView({ behavior: "smooth" });
       }
+    } else if (section === "favorites") {
+      // For now, just scroll to menu section as favorites isn't implemented
+      const menuSection = document.getElementById("menu-section");
+      if (menuSection) {
+        menuSection.scrollIntoView({ behavior: "smooth" });
+      }
+      alert(language === "en" ? "Favorites feature coming soon!" : "មុខងារចូលចិត្តនឹងមកដល់ឆាប់ៗ!");
+    } else if (section === "account") {
+      // For now, just scroll to footer as account isn't implemented
+      const footer = document.querySelector("footer");
+      if (footer) {
+        footer.scrollIntoView({ behavior: "smooth" });
+      }
+      alert(language === "en" ? "Account feature coming soon!" : "មុខងារគណនីនឹងមកដល់ឆាប់ៗ!");
     }
   };
+
+  const handleInstallPrompt = () => {
+    setShowInstallPrompt(true);
+  }
+  // Track scroll position to update current section
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      const menuSection = document.getElementById("menu-section");
+      const footer = document.querySelector("footer");
+      
+      if (footer && scrollPosition + window.innerHeight >= document.body.scrollHeight - 100) {
+        setCurrentSection("contact");
+      } else if (menuSection && scrollPosition >= menuSection.offsetTop - 100) {
+        setCurrentSection("menu");
+      } else if (scrollPosition < 100) {
+        setCurrentSection("top");
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -104,23 +146,20 @@ export default function HomePage() {
     setIsProductModalOpen(true)
   }
 
-  // NEW: Function to handle direct add to cart from menu
+  // Function to handle direct add to cart from menu
   const handleAddToCartFromMenu = (product: Product) => {
     const cartItem: CartItem = {
       id: `${product.id}-${Date.now()}`,
       productId: product.id,
       name: product.name,
-      name_kh: product.name_kh, // ADDED: Include Khmer name
+      name_kh: product.name_kh,
       price: product.price,
       quantity: 1,
-      options: {}, // Default empty options
-      optionsPricing: {} // Default empty options pricing
+      options: {},
+      optionsPricing: {}
     };
     
     setCartItems((prev) => [...prev, cartItem]);
-    
-    // Show a quick notification (you can replace with a proper toast)
-    // alert(`${language === "en" ? "Added to cart" : "បានបន្ថែមទៅកន្ត្រក"}: ${language === "kh" ? product.name_kh : product.name}`);
   }
 
   const handleAddToCart = (item: CartItem) => {
@@ -154,7 +193,7 @@ export default function HomePage() {
   const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-yellow-50">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-yellow-50 pb-16 lg:pb-0">
       <Header
         cartItemCount={cartItemCount}
         onCartClick={() => setIsCartOpen(true)}
@@ -186,7 +225,7 @@ export default function HomePage() {
                   : undefined,
               }))}
               onProductClick={handleProductClick}
-              onAddToCart={handleAddToCartFromMenu} // ADDED: New prop for direct add to cart
+              onAddToCart={handleAddToCartFromMenu}
               language={language}
             />
           ) : (
@@ -198,7 +237,7 @@ export default function HomePage() {
               <p className="text-amber-700">
                 {language === "en" 
                   ? "Could not load menu from Google Sheet. Please check your Sheet ID, tab name, and publish settings. Try renaming your tab to 'Sheet1' and ensure it is published to the web."
-                  : "មិនអាចទាញយកម៉ឺនុយពី Google Sheet។ សូមពិនិត្យ Sheet ID, ឈ្មោះ tab, និង publish settings។ សូមសាកល្បងប្ដូរឈ្មោះ tab ទៅជា 'Sheet1' និងបង្ហោះទៅ web។"
+                  : "មិនអាចទាញយកម៉ឺនុយពី Google Sheet។ សូមពិនិត្យ Sheet ID, ឈ្មោះ tab, និង publish settings។ �សូមសាកល្បងប្ដូរឈ្មោះ tab ទៅជា 'Sheet1' និងបង្ហោះទៅ web។"
                 }
               </p>
             </div>
@@ -229,12 +268,27 @@ export default function HomePage() {
         language={language}
       />
 
+      {/* Bottom Navigation for Mobile */}
+      
+      {/* <BottomNavigation
+        cartItemCount={cartItemCount}
+        currentSection={currentSection}
+        onNavigate={handleScrollToSection}
+        onCartClick={() => setIsCartOpen(true)}
+        language={language}
+        onLanguageChange={setLanguage}
+        onInstallPrompt={handleInstallPrompt}
+      /> */}
+
       {/* Add Install Prompt */}
-      <InstallPrompt language={language} />
+      <InstallPrompt 
+        language={language} 
+        isOpen={showInstallPrompt}
+        onClose={() => setShowInstallPrompt(false)}
+      />
       
       {/* Add Safari Download Prompt */}
       <SafariDownloadPrompt language={language} />      
-
     </div>
   )
 }
