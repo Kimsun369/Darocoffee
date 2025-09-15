@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Coffee, Globe, Download, Home, Menu, Phone, ShoppingCart } from "lucide-react"
+import { Coffee, Globe, Download, Home, Menu, Phone, ShoppingCart, X} from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface HeaderProps {
@@ -23,6 +23,7 @@ export function Header({
 }: HeaderProps) {
   const [installPrompt, setInstallPrompt] = useState<any>(null)
   const [isInstallable, setIsInstallable] = useState(false)
+  const [showInstallPrompt, setShowInstallPrompt] = useState(false)
 
   useEffect(() => {
     const handler = (e: any) => {
@@ -39,7 +40,11 @@ export function Header({
   }, [])
 
   const handleInstallClick = async () => {
-    if (!installPrompt) return
+    if (!installPrompt) {
+      // If no install prompt available, show the custom prompt
+      setShowInstallPrompt(true)
+      return
+    }
 
     installPrompt.prompt()
 
@@ -48,6 +53,10 @@ export function Header({
 
     setInstallPrompt(null)
     setIsInstallable(false)
+  }
+
+  const handleDismissInstall = () => {
+    setShowInstallPrompt(false)
   }
 
   const promotionalItems = [
@@ -109,21 +118,67 @@ export function Header({
               </Button>
 
               {/* Install App button */}
-              {isInstallable && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleInstallClick}
-                  className="h-9 w-9 rounded-lg hover:bg-gray-100"
-                  title={language === "en" ? "Install App" : "តំឡើងកម្មវិធី"}
-                >
-                  <Download className="h-4 w-4 text-gray-700" />
-                </Button>
-              )}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleInstallClick}
+                className="h-9 w-9 rounded-lg hover:bg-gray-100"
+                title={language === "en" ? "Install App" : "តំឡើងកម្មវិធី"}
+              >
+                <Download className="h-4 w-4 text-gray-700" />
+              </Button>
             </div>
           </div>
         </div>
       </header>
+
+      {/* Custom install prompt */}
+      {showInstallPrompt && (
+        <div className={`fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50 bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm ${language === "kh" ? "font-mono" : "font-sans"}`}>
+          <div className="flex items-start justify-between mb-3">
+            <h3 className="font-semibold text-gray-900">
+              {language === "en" ? "Install Fresthie's Coffee App" : "តំឡើងកម្មវិធី Fresthie's Coffee"}
+            </h3>
+            <button
+              onClick={handleDismissInstall}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <p className="text-sm text-gray-600 mb-4">
+            {language === "en" 
+              ? "Install our app now for more convenient. Access your menu and orders quickly from your home screen." 
+              : "តំឡើងកម្មវិធីឥឡូវនេះសម្រាប់ភាពងាយស្រួល។ ចូលប្រើម៉ឺនុយ និងការកម្មង់របស់អ្នកយ៉ាងរហ័សពីអេក្រង់ដើមរបស់អ្នក។"
+            }
+          </p>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => {
+                // For iOS, we can guide users to use the share menu
+                if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                  alert(language === "en" 
+                    ? "Tap the share button and then 'Add to Home Screen'" 
+                    : "ចុចប៊ូតុងចែករំលែក ហើយបន្ទាប់មក 'Add to Home Screen'"
+                  );
+                }
+                handleDismissInstall();
+              }}
+              className="flex-1 bg-amber-600 hover:bg-amber-700"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              {language === "en" ? "Install" : "តំឡើង"}
+            </Button>
+            <Button
+              onClick={handleDismissInstall}
+              variant="outline"
+              className="border-gray-300"
+            >
+              {language === "en" ? "Not Now" : "មិនមែនឥឡូវ"}
+            </Button>
+          </div>
+        </div>
+      )}
 
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg">
         <div className="grid grid-cols-5 h-16 max-w-lg mx-auto">
@@ -189,7 +244,6 @@ export function Header({
             variant="ghost"
             onClick={handleInstallClick}
             className="flex flex-col items-center justify-center h-full px-2 py-2 rounded-none text-gray-600 hover:text-amber-600 hover:bg-amber-50 transition-all duration-200"
-            disabled={!isInstallable}
           >
             <Download className="h-5 w-5 mb-1" />
             <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
