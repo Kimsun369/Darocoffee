@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Coffee, Globe, Download, Home, Menu, Phone, ShoppingCart, X} from "lucide-react"
+import { Coffee, Globe, Laugh, Download, Home, Menu, Phone, ShoppingCart, X} from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface HeaderProps {
@@ -66,6 +66,10 @@ export function Header({
     },
     {
       icon: <Globe className="h-4 w-4" />,
+      text: language === "en" ? "100% SATISFACTION GUARANTEE" : "ការធានា 100% ពេញចិត្ត",
+    },
+    {
+      icon: <Laugh className="h-4 w-4" />,
       text: language === "en" ? "100% SATISFACTION GUARANTEE" : "ការធានា 100% ពេញចិត្ត",
     },
   ]

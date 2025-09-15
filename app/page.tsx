@@ -268,10 +268,10 @@ export default function HomePage() {
       
 
       {/* Add Install Prompt */}
-      {/* <InstallPrompt language={language} isOpen={showInstallPrompt} onClose={() => setShowInstallPrompt(false)} /> */}
+      <InstallPrompt language={language} isOpen={showInstallPrompt} onClose={() => setShowInstallPrompt(false)} />
 
       {/* Add Safari Download Prompt */}
-      {/* <SafariDownloadPrompt language={language} /> */}
+      <SafariDownloadPrompt language={language} />
     </div>
   )
 }
