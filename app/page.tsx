@@ -197,6 +197,14 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-yellow-50 pb-20">
       <main>
+        <Header
+          cartItemCount={cartItemCount}
+          onCartClick={() => setIsCartOpen(true)}
+          language={language}
+          onLanguageChange={setLanguage}
+          onScrollToSection={handleScrollToSection}
+          currentSection={currentSection}
+        />
         <DiscountBanner />
 
         {/* Menu Section with ID for scrolling */}
@@ -257,14 +265,7 @@ export default function HomePage() {
         language={language}
       />
 
-      <Header
-        cartItemCount={cartItemCount}
-        onCartClick={() => setIsCartOpen(true)}
-        language={language}
-        onLanguageChange={setLanguage}
-        onScrollToSection={handleScrollToSection}
-        currentSection={currentSection}
-      />
+      
 
       {/* Add Install Prompt */}
       <InstallPrompt language={language} isOpen={showInstallPrompt} onClose={() => setShowInstallPrompt(false)} />
