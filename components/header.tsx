@@ -79,11 +79,14 @@ export function Header({
   return (
     <>
       {/* Top promotional banner */}
-      <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white py-2 text-xs">
+      <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white py-2 text-xs overflow-hidden">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-start space-x-6 overflow-x-auto scrollbar-hide">
+          <div className="whitespace-nowrap flex animate-marquee">
             {promotionalItems.map((item, index) => (
-              <div key={index} className="flex items-center space-x-2 whitespace-nowrap">
+              <div
+                key={index}
+                className="flex items-center space-x-2 mx-6"
+              >
                 {item.icon}
                 <span className={`font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
                   {item.text}
@@ -93,6 +96,7 @@ export function Header({
           </div>
         </div>
       </div>
+
 
 
       {/* Simple top header with logo */}
