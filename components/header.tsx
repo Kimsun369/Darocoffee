@@ -68,6 +68,11 @@ export function Header({
       icon: <Laugh  className="h-4 w-4" />,
       text: language === "en" ? "100% SATISFACTION GUARANTEE" : "ការធានា 100% ពេញចិត្ត",
     },
+    {
+      icon: <Globe  className="h-4 w-4" />,
+      text: language === "en" ? "TRUSTWORTHY DELIVERY" : "ការដឹកជញ្ជូន ដែលអាចទុកចិត្តបាន",
+    },
+    
     
   ]
 
