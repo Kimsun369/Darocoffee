@@ -231,7 +231,8 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
   return (
     <section className="py-3 px-3 sm:py-4 sm:px-4 bg-gradient-to-br from-amber-50 to-orange-50 min-h-screen">
       <div className="container mx-auto max-w-7xl">
-        <div className="sticky top-14 sm:top-16 z-40 bg-white/95 backdrop-blur-md border-b border-amber-100 py-3 sm:py-4 mb-4 sm:mb-6 -mx-3 sm:-mx-4 px-3 sm:px-4 shadow-sm">
+        {/* Filter section with sticky positioning */}
+        <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-amber-100 py-3 sm:py-4 mb-4 sm:mb-6 -mx-3 sm:-mx-4 px-3 sm:px-4 shadow-sm">
           <div className="mb-3 sm:mb-4">
             <div className="relative flex gap-0 overflow-x-auto scrollbar-hide pb-2 sm:pb-3 px-1">
               {visibleCategories.map((category, index) => {
