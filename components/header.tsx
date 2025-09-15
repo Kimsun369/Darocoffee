@@ -81,21 +81,47 @@ export function Header({
       {/* Top promotional banner */}
       <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white py-2 text-xs overflow-hidden">
         <div className="container mx-auto px-4">
-          <div className="whitespace-nowrap flex animate-marquee">
-            {promotionalItems.map((item, index) => (
-              <div
-                key={index}
-                className="flex items-center space-x-2 mx-6"
-              >
-                {item.icon}
-                <span className={`font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                  {item.text}
-                </span>
-              </div>
-            ))}
+          <div className="flex whitespace-nowrap">
+            {/* First set */}
+            <div className="flex animate-marquee space-x-6">
+              {promotionalItems.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex items-center space-x-2 mx-6"
+                >
+                  {item.icon}
+                  <span
+                    className={`font-medium ${
+                      language === "kh" ? "font-mono" : "font-sans"
+                    }`}
+                  >
+                    {item.text}
+                  </span>
+                </div>
+              ))}
+            </div>
+            {/* Duplicate set for seamless loop */}
+            <div className="flex animate-marquee space-x-6" aria-hidden="true">
+              {promotionalItems.map((item, index) => (
+                <div
+                  key={`dup-${index}`}
+                  className="flex items-center space-x-2 mx-6"
+                >
+                  {item.icon}
+                  <span
+                    className={`font-medium ${
+                      language === "kh" ? "font-mono" : "font-sans"
+                    }`}
+                  >
+                    {item.text}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
+
 
 
 
