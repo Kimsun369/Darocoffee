@@ -26,7 +26,7 @@ interface Product {
 interface MenuSectionProps {
   products: Product[]
   onProductClick: (product: Product) => void
-  onAddToCart: (product: Product) => void // ADDED: Direct add to cart function
+  onAddToCart: (product: Product) => void
   language: "en" | "kh"
 }
 
@@ -35,15 +35,10 @@ const categories = [
   { id: "all", name: { en: "All", kh: "ទាំងអស់" } },
   { id: "coffee", name: { en: "Coffee", kh: "កាហ្វេ" } },
   { id: "tea", name: { en: "Tea", kh: "តែ" } },
-  { id: "noodles", name: { en: "Noodles", kh: "មី" } },
-  { id: "european-breakfast", name: { en: "European Breakfast", kh: "អាហារពេលព្រឹកអឺរ៉ុប" } },
-  { id: "khmer-breakfast", name: { en: "Khmer Breakfast", kh: "អាហារពេលព្រឹកខ្មែរ" } },
-  { id: "salads", name: { en: "Salads", kh: "សាលាដ" } },
-  { id: "pizza", name: { en: "Pizza", kh: "ភីហ្សា" } },
-  { id: "sandwiches", name: { en: "Sandwiches", kh: "នំបុ័ង" } },
-  { id: "pastries", name: { en: "Pastries", kh: "នំកេក" } },
-  { id: "desserts", name: { en: "Desserts", kh: "បង្អែម" } },
-  { id: "beverages", name: { en: "Beverages", kh: "ភេសជ្ជៈ" } },
+  { id: "dessert", name: { en: "Dessert", kh: "បង្អែម" } },
+  { id: "bakery", name: { en: "Bakery", kh: "នំប៉័ង" } },
+  { id: "rice", name: { en: "Rice", kh: "បាយ" } },
+  { id: "noodle", name: { en: "Noodle", kh: "មី" } },
 ]
 
 export function MenuSection({ products, onProductClick, onAddToCart, language }: MenuSectionProps) {
@@ -82,36 +77,29 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
     
     const categoryMap: Record<string, string> = {
       'coffee': 'coffee',
-      'cafe': 'coffee',
-      'espresso': 'coffee',
       'tea': 'tea',
-      'green tea': 'tea',
-      'black tea': 'tea',
-      'noodles': 'noodles',
-      'noodle': 'noodles',
-      'pasta': 'noodles',
-      'european breakfast': 'european-breakfast',
-      'continental breakfast': 'european-breakfast',
-      'khmer breakfast': 'khmer-breakfast',
-      'cambodian breakfast': 'khmer-breakfast',
-      'salad': 'salads',
-      'salads': 'salads',
-      'pizza': 'pizza',
-      'sandwich': 'sandwiches',
-      'sandwiches': 'sandwiches',
-      'pastry': 'pastries',
-      'pastries': 'pastries',
-      'bakery': 'pastries',
-      'dessert': 'desserts',
-      'desserts': 'desserts',
-      'sweet': 'desserts',
-      'beverage': 'beverages',
-      'beverages': 'beverages',
-      'drink': 'beverages',
-      'drinks': 'beverages'
+      'dessert': 'dessert',
+      'bakery': 'bakery',
+      'rice': 'rice',
+      'noodle': 'noodle',
     };
 
     return categoryMap[lowerCategory] || lowerCategory;
+  };
+
+  // Get image URL for a category - UPDATED to handle your sheet structure
+  const getCategoryImage = (categoryId: string): string => {
+    if (categoryId === "all") return "";
+    
+    // Find the category in the sheet data - match by ID
+    const sheetCategory = categoriesFromSheet.find(
+      cat => mapCategoryToId(cat.Category || cat.category) === categoryId
+    );
+    
+    console.log('Looking for category:', categoryId, 'Found:', sheetCategory);
+    
+    // Use the correct column name from your sheet - "Image URL"
+    return sheetCategory?.['Image URL'] || sheetCategory?.['image url'] || "";
   };
 
   const filteredProducts = useMemo(() => {
@@ -243,35 +231,47 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
       <div className="container mx-auto max-w-7xl">
         {/* Sticky header with filters and search */}
         <div className="sticky top-16 z-40 bg-gray-50 py-3 mb-4">
-          {/* Improved category filter design */}
-          <div className="mb-3">
-            <div className="flex gap-1 overflow-x-auto scrollbar-hide pb-2 px-1">
-              {visibleCategories.map((category) => (
-                <Button
-                  key={category.id}
-                  variant="ghost"
-                  onClick={() => setSelectedCategory(category.id)}
-                  className={`rounded-full text-xs md:text-sm font-medium whitespace-nowrap flex-shrink-0 px-3 py-1 h-auto transition-all duration-200 border ${
-                    selectedCategory === category.id
-                      ? "bg-amber-500 hover:bg-amber-600 text-white border-amber-500 shadow-md"
-                      : "border-amber-200 text-amber-600 bg-white hover:bg-amber-50 hover:border-amber-300 hover:shadow-sm"
-                  } ${language === "kh" ? "font-mono" : "font-sans"}`}
-                >
-                  {category.name[language] || getCategoryDisplayName(category.id)}
-                </Button>
-              ))}
+          {/* Improved category filter design - Larger and more visible */}
+          <div className="mb-4">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-3 px-1">
+              {visibleCategories.map((category) => {
+                const imageUrl = getCategoryImage(category.id);
+                
+                return (
+                  <Button
+                    key={category.id}
+                    variant="ghost"
+                    onClick={() => setSelectedCategory(category.id)}
+                    className={`rounded-xl text-sm md:text-base font-semibold whitespace-nowrap flex-shrink-0 px-4 py-3 h-auto transition-all duration-200 border-2 relative overflow-hidden min-h-[60px] min-w-[100px] ${
+                      selectedCategory === category.id
+                        ? "border-amber-600 text-white shadow-lg"
+                        : "border-amber-200 text-amber-800 bg-white hover:bg-amber-50 hover:border-amber-300 hover:shadow-md"
+                    } ${language === "kh" ? "font-mono" : "font-sans"}`}
+                    style={{
+                      backgroundImage: imageUrl ? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${imageUrl})` : undefined,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    }}
+                  >
+                    {/* Category text with better visibility */}
+                    <span className="relative z-10 drop-shadow-md text-center">
+                      {category.name[language] || getCategoryDisplayName(category.id)}
+                    </span>
+                  </Button>
+                )
+              })}
             </div>
           </div>
 
           {/* Search bar */}
           <div className="w-full px-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
               <Input
                 placeholder={language === "en" ? "Search menus..." : "ស្វែងរកម្ហូបអាហារ..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className={`w-full pl-9 pr-3 py-2 border-gray-200 focus:border-amber-300 focus:ring-amber-200 rounded-lg bg-white focus:bg-white text-sm ${language === "kh" ? "font-mono" : "font-sans"}`}
+                className={`w-full pl-10 pr-4 py-3 border-gray-200 focus:border-amber-300 focus:ring-amber-200 rounded-xl bg-white focus:bg-white text-base ${language === "kh" ? "font-mono" : "font-sans"}`}
               />
             </div>
           </div>
@@ -295,17 +295,17 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
                 <div className="flex items-center justify-between px-2">
                   <div className="flex-1">
                     <h3
-                      className={`font-bold text-xl md:text-2xl text-gray-800 ${
+                      className={`font-bold text-2xl md:text-3xl text-gray-800 ${
                         language === "kh" ? "font-mono" : "font-serif"
                       }`}
                     >
                       {categoryName}
                     </h3>
-                    <div className="w-10 h-0.5 bg-amber-500 rounded-full mt-1"></div>
+                    <div className="w-12 h-1 bg-amber-500 rounded-full mt-1"></div>
                   </div>
                   <div className="text-right">
                     <div
-                      className={`bg-amber-100 text-amber-800 px-2 py-1 rounded text-xs font-medium ${
+                      className={`bg-amber-100 text-amber-800 px-3 py-1.5 rounded-lg text-sm font-medium ${
                         language === "kh" ? "font-mono" : "font-sans"
                       }`}
                     >
@@ -315,11 +315,11 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
                 </div>
 
                 {/* Products grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {displayProducts.map((product) => (
                     <Card
                       key={product.id}
-                      className="group cursor-pointer transition-all duration-200 hover:shadow-md border border-gray-100 bg-white rounded-lg overflow-hidden"
+                      className="group cursor-pointer transition-all duration-200 hover:shadow-lg border border-gray-100 bg-white rounded-xl overflow-hidden"
                       onClick={() => onProductClick(product)}
                     >
                       <CardContent className="p-0">
@@ -345,10 +345,10 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
                           {/* Favorite button */}
                           <button
                             onClick={(e) => toggleFavorite(product.id, e)}
-                            className="absolute top-2 right-2 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-sm hover:shadow-md transition-all"
+                            className="absolute top-2 right-2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:shadow-md transition-all"
                           >
                             <Heart
-                              className={`h-3.5 w-3.5 ${favorites.has(product.id) ? "fill-amber-600 text-amber-600" : "text-gray-400"}`}
+                              className={`h-4 w-4 ${favorites.has(product.id) ? "fill-amber-600 text-amber-600" : "text-gray-400"}`}
                             />
                           </button>
                           
@@ -356,27 +356,27 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
                           <button
                             onClick={(e) => {
                               e.stopPropagation()
-                              onAddToCart(product) // CHANGED: Now adds directly to cart
+                              onAddToCart(product)
                             }}
-                            className="absolute bottom-2 right-2 w-8 h-8 bg-amber-600 hover:bg-amber-700 rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-all"
+                            className="absolute bottom-2 right-2 w-9 h-9 bg-amber-600 hover:bg-amber-700 rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-all"
                           >
                             <Plus className="h-5 w-5 text-white" />
                           </button>
                         </div>
 
-                        <div className="p-3 space-y-1">
+                        <div className="p-3 space-y-2">
                           <h4
-                            className={`font-semibold text-sm text-gray-800 line-clamp-2 leading-tight ${language === "kh" ? "font-mono" : "font-sans"}`}
+                            className={`font-semibold text-base text-gray-800 line-clamp-2 leading-tight ${language === "kh" ? "font-mono" : "font-sans"}`}
                           >
                             {language === "kh" ? product.name_kh : product.name}
                           </h4>
-                          <p className={`text-xs text-gray-600 line-clamp-2 ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                          <p className={`text-sm text-gray-600 line-clamp-2 ${language === "kh" ? "font-mono" : "font-sans"}`}>
                             {language === "kh" ? product.description_kh : product.description}
                           </p>
 
                           <div className="flex items-center gap-1">
-                            <span className="text-base font-bold text-amber-700">${product.price.toFixed(2)}</span>
-                            <span className="text-xs text-amber-600 font-medium">
+                            <span className="text-lg font-bold text-amber-700">${product.price.toFixed(2)}</span>
+                            <span className="text-sm text-amber-600 font-medium">
                               KHR {(product.price * 4000).toLocaleString()}
                             </span>
                           </div>
@@ -384,9 +384,9 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
                           <Button
                             onClick={(e) => {
                               e.stopPropagation()
-                              onAddToCart(product) // CHANGED: Now adds directly to cart
+                              onAddToCart(product)
                             }}
-                            className={`w-full mt-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-medium py-1.5 rounded transition-colors duration-200 ${language === "kh" ? "font-mono" : "font-sans"}`}
+                            className={`w-full mt-2 bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium py-2 rounded-xl transition-colors duration-200 ${language === "kh" ? "font-mono" : "font-sans"}`}
                           >
                             {language === "en" ? "Add to Cart" : "បន្ថែមទៅកន្ត្រក"}
                           </Button>
@@ -402,7 +402,7 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
                     <Button
                       variant="outline"
                       onClick={() => handleSeeMore(categoryId)}
-                      className={`border-amber-300 text-amber-600 hover:bg-amber-50 hover:text-amber-700 rounded-full px-6 py-2 ${
+                      className={`border-amber-300 text-amber-600 hover:bg-amber-50 hover:text-amber-700 rounded-xl px-6 py-3 text-sm ${
                         language === "kh" ? "font-mono" : "font-sans"
                       }`}
                     >
@@ -420,7 +420,7 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
 
         {Object.keys(productsByCategory).length === 0 && (
           <div className="text-center py-12">
-            <div className="bg-white rounded-lg p-6 border border-gray-200 max-w-md mx-auto">
+            <div className="bg-white rounded-xl p-6 border border-gray-200 max-w-md mx-auto">
               <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <Search className="h-6 w-6 text-gray-400" />
               </div>
