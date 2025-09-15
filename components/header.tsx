@@ -1,9 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ShoppingCart, Menu, X, Coffee, Search, Globe, User, Heart, Truck, RotateCcw, Download } from "lucide-react"
+import { Coffee, Globe, Download, Home, Menu, Phone, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 
 interface HeaderProps {
   cartItemCount: number
@@ -11,16 +10,21 @@ interface HeaderProps {
   language: "en" | "kh"
   onLanguageChange: (lang: "en" | "kh") => void
   onScrollToSection: (section: string) => void
+  currentSection?: string
 }
 
-export function Header({ cartItemCount, onCartClick, language, onLanguageChange, onScrollToSection }: HeaderProps) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+export function Header({
+  cartItemCount,
+  onCartClick,
+  language,
+  onLanguageChange,
+  onScrollToSection,
+  currentSection,
+}: HeaderProps) {
   const [installPrompt, setInstallPrompt] = useState<any>(null)
   const [isInstallable, setIsInstallable] = useState(false)
 
-  // Detect browser and setup install prompt
   useEffect(() => {
-    // Listen for the beforeinstallprompt event
     const handler = (e: any) => {
       e.preventDefault()
       setInstallPrompt(e)
@@ -34,51 +38,35 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
     }
   }, [])
 
-  // Handle install button click
   const handleInstallClick = async () => {
     if (!installPrompt) return
-    
+
     installPrompt.prompt()
-    
+
     const { outcome } = await installPrompt.userChoice
     console.log(`User response to the install prompt: ${outcome}`)
-    
+
     setInstallPrompt(null)
     setIsInstallable(false)
   }
 
   const promotionalItems = [
     {
-      icon: <Truck className="h-4 w-4" />,
-      text: language === "en" ? "FREE DELIVERY OVER $20" : "ដឹកជញ្ជូនឥតគិតថ្លៃលើស $20",
-    },
-    {
       icon: <Coffee className="h-4 w-4" />,
       text: language === "en" ? "FRESH ROASTED DAILY" : "អាំងស្រស់ប្រចាំថ្ងៃ",
     },
     {
-      icon: <RotateCcw className="h-4 w-4" />,
+      icon: <Globe className="h-4 w-4" />,
       text: language === "en" ? "100% SATISFACTION GUARANTEE" : "ការធានា 100% ពេញចិត្ត",
     },
   ]
 
-  const mainNavigation = [
-    { name: language === "en" ? "HOME" : "ទំព័រដើម", href: "#top", section: "top" },
-    { name: language === "en" ? "MENU" : "ម៉ឺនុយ", href: "#menu", section: "menu" },
-    { name: language === "en" ? "CONTACT" : "ទំនាក់ទំនង", href: "#contact", section: "contact", special: true },
-  ]
-
-  const handleNavigationClick = (section: string, e: React.MouseEvent) => {
-    e.preventDefault()
-    setMobileMenuOpen(false)
-    onScrollToSection(section)
-  }
-
   return (
     <>
-      <div className="bg-black text-white py-2 text-xs">
+      {/* Top promotional banner */}
+      <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white py-2 text-xs">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between space-x-4 overflow-x-auto">
+          <div className="flex items-center justify-center space-x-6 overflow-x-auto">
             {promotionalItems.map((item, index) => (
               <div key={index} className="flex items-center space-x-2 whitespace-nowrap">
                 {item.icon}
@@ -89,54 +77,36 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
         </div>
       </div>
 
-      <header className="sticky top-0 z-50 w-full bg-[#F5F1E9] border-b border-gray-200 shadow-sm">
+      {/* Simple top header with logo */}
+      <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-100 shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 sm:h-18 items-center justify-between">
-            <nav className="hidden lg:flex items-center space-x-8">
-              {mainNavigation.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={(e) => handleNavigationClick(item.section, e)}
-                  className={`text-sm font-medium transition-colors hover:text-amber-600 cursor-pointer ${
-                    item.special ? "text-red-500 hover:text-red-600" : "text-gray-900"
-                  } ${language === "kh" ? "font-mono" : "font-sans"}`}
-                >
-                  {item.name}
-                </a>
-              ))}
-            </nav>
-
-            <div className="flex items-center space-x-3">
-              <a 
-                href="#top" 
-                onClick={(e) => handleNavigationClick("top", e)}
-                className="flex items-center space-x-3 cursor-pointer"
+          <div className="flex h-14 sm:h-16 items-center justify-between">
+            <div className="flex items-center">
+              <a
+                href="#top"
+                onClick={(e) => {
+                  e.preventDefault()
+                  onScrollToSection("top")
+                }}
+                className="flex items-center space-x-2 cursor-pointer"
               >
-                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg bg-amber-600 flex items-center justify-center">
-                  <Coffee className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg bg-amber-600 flex items-center justify-center">
+                  <Coffee className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                 </div>
-                <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">Fresthie</h1>
+                <h1 className="font-serif text-lg sm:text-xl font-bold text-gray-900">Fresthie</h1>
               </a>
             </div>
 
-            <div className="flex items-center space-x-2 sm:space-x-3">
-              {/* Search icon */}
-              <Button variant="ghost" size="icon" className="hidden sm:flex h-10 w-10 rounded-lg hover:bg-gray-100">
-                <Search className="h-5 w-5 text-gray-700" />
+            <div className="flex items-center space-x-2">
+              {/* Language toggle */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onLanguageChange(language === "en" ? "kh" : "en")}
+                className="h-9 w-9 rounded-lg hover:bg-gray-100"
+              >
+                <Globe className="h-4 w-4 text-gray-700" />
               </Button>
-
-              {/* Language/Globe icon */}
-              <div className="hidden sm:flex">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onLanguageChange(language === "en" ? "kh" : "en")}
-                  className="h-10 w-10 rounded-lg hover:bg-gray-100"
-                >
-                  <Globe className="h-5 w-5 text-gray-700" />
-                </Button>
-              </div>
 
               {/* Install App button */}
               {isInstallable && (
@@ -144,195 +114,109 @@ export function Header({ cartItemCount, onCartClick, language, onLanguageChange,
                   variant="ghost"
                   size="icon"
                   onClick={handleInstallClick}
-                  className="hidden sm:flex h-10 w-10 rounded-lg hover:bg-gray-100"
+                  className="h-9 w-9 rounded-lg hover:bg-gray-100"
                   title={language === "en" ? "Install App" : "តំឡើងកម្មវិធី"}
                 >
-                  <Download className="h-5 w-5 text-gray-700" />
+                  <Download className="h-4 w-4 text-gray-700" />
                 </Button>
               )}
-
-              {/* User icon */}
-              <Button variant="ghost" size="icon" className="hidden sm:flex h-10 w-10 rounded-lg hover:bg-gray-100">
-                <User className="h-5 w-5 text-gray-700" />
-              </Button>
-
-              {/* Heart/Favorites icon */}
-              <Button variant="ghost" size="icon" className="hidden sm:flex h-10 w-10 rounded-lg hover:bg-gray-100">
-                <Heart className="h-5 w-5 text-gray-700" />
-              </Button>
-
-              {/* Cart icon */}
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onCartClick}
-                className="relative h-10 w-10 sm:h-11 sm:w-11 rounded-lg hover:bg-gray-100"
-              >
-                <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6 text-gray-700" />
-                {cartItemCount > 0 && (
-                  <Badge className="absolute -right-2 -top-2 h-5 w-5 sm:h-6 sm:w-6 rounded-full p-0 text-xs font-bold bg-red-500 hover:bg-red-600 border-2 border-white">
-                    {cartItemCount > 99 ? "99+" : cartItemCount}
-                  </Badge>
-                )}
-              </Button>
-
-              {/* Mobile menu button */}
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden h-10 w-10 sm:h-11 sm:w-11 rounded-lg hover:bg-gray-100"
-              >
-                <Menu className="h-5 w-5 sm:h-6 sm:w-6 text-gray-700" />
-              </Button>
             </div>
           </div>
         </div>
       </header>
 
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setMobileMenuOpen(false)} />
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg">
+        <div className="grid grid-cols-5 h-16 max-w-lg mx-auto">
+          {/* Home Button */}
+          <Button
+            variant="ghost"
+            onClick={(e) => {
+              e.preventDefault()
+              onScrollToSection("top")
+            }}
+            className={`flex flex-col items-center justify-center h-full px-2 py-2 rounded-none transition-all duration-200 ${
+              currentSection === "top"
+                ? "bg-amber-50 text-amber-600 border-t-2 border-amber-600"
+                : "text-gray-600 hover:text-amber-600 hover:bg-amber-50"
+            }`}
+          >
+            <Home className="h-5 w-5 mb-1" />
+            <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
+              {language === "en" ? "Home" : "ទំព័រដើម"}
+            </span>
+          </Button>
 
-          <div className="fixed right-0 top-0 h-full w-full max-w-sm bg-white shadow-xl">
-            <div className="flex h-full flex-col">
-              {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                <a 
-                  href="#top" 
-                  className="flex items-center space-x-3 cursor-pointer"
-                  onClick={(e) => handleNavigationClick("top", e)}
-                >
-                  <div className="h-8 w-8 rounded-lg bg-amber-600 flex items-center justify-center">
-                    <Coffee className="h-4 w-4 text-white" />
-                  </div>
-                  <span className="font-serif text-lg font-bold text-gray-900">Fresthie</span>
-                </a>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="h-10 w-10 rounded-lg hover:bg-gray-100"
-                >
-                  <X className="h-5 w-5 text-gray-700" />
-                </Button>
-              </div>
+          {/* Menu Button */}
+          <Button
+            variant="ghost"
+            onClick={(e) => {
+              e.preventDefault()
+              onScrollToSection("menu")
+            }}
+            className={`flex flex-col items-center justify-center h-full px-2 py-2 rounded-none transition-all duration-200 ${
+              currentSection === "menu"
+                ? "bg-amber-50 text-amber-600 border-t-2 border-amber-600"
+                : "text-gray-600 hover:text-amber-600 hover:bg-amber-50"
+            }`}
+          >
+            <Menu className="h-5 w-5 mb-1" />
+            <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
+              {language === "en" ? "Menu" : "ម្ហូប"}
+            </span>
+          </Button>
 
-              {/* Navigation */}
-              <div className="flex-1 overflow-y-auto p-4">
-                <nav className="space-y-2">
-                  {mainNavigation.map((item) => (
-                    <a
-                      key={item.href}
-                      href={item.href}
-                      onClick={(e) => handleNavigationClick(item.section, e)}
-                      className={`block py-3 px-4 text-lg font-medium rounded-lg transition-colors cursor-pointer ${
-                        item.special ? "text-red-500 hover:bg-red-50" : "text-gray-900 hover:bg-gray-50"
-                      } ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    >
-                      {item.name}
-                    </a>
-                  ))}
-                </nav>
+          {/* Contact Button */}
+          <Button
+            variant="ghost"
+            onClick={(e) => {
+              e.preventDefault()
+              onScrollToSection("contact")
+            }}
+            className={`flex flex-col items-center justify-center h-full px-2 py-2 rounded-none transition-all duration-200 ${
+              currentSection === "contact"
+                ? "bg-amber-50 text-amber-600 border-t-2 border-amber-600"
+                : "text-gray-600 hover:text-amber-600 hover:bg-amber-50"
+            }`}
+          >
+            <Phone className="h-5 w-5 mb-1" />
+            <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
+              {language === "en" ? "Contact" : "ទំនាក់ទំនង"}
+            </span>
+          </Button>
 
-                {/* Install App button in mobile menu */}
-                {isInstallable && (
-                  <div className="mt-6 pt-6 border-t border-gray-200">
-                    <h3
-                      className={`text-sm font-medium text-gray-500 mb-3 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    >
-                      {language === "en" ? "APP" : "កម្មវិធី"}
-                    </h3>
-                    <Button
-                      variant="ghost"
-                      onClick={handleInstallClick}
-                      className={`w-full justify-start py-3 px-4 text-lg font-medium rounded-lg hover:bg-gray-50 text-gray-900 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    >
-                      <Download className="h-5 w-5 mr-3 text-gray-700" />
-                      {language === "en" ? "Install App" : "តំឡើងកម្មវិធី"}
-                    </Button>
-                  </div>
-                )}
-                
-                {/* Language selector */}
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <h3
-                    className={`text-sm font-medium text-gray-500 mb-3 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                  >
-                    {language === "en" ? "LANGUAGE" : "ភាសា"}
-                  </h3>
-                  <div className="space-y-2">
-                    <Button
-                      variant={language === "en" ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => {
-                        onLanguageChange("en")
-                        setMobileMenuOpen(false)
-                      }}
-                      className={`w-full justify-start rounded-lg ${
-                        language === "en"
-                          ? "bg-amber-600 hover:bg-amber-700 text-white"
-                          : "hover:bg-gray-100 text-gray-700"
-                      }`}
-                    >
-                      🇬🇧 English
-                    </Button>
-                    <Button
-                      variant={language === "kh" ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => {
-                        onLanguageChange("kh")
-                        setMobileMenuOpen(false)
-                      }} 
-                      className={`w-full justify-start rounded-lg ${ language === "kh" 
-                          ? "bg-amber-600 hover:bg-amber-700 text-white font-mono"
-                          : "hover:bg-gray-100 text-gray-700 font-sans"
-                      }`}
-                    >
-                      🇰🇭 ខ្មែរ
-                    </Button>
-                  </div>
-                </div>
+          {/* Install App button */}
+          <Button
+            variant="ghost"
+            onClick={handleInstallClick}
+            className="flex flex-col items-center justify-center h-full px-2 py-2 rounded-none text-gray-600 hover:text-amber-600 hover:bg-amber-50 transition-all duration-200"
+            disabled={!isInstallable}
+          >
+            <Download className="h-5 w-5 mb-1" />
+            <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
+              {language === "en" ? "Install" : "តំឡើង"}
+            </span>
+          </Button>
 
-                {/* Mobile action icons section */}
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <h3
-                    className={`text-sm font-medium text-gray-500 mb-3 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                  >
-                    {language === "en" ? "ACTIONS" : "សកម្មភាព"}
-                  </h3>
-                  <div className="space-y-2">
-                    <Button
-                      variant="ghost"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`w-full justify-start py-3 px-4 text-lg font-medium rounded-lg hover:bg-gray-50 text-gray-900 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    >
-                      <Search className="h-5 w-5 mr-3 text-gray-700" />
-                      {language === "en" ? "Search" : "ស្វែងរក"}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`w-full justify-start py-3 px-4 text-lg font-medium rounded-lg hover:bg-gray-50 text-gray-900 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    >
-                      <User className="h-5 w-5 mr-3 text-gray-700" />
-                      {language === "en" ? "Account" : "គណនី"}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`w-full justify-start py-3 px-4 text-lg font-medium rounded-lg hover:bg-gray-50 text-gray-900 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    >
-                      <Heart className="h-5 w-5 mr-3 text-gray-700" />
-                      {language === "en" ? "Favorites" : "ចូលចិត្ត"}
-                    </Button>
-                  </div>
-                </div>
-              </div>
+          {/* Cart Button */}
+          <Button
+            variant="ghost"
+            onClick={onCartClick}
+            className="flex flex-col items-center justify-center h-full px-2 py-2 rounded-none text-gray-600 hover:text-amber-600 hover:bg-amber-50 transition-all duration-200 relative"
+          >
+            <div className="relative">
+              <ShoppingCart className="h-5 w-5 mb-1" />
+              {cartItemCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                  {cartItemCount > 99 ? "99+" : cartItemCount}
+                </span>
+              )}
             </div>
-          </div>
+            <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
+              {language === "en" ? "Cart" : "កន្ត្រក"}
+            </span>
+          </Button>
         </div>
-      )}
+      </nav>
     </>
   )
 }

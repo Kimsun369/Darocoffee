@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Header } from "@/components/header"
 import { DiscountBanner } from "@/components/discount-banner"
 import { MenuSection } from "@/components/menu-section"
 import { ProductModal } from "@/components/product-modal"
@@ -9,7 +8,7 @@ import { CartSidebar } from "@/components/cart-sidebar"
 import { Footer } from "@/components/footer"
 import { InstallPrompt } from "@/components/install-prompt"
 import { SafariDownloadPrompt } from "@/components/safari-download-prompt"
-import { BottomNavigation } from "@/components/bottom-navigation"
+import { Header } from "@/components/header"
 
 interface Product {
   id: number
@@ -48,58 +47,58 @@ export default function HomePage() {
 
   const handleScrollToSection = (section: string) => {
     setCurrentSection(section)
-    
+
     if (section === "top") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: "smooth" })
     } else if (section === "menu") {
-      const menuSection = document.getElementById("menu-section");
+      const menuSection = document.getElementById("menu-section")
       if (menuSection) {
-        menuSection.scrollIntoView({ behavior: "smooth" });
+        menuSection.scrollIntoView({ behavior: "smooth" })
       }
     } else if (section === "contact") {
-      const footer = document.querySelector("footer");
+      const footer = document.querySelector("footer")
       if (footer) {
-        footer.scrollIntoView({ behavior: "smooth" });
+        footer.scrollIntoView({ behavior: "smooth" })
       }
     } else if (section === "favorites") {
       // For now, just scroll to menu section as favorites isn't implemented
-      const menuSection = document.getElementById("menu-section");
+      const menuSection = document.getElementById("menu-section")
       if (menuSection) {
-        menuSection.scrollIntoView({ behavior: "smooth" });
+        menuSection.scrollIntoView({ behavior: "smooth" })
       }
-      alert(language === "en" ? "Favorites feature coming soon!" : "មុខងារចូលចិត្តនឹងមកដល់ឆាប់ៗ!");
+      alert(language === "en" ? "Favorites feature coming soon!" : "មុខងារចូលចិត្តនឹងមកដល់ឆាប់ៗ!")
     } else if (section === "account") {
       // For now, just scroll to footer as account isn't implemented
-      const footer = document.querySelector("footer");
+      const footer = document.querySelector("footer")
       if (footer) {
-        footer.scrollIntoView({ behavior: "smooth" });
+        footer.scrollIntoView({ behavior: "smooth" })
       }
-      alert(language === "en" ? "Account feature coming soon!" : "មុខងារគណនីនឹងមកដល់ឆាប់ៗ!");
+      alert(language === "en" ? "Account feature coming soon!" : "មុខងារគណនីនឹងមកដល់ឆាប់ៗ!")
     }
-  };
+  }
 
   const handleInstallPrompt = () => {
-    setShowInstallPrompt(true);
+    setShowInstallPrompt(true)
   }
   // Track scroll position to update current section
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const menuSection = document.getElementById("menu-section");
-      const footer = document.querySelector("footer");
-      
-      if (footer && scrollPosition + window.innerHeight >= document.body.scrollHeight - 100) {
-        setCurrentSection("contact");
-      } else if (menuSection && scrollPosition >= menuSection.offsetTop - 100) {
-        setCurrentSection("menu");
-      } else if (scrollPosition < 100) {
-        setCurrentSection("top");
-      }
-    };
+      const scrollPosition = window.scrollY
+      const menuSection = document.getElementById("menu-section")
+      const footer = document.querySelector("footer")
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+      if (footer && scrollPosition + window.innerHeight >= document.body.scrollHeight - 100) {
+        setCurrentSection("contact")
+      } else if (menuSection && scrollPosition >= menuSection.offsetTop - 100) {
+        setCurrentSection("menu")
+      } else if (scrollPosition < 100) {
+        setCurrentSection("top")
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -125,11 +124,14 @@ export default function HomePage() {
       try {
         const mod = await import("@/data/google-sheet.data")
         const products = await mod.fetchProductsFromGoogleSheet()
-        
-        console.log('Loaded products:', products)
-        console.log('Categories found:', [...new Set(products.map(p => p.category))])
-        console.log('Sample images:', products.slice(0, 3).map(p => ({ name: p.name, image: p.image })))
-        
+
+        console.log("Loaded products:", products)
+        console.log("Categories found:", [...new Set(products.map((p) => p.category))])
+        console.log(
+          "Sample images:",
+          products.slice(0, 3).map((p) => ({ name: p.name, image: p.image })),
+        )
+
         setProductsData(products)
       } catch (error) {
         console.error("Error loading products from Google Sheets:", error)
@@ -156,10 +158,10 @@ export default function HomePage() {
       price: product.price,
       quantity: 1,
       options: {},
-      optionsPricing: {}
-    };
-    
-    setCartItems((prev) => [...prev, cartItem]);
+      optionsPricing: {},
+    }
+
+    setCartItems((prev) => [...prev, cartItem])
   }
 
   const handleAddToCart = (item: CartItem) => {
@@ -193,15 +195,7 @@ export default function HomePage() {
   const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-yellow-50 pb-16 lg:pb-0">
-      <Header
-        cartItemCount={cartItemCount}
-        onCartClick={() => setIsCartOpen(true)}
-        language={language}
-        onLanguageChange={setLanguage}
-        onScrollToSection={handleScrollToSection}
-      />
-
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-yellow-50 pb-20">
       <main>
         <DiscountBanner />
 
@@ -210,18 +204,14 @@ export default function HomePage() {
           {isLoading ? (
             <div className="text-center py-20">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mb-4"></div>
-              <p className="text-amber-800">
-                {language === "en" ? "Loading menu..." : "កំពុងដំណើរការ menu..."}
-              </p>
+              <p className="text-amber-800">{language === "en" ? "Loading menu..." : "កំពុងដំណើរការ menu..."}</p>
             </div>
           ) : productsData.length > 0 ? (
             <MenuSection
               products={productsData.map((product) => ({
                 ...product,
                 options: product.options
-                  ? Object.fromEntries(
-                      Object.entries(product.options).filter(([_, v]) => Array.isArray(v))
-                    )
+                  ? Object.fromEntries(Object.entries(product.options).filter(([_, v]) => Array.isArray(v)))
                   : undefined,
               }))}
               onProductClick={handleProductClick}
@@ -235,10 +225,9 @@ export default function HomePage() {
                 {language === "en" ? "Menu Not Available" : "Menu មិនអាចប្រើបាន"}
               </h3>
               <p className="text-amber-700">
-                {language === "en" 
+                {language === "en"
                   ? "Could not load menu from Google Sheet. Please check your Sheet ID, tab name, and publish settings. Try renaming your tab to 'Sheet1' and ensure it is published to the web."
-                  : "មិនអាចទាញយកម៉ឺនុយពី Google Sheet។ សូមពិនិត្យ Sheet ID, ឈ្មោះ tab, និង publish settings។ �សូមសាកល្បងប្ដូរឈ្មោះ tab ទៅជា 'Sheet1' និងបង្ហោះទៅ web។"
-                }
+                  : "មិនអាចទាញយកម៉ឺនុយពី Google Sheet។ សូមពិនិត្យ Sheet ID, ឈ្មោះ tab, និង publish settings។ សូមសាកល្បងប្ដូរឈ្មោះ tab ទៅជា 'Sheet1' និងបង្ហោះទៅ web។"}
               </p>
             </div>
           )}
@@ -268,27 +257,20 @@ export default function HomePage() {
         language={language}
       />
 
-      {/* Bottom Navigation for Mobile */}
-      
-      {/* <BottomNavigation
+      <Header
         cartItemCount={cartItemCount}
-        currentSection={currentSection}
-        onNavigate={handleScrollToSection}
         onCartClick={() => setIsCartOpen(true)}
         language={language}
         onLanguageChange={setLanguage}
-        onInstallPrompt={handleInstallPrompt}
-      /> */}
+        onScrollToSection={handleScrollToSection}
+        currentSection={currentSection}
+      />
 
       {/* Add Install Prompt */}
-      <InstallPrompt 
-        language={language} 
-        isOpen={showInstallPrompt}
-        onClose={() => setShowInstallPrompt(false)}
-      />
-      
+      <InstallPrompt language={language} isOpen={showInstallPrompt} onClose={() => setShowInstallPrompt(false)} />
+
       {/* Add Safari Download Prompt */}
-      <SafariDownloadPrompt language={language} />      
+      <SafariDownloadPrompt language={language} />
     </div>
   )
 }
