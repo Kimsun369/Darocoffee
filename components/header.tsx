@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Coffee, Globe, Laugh, Download, Home, Menu, Phone, ShoppingCart, X} from "lucide-react"
+import { Coffee, Globe, Laugh , Download, Home, Menu, Phone, ShoppingCart, X} from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface HeaderProps {
@@ -65,7 +65,7 @@ export function Header({
       text: language === "en" ? "FRESH ROASTED DAILY" : "អាំងស្រស់ប្រចាំថ្ងៃ",
     },
     {
-      icon: <Globe className="h-4 w-4" />,
+      icon: <Laugh  className="h-4 w-4" />,
       text: language === "en" ? "100% SATISFACTION GUARANTEE" : "ការធានា 100% ពេញចិត្ត",
     },
     
@@ -76,16 +76,19 @@ export function Header({
       {/* Top promotional banner */}
       <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white py-2 text-xs">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center space-x-6 overflow-x-auto">
+          <div className="flex items-center justify-start space-x-6 overflow-x-auto scrollbar-hide">
             {promotionalItems.map((item, index) => (
               <div key={index} className="flex items-center space-x-2 whitespace-nowrap">
                 {item.icon}
-                <span className={`font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>{item.text}</span>
+                <span className={`font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                  {item.text}
+                </span>
               </div>
             ))}
           </div>
         </div>
       </div>
+
 
       {/* Simple top header with logo */}
       <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-100 shadow-sm">
