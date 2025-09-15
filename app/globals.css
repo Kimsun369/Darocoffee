@@ -137,5 +137,5 @@
 
 .animate-marquee {
   display: inline-flex;
-  animation: marquee 30s linear infinite; /* Adjust 30s for slower/faster */
+  animation: marquee 20s linear infinite; /* Adjust 30s for slower/faster */
 }
