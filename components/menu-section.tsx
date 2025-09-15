@@ -238,7 +238,6 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
               {visibleCategories.map((category, index) => {
                 const imageUrl = getCategoryImage(category.id)
                 const isSelected = selectedCategory === category.id
-                const isEven = index % 2 === 0
 
                 return (
                   <div key={category.id} className="relative flex-shrink-0">
@@ -247,25 +246,26 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
                       onClick={() => setSelectedCategory(category.id)}
                       className={`relative text-xs sm:text-sm font-bold whitespace-nowrap px-4 sm:px-6 py-3 sm:py-4 h-auto transition-all duration-300 border-0 overflow-hidden min-h-[50px] sm:min-h-[60px] min-w-[90px] sm:min-w-[110px] shadow-md hover:shadow-lg ${
                         isSelected
-                          ? "bg-amber-600 text-white shadow-xl scale-105 z-10"
-                          : "bg-white text-amber-800 hover:bg-amber-50 hover:scale-102"
+                          ? "bg-amber-600/80 text-white shadow-xl scale-105 z-10"
+                          : "bg-white/70 text-amber-800 hover:bg-amber-50 hover:scale-102"
                       } ${language === "kh" ? "font-mono" : "font-sans"}`}
                       style={{
-                        clipPath: isEven
-                          ? "polygon(0 0, 85% 0, 100% 100%, 15% 100%)"
-                          : "polygon(15% 0, 100% 0, 85% 100%, 0% 100%)",
+                        // All buttons now have the same parallelogram shape
+                        clipPath: "polygon(15% 0, 100% 0, 85% 100%, 0% 100%)",
                         marginLeft: index === 0 ? "0" : "-15px",
                         ...(imageUrl && isSelected
                           ? {
-                              backgroundImage: `linear-gradient(rgba(245, 158, 11, 0.85), rgba(217, 119, 6, 0.85)), url(${imageUrl})`,
-                              backgroundSize: "cover",
+                              backgroundImage: `linear-gradient(rgba(245, 158, 11, 0.6), rgba(217, 119, 6, 0.6)), url(${imageUrl})`,
+                              backgroundSize: "120%",
                               backgroundPosition: "center",
+                              transition: "all 0.3s ease",
                             }
                           : imageUrl && !isSelected
                             ? {
-                                backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url(${imageUrl})`,
-                                backgroundSize: "cover",
+                                backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url(${imageUrl})`,
+                                backgroundSize: "120%",
                                 backgroundPosition: "center",
+                                transition: "all 0.3s ease",
                               }
                             : undefined),
                       }}
@@ -346,11 +346,11 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
                             </div>
                           )}
 
-                          <div className="w-full h-full flex items-center justify-center">
+                          <div className="w-full h-full flex items-center justify-center overflow-hidden">
                             <img
                               src={product.image || "/placeholder.svg"}
                               alt={product.name}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              className="w-full h-full object-cover scale-110 group-hover:scale-125 transition-transform duration-500"
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement
                                 target.src = "/placeholder.svg"
