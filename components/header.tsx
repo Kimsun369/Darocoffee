@@ -68,10 +68,7 @@ export function Header({
       icon: <Globe className="h-4 w-4" />,
       text: language === "en" ? "100% SATISFACTION GUARANTEE" : "ការធានា 100% ពេញចិត្ត",
     },
-    {
-      icon: <Laugh className="h-4 w-4" />,
-      text: language === "en" ? "100% SATISFACTION GUARANTEE" : "ការធានា 100% ពេញចិត្ត",
-    },
+    
   ]
 
   return (
