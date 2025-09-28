@@ -69,61 +69,82 @@ export function CartSidebar({
 
   const generateTelegramMessage = () => {
     const now = new Date()
-    const dateStr = now.toLocaleDateString("en-GB", { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
-    })
-    const timeStr = now.toLocaleTimeString("en-GB", { 
-      hour12: false,
-      hour: '2-digit',
-      minute: '2-digit'
-    })
+    
+    // Universal date formatting
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const day = String(now.getDate()).padStart(2, '0')
+    const hours = String(now.getHours()).padStart(2, '0')
+    const minutes = String(now.getMinutes()).padStart(2, '0')
+    
+    const dateStr = `${day}/${month}/${year}`
+    const timeStr = `${hours}:${minutes}`
     const pickupTimeStr = getPickupTimeString()
+
+    // BASIC, UNIVERSAL EMOJIS ONLY (tested across platforms)
+    const safeEmojis = {
+      coffee: '☕',
+      calendar: '📅', 
+      clock: '⏰',
+      money: '💵',
+      gear: '⚙️',
+      total: '💰',
+      timer: '⏱️',
+      thanks: '🙏',
+      bullet: '•'
+    }
 
     // Use Khmer text if language is set to Khmer
     if (language === "kh") {
-      let message = `☕ ការកម្មង់ពី Fresthie'S COFFEE 📋\n\n`
-      message += `📅 ${dateStr} | ⏰ ${timeStr}\n`
-      message += `🕐 ពេលយក: ${pickupTimeStr}\n\n`
-      message += `━━━━━━━━━━━━━━━━━━━━\n\n`
+      let message = `${safeEmojis.coffee} ការកម្មង់ពី Fresthie'S COFFEE\n\n`
+      message += `${safeEmojis.calendar} ${dateStr} | ${safeEmojis.clock} ${timeStr}\n`
+      message += `ពេលយក: ${pickupTimeStr}\n\n`
+      message += `==============================\n\n`
 
       cartItems.forEach((item, index) => {
-        message += `${item.quantity}x ${item.name_kh || item.name}\n`
-        message += `$${(item.price * item.quantity).toFixed(2)} | ₭${(item.price * item.quantity * 4000).toLocaleString()}\n`
+        message += `${safeEmojis.bullet} ${item.quantity}x ${item.name_kh || item.name}\n`
+        message += `${safeEmojis.money} $${(item.price * item.quantity).toFixed(2)} | ៛${(item.price * item.quantity * 4000).toLocaleString()}\n`
 
         if (Object.keys(item.options).length > 0) {
-          message += `ការជ្រើសរើស: ${formatOptions(item.options)}\n`
+          const optionsText = Object.entries(item.options)
+            .map(([key, value]) => `${key}: ${value}`)
+            .join(', ')
+          message += `${safeEmojis.gear} ${optionsText}\n`
         }
         message += `\n`
       })
 
-      message += `━━━━━━━━━━━━━━━━━━━━\n`
-      message += `សរុប: $${totalPrice.toFixed(2)} | ₭${totalPriceKHR.toLocaleString()}\n`
-      message += `ពេលយក: ${pickupOption === "now" ? "ភ្លាមៗ" : pickupOption === "other" ? `${customMinutes} នាទី` : `${pickupOption} នាទី`}\n\n`
+      message += `==============================\n`
+      message += `${safeEmojis.total} សរុប: $${totalPrice.toFixed(2)} | ៛${totalPriceKHR.toLocaleString()}\n`
+      message += `${safeEmojis.timer} ពេលយក: ${pickupOption === "now" ? "ភ្លាមៗ" : pickupOption === "other" ? `${customMinutes} នាទី` : `${pickupOption} នាទី`}\n\n`
+      message += `${safeEmojis.thanks} សូមអរគុណ!`
 
       return encodeURIComponent(message)
     }
 
-    // Default to English
-    let message = `☕ Fresthie'S COFFEE ORDER 📋\n\n`
-    message += `📅 ${dateStr} | ⏰ ${timeStr}\n`
-    message += `🕐 Pickup: ${pickupTimeStr}\n\n`
-    message += `━━━━━━━━━━━━━━━━━━━━\n\n`
+    // Default to English - MAXIMUM COMPATIBILITY
+    let message = `${safeEmojis.coffee} FRESTHIE'S COFFEE ORDER\n\n`
+    message += `${safeEmojis.calendar} ${dateStr} | ${safeEmojis.clock} ${timeStr}\n`
+    message += `Pickup: ${pickupTimeStr}\n\n`
+    message += `==============================\n\n`
 
     cartItems.forEach((item, index) => {
-      message += `${item.quantity}x ${item.name}\n`
-      message += `$${(item.price * item.quantity).toFixed(2)} | ₭${(item.price * item.quantity * 4000).toLocaleString()}\n`
+      message += `${safeEmojis.bullet} ${item.quantity}x ${item.name}\n`
+      message += `${safeEmojis.money} $${(item.price * item.quantity).toFixed(2)} | ៛${(item.price * item.quantity * 4000).toLocaleString()}\n`
 
       if (Object.keys(item.options).length > 0) {
-        message += `Options: ${formatOptions(item.options)}\n`
+        const optionsText = Object.entries(item.options)
+          .map(([key, value]) => `${key}: ${value}`)
+          .join(', ')
+        message += `${safeEmojis.gear} ${optionsText}\n`
       }
       message += `\n`
     })
 
-    message += `━━━━━━━━━━━━━━━━━━━━\n`
-    message += `TOTAL: $${totalPrice.toFixed(2)} | ₭${totalPriceKHR.toLocaleString()}\n`
-    message += `Pickup: ${pickupOption === "now" ? "ASAP" : pickupOption === "other" ? `${customMinutes} min` : `${pickupOption} min`}\n\n`
+    message += `==============================\n`
+    message += `${safeEmojis.total} TOTAL: $${totalPrice.toFixed(2)} | ៛${totalPriceKHR.toLocaleString()}\n`
+    message += `${safeEmojis.timer} Pickup: ${pickupOption === "now" ? "ASAP" : pickupOption === "other" ? `${customMinutes} min` : `${pickupOption} min`}\n\n`
+    message += `${safeEmojis.thanks} Thank you!`
 
     return encodeURIComponent(message)
   }
