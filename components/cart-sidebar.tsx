@@ -69,8 +69,6 @@ export function CartSidebar({
 
   const generateTelegramMessage = () => {
     const now = new Date()
-    
-    // Universal date formatting
     const year = now.getFullYear()
     const month = String(now.getMonth() + 1).padStart(2, '0')
     const day = String(now.getDate()).padStart(2, '0')
@@ -81,67 +79,74 @@ export function CartSidebar({
     const timeStr = `${hours}:${minutes}`
     const pickupTimeStr = getPickupTimeString()
 
-    // ULTRA-SAFE VERSION - TEXT ONLY, NO EMOJIS
+    // 100% TEXT-ONLY VERSION - NO SPECIAL CHARACTERS
     if (language === "kh") {
-      let message = `ការកម្មង់ពី Fresthie'S COFFEE\n\n`
-      message += `📅 ${dateStr} | 🕒 ${timeStr}\n`
-      message += `ពេលយក: ${pickupTimeStr}\n\n`
-      message += `----------------------------\n\n`
+      let message = "FRESTHIE'S COFFEE ORDER\n\n"
+      message += "Date: " + dateStr + " | Time: " + timeStr + "\n"
+      message += "Pickup: " + pickupTimeStr + "\n\n"
+      message += "----------------------------\n\n"
 
       cartItems.forEach((item, index) => {
-        message += `• ${item.quantity}x ${item.name_kh || item.name}\n`
-        message += `$${(item.price * item.quantity).toFixed(2)} | ៛${(item.price * item.quantity * 4000).toLocaleString()}\n`
+        message += "- " + item.quantity + "x " + (item.name_kh || item.name) + "\n"
+        message += "$" + (item.price * item.quantity).toFixed(2) + " | R " + (item.price * item.quantity * 4000).toLocaleString() + "\n"
 
         if (Object.keys(item.options).length > 0) {
           const optionsText = Object.entries(item.options)
-            .map(([key, value]) => `${key}: ${value}`)
-            .join(', ')
-          message += `Options: ${optionsText}\n`
+            .map(([key, value]) => key + ": " + value)
+            .join(", ")
+          message += "Options: " + optionsText + "\n"
         }
-        message += `\n`
+        message += "\n"
       })
 
-      message += `----------------------------\n`
-      message += `សរុប: $${totalPrice.toFixed(2)} | ៛${totalPriceKHR.toLocaleString()}\n`
-      message += `ពេលយក: ${pickupOption === "now" ? "ភ្លាមៗ" : pickupOption === "other" ? `${customMinutes} នាទី` : `${pickupOption} នាទី`}\n\n`
-      message += `សូមអរគុណ!`
+      message += "----------------------------\n"
+      message += "TOTAL: $" + totalPrice.toFixed(2) + " | R " + totalPriceKHR.toLocaleString() + "\n"
+      message += "Pickup: " + (pickupOption === "now" ? "ASAP" : pickupOption === "other" ? customMinutes + " min" : pickupOption + " min") + "\n\n"
+      message += "Thank you!"
 
-      return encodeURIComponent(message)
+      return message
     }
 
-    // ENGLISH VERSION - MINIMAL EMOJIS, MAX COMPATIBILITY
-    let message = `FRESTHIE'S COFFEE ORDER\n\n`
-    message += `Date: ${dateStr} | Time: ${timeStr}\n`
-    message += `Pickup: ${pickupTimeStr}\n\n`
-    message += `----------------------------\n\n`
+    // English version - 100% basic ASCII
+    let message = "FRESTHIE'S COFFEE ORDER\n\n"
+    message += "Date: " + dateStr + " | Time: " + timeStr + "\n"
+    message += "Pickup: " + pickupTimeStr + "\n\n"
+    message += "----------------------------\n\n"
 
     cartItems.forEach((item, index) => {
-      message += `• ${item.quantity}x ${item.name}\n`
-      message += `$${(item.price * item.quantity).toFixed(2)} | R ${(item.price * item.quantity * 4000).toLocaleString()}\n`
+      message += "- " + item.quantity + "x " + item.name + "\n"
+      message += "$" + (item.price * item.quantity).toFixed(2) + " | R " + (item.price * item.quantity * 4000).toLocaleString() + "\n"
 
       if (Object.keys(item.options).length > 0) {
         const optionsText = Object.entries(item.options)
-          .map(([key, value]) => `${key}: ${value}`)
-          .join(', ')
-        message += `Options: ${optionsText}\n`
+          .map(([key, value]) => key + ": " + value)
+          .join(", ")
+        message += "Options: " + optionsText + "\n"
       }
-      message += `\n`
+      message += "\n"
     })
 
-    message += `----------------------------\n`
-    message += `TOTAL: $${totalPrice.toFixed(2)} | R ${totalPriceKHR.toLocaleString()}\n`
-    message += `Pickup: ${pickupOption === "now" ? "ASAP" : pickupOption === "other" ? `${customMinutes} min` : `${pickupOption} min`}\n\n`
-    message += `Thank you!`
+    message += "----------------------------\n"
+    message += "TOTAL: $" + totalPrice.toFixed(2) + " | R " + totalPriceKHR.toLocaleString() + "\n"
+    message += "Pickup: " + (pickupOption === "now" ? "ASAP" : pickupOption === "other" ? customMinutes + " min" : pickupOption + " min") + "\n\n"
+    message += "Thank you!"
 
-    return encodeURIComponent(message)
+    return message
   }
 
   const handleTelegramOrder = () => {
     const message = generateTelegramMessage()
-    const telegramUrl = `https://t.me/Hen_Chandaro?text=${message}`
+    // Use encodeURIComponent but with basic text that won't cause issues
+    const encodedMessage = encodeURIComponent(message)
+    const telegramUrl = `https://t.me/Hen_Chandaro?text=${encodedMessage}`
+    
+    console.log("Final URL:", telegramUrl) // Debug log
+    
     window.open(telegramUrl, "_blank")
     onCheckout()
   }
+
+  
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
