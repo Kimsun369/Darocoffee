@@ -81,70 +81,57 @@ export function CartSidebar({
     const timeStr = `${hours}:${minutes}`
     const pickupTimeStr = getPickupTimeString()
 
-    // BASIC, UNIVERSAL EMOJIS ONLY (tested across platforms)
-    const safeEmojis = {
-      coffee: '☕',
-      calendar: '📅', 
-      clock: '⏰',
-      money: '💵',
-      gear: '⚙️',
-      total: '💰',
-      timer: '⏱️',
-      thanks: '🙏',
-      bullet: '•'
-    }
-
-    // Use Khmer text if language is set to Khmer
+    // ULTRA-SAFE VERSION - TEXT ONLY, NO EMOJIS
     if (language === "kh") {
-      let message = `${safeEmojis.coffee} ការកម្មង់ពី Fresthie'S COFFEE\n\n`
-      message += `${safeEmojis.calendar} ${dateStr} | ${safeEmojis.clock} ${timeStr}\n`
+      let message = `ការកម្មង់ពី Fresthie'S COFFEE\n\n`
+      message += `📅 ${dateStr} | 🕒 ${timeStr}\n`
       message += `ពេលយក: ${pickupTimeStr}\n\n`
-      message += `==============================\n\n`
+      message += `----------------------------\n\n`
 
       cartItems.forEach((item, index) => {
-        message += `${safeEmojis.bullet} ${item.quantity}x ${item.name_kh || item.name}\n`
-        message += `${safeEmojis.money} $${(item.price * item.quantity).toFixed(2)} | ៛${(item.price * item.quantity * 4000).toLocaleString()}\n`
+        message += `• ${item.quantity}x ${item.name_kh || item.name}\n`
+        message += `$${(item.price * item.quantity).toFixed(2)} | ៛${(item.price * item.quantity * 4000).toLocaleString()}\n`
 
         if (Object.keys(item.options).length > 0) {
           const optionsText = Object.entries(item.options)
             .map(([key, value]) => `${key}: ${value}`)
             .join(', ')
-          message += `${safeEmojis.gear} ${optionsText}\n`
+          message += `Options: ${optionsText}\n`
         }
         message += `\n`
       })
 
-      message += `==============================\n`
-      message += `${safeEmojis.total} សរុប: $${totalPrice.toFixed(2)} | ៛${totalPriceKHR.toLocaleString()}\n`
-      message += `${safeEmojis.timer} ពេលយក: ${pickupOption === "now" ? "ភ្លាមៗ" : pickupOption === "other" ? `${customMinutes} នាទី` : `${pickupOption} នាទី`}\n\n`
-      message += `${safeEmojis.thanks} សូមអរគុណ!`
+      message += `----------------------------\n`
+      message += `សរុប: $${totalPrice.toFixed(2)} | ៛${totalPriceKHR.toLocaleString()}\n`
+      message += `ពេលយក: ${pickupOption === "now" ? "ភ្លាមៗ" : pickupOption === "other" ? `${customMinutes} នាទី` : `${pickupOption} នាទី`}\n\n`
+      message += `សូមអរគុណ!`
 
       return encodeURIComponent(message)
     }
 
-    // Default to English - MAXIMUM COMPATIBILITY
-    let message = `${safeEmojis.coffee} FRESTHIE'S COFFEE ORDER\n\n`
-    message += `${safeEmojis.calendar} ${dateStr} | ${safeEmojis.clock} ${timeStr}\n`
+    // ENGLISH VERSION - MINIMAL EMOJIS, MAX COMPATIBILITY
+    let message = `FRESTHIE'S COFFEE ORDER\n\n`
+    message += `Date: ${dateStr} | Time: ${timeStr}\n`
     message += `Pickup: ${pickupTimeStr}\n\n`
-    message += `==============================\n\n`
+    message += `----------------------------\n\n`
 
     cartItems.forEach((item, index) => {
-      message += `${safeEmojis.bullet} ${item.quantity}x ${item.name}\n`
-      message += `${safeEmojis.money} $${(item.price * item.quantity).toFixed(2)} | ៛${(item.price * item.quantity * 4000).toLocaleString()}\n`
+      message += `• ${item.quantity}x ${item.name}\n`
+      message += `$${(item.price * item.quantity).toFixed(2)} | R ${(item.price * item.quantity * 4000).toLocaleString()}\n`
 
       if (Object.keys(item.options).length > 0) {
         const optionsText = Object.entries(item.options)
           .map(([key, value]) => `${key}: ${value}`)
           .join(', ')
-        message += `${safeEmojis.gear} ${optionsText}\n`
+        message += `Options: ${optionsText}\n`
       }
       message += `\n`
     })
 
-    message += `==============================\n`
-    message += `${safeEmojis.total} TOTAL: $${totalPrice.toFixed(2)} | ៛${totalPriceKHR.toLocaleString()}\n`
-    message += `${safeEmojis.timer} Pickup: ${pickupOption === "now" ? "ASAP" : pickupOption === "other" ? `${customMinutes} min` : `${pickupOption} min`}\n\n`
-    message += `${safeEmojis.thanks} Thank you!`
+    message += `----------------------------\n`
+    message += `TOTAL: $${totalPrice.toFixed(2)} | R ${totalPriceKHR.toLocaleString()}\n`
+    message += `Pickup: ${pickupOption === "now" ? "ASAP" : pickupOption === "other" ? `${customMinutes} min` : `${pickupOption} min`}\n\n`
+    message += `Thank you!`
 
     return encodeURIComponent(message)
   }
