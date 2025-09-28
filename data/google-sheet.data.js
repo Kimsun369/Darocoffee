@@ -27,6 +27,73 @@ async function fetchProductsFromGoogleSheet() {
   }
 }
 
+// NEW FUNCTION: Fetch discount data from Discount sheet
+async function fetchDiscountsFromGoogleSheet() {
+  try {
+    const SHEET_ID = '1IxeuobNv6Qk7-EbGn4qzTxT4xRwoMqH_1hT2-pRSpPU';
+    const SHEET_NAME = 'Discount';
+    
+    const discountData = await fetchSheetData(SHEET_ID, SHEET_NAME);
+    const processedDiscounts = processDiscountsData(discountData);
+    
+    console.log('Processed discounts:', processedDiscounts);
+    return processedDiscounts;
+  } catch (error) {
+    console.error('Error fetching discounts from Google Sheets:', error);
+    return [];
+  }
+}
+
+// NEW FUNCTION: Process discount data
+function processDiscountsData(discountData) {
+  if (!discountData || discountData.length === 0) {
+    console.log('No discount data found');
+    return [];
+  }
+  
+  console.log('Raw discount data from Google Sheets:', discountData);
+  
+  const discounts = [];
+  
+  discountData.forEach((item, index) => {
+    console.log('Processing discount row:', item);
+    
+    // Handle various column name formats
+    const discountId = item['Discount ID'] || item.discount_id || item.id || (index + 1);
+    const discountName = item['Discount Name'] || item.discount_name || item.name || '';
+    const duplicateCheck = item['Duplicate Check'] || item.duplicate_check || item.status || '';
+    const discountPercent = parseFloat(item['Discount %'] || item.discount_percent || item.percent || 0);
+    const price = parseFloat(item.Price || item.price || item.discount_price || 0);
+    const isActive = (item['Is Active'] || item.is_active || item.active || '').toLowerCase() === 'active';
+    const productName = item['Product Name'] || item.product_name || item.product || '';
+    
+    // Only add discount if it has basic required information
+    if (discountName || productName) {
+      const discount = {
+        id: discountId,
+        discountName: discountName,
+        productName: productName,
+        duplicateCheck: duplicateCheck,
+        discountPercent: discountPercent,
+        originalPrice: price,
+        isActive: isActive,
+        calculatedPrice: duplicateCheck === 'DUPLICATE' ? 'DUPLICATE' : price - (price * (discountPercent / 100))
+      };
+      
+      discounts.push(discount);
+      console.log('Added discount:', discount);
+    }
+  });
+  
+  // Filter out empty rows and sort by discount ID
+  const filteredDiscounts = discounts.filter(discount => 
+    discount.discountName || discount.productName
+  ).sort((a, b) => a.id - b.id);
+  
+  console.log('Final processed discounts:', filteredDiscounts);
+  return filteredDiscounts;
+}
+
 // Helper function to fetch data from any sheet
 async function fetchSheetData(sheetId, sheetName) {
   try {
@@ -126,7 +193,7 @@ function processProductsData(data, categoriesMap) {
     
     // Process options from the new columns - check ALL possible column name formats
     for (let i = 1; i <= 10; i++) {
-    // Try multiple column name formats
+      // Try multiple column name formats
       const optionName = item[`Option ${i} - Name`] || item[`Option ${i} Name`] || item[`option${i}_name`] || item[`Option_${i}_Name`] || '';
       const choicesStr = item[`Option ${i} - Choices`] || item[`Option ${i} Choices`] || item[`option${i}_choices`] || item[`Option_${i}_Choices`] || '';
       const pricesStr = item[`Option ${i} - Prices`] || item[`Option ${i} Prices`] || item[`option${i}_prices`] || item[`Option_${i}_Prices`] || '';
@@ -165,8 +232,6 @@ function processProductsData(data, categoriesMap) {
         }
       }
     }
-
-
   });
   
   const result = Object.values(productsMap).sort((a, b) => a.displayOrder - b.displayOrder);
@@ -175,5 +240,7 @@ function processProductsData(data, categoriesMap) {
 }
 
 module.exports = {
-  fetchProductsFromGoogleSheet
+  fetchProductsFromGoogleSheet,
+  fetchDiscountsFromGoogleSheet, // NEW EXPORT
+  processDiscountsData // NEW EXPORT (for testing)
 };

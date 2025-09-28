@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState, useMemo, useEffect } from "react"
-import { Search, Heart, Plus, ChevronRight } from "lucide-react"
+import { Search, Heart, Plus, ChevronRight, Tag } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
@@ -21,6 +21,19 @@ interface Product {
   category_description_kh?: string
   options?: Record<string, Array<{ name: string; price: number }>>
   discount?: number
+  originalPrice?: number
+  isDiscounted?: boolean
+}
+
+interface Discount {
+  id: string | number
+  discountName: string
+  productName: string
+  duplicateCheck: string
+  discountPercent: number
+  originalPrice: number
+  isActive: boolean
+  calculatedPrice: number | string
 }
 
 interface MenuSectionProps {
@@ -46,8 +59,10 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
   const [searchQuery, setSearchQuery] = useState("")
   const [favorites, setFavorites] = useState<Set<number>>(new Set())
   const [categoriesFromSheet, setCategoriesFromSheet] = useState<any[]>([])
+  const [discounts, setDiscounts] = useState<Discount[]>([])
+  const [discountsLoading, setDiscountsLoading] = useState(true)
 
-  // this useEffect to load categories from Google Sheets
+  // Load categories from Google Sheets
   useEffect(() => {
     async function loadCategories() {
       try {
@@ -71,6 +86,25 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
     loadCategories()
   }, [])
 
+  // Load discounts from Google Sheets
+  useEffect(() => {
+    async function loadDiscounts() {
+      try {
+        // Import the discount function from our data file
+        const mod = await import("@/data/google-sheet.data")
+        const discountData = await mod.fetchDiscountsFromGoogleSheet()
+        setDiscounts(discountData)
+        console.log("Discounts loaded:", discountData)
+      } catch (error) {
+        console.error("Error loading discounts:", error)
+      } finally {
+        setDiscountsLoading(false)
+      }
+    }
+
+    loadDiscounts()
+  }, [])
+
   // Map Google Sheet categories to your predefined category IDs
   const mapCategoryToId = (categoryName: string): string => {
     const lowerCategory = categoryName.toLowerCase().trim()
@@ -87,23 +121,76 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
     return categoryMap[lowerCategory] || lowerCategory
   }
 
-  // Get image URL for a category - UPDATED to handle your sheet structure
+  // Get image URL for a category
   const getCategoryImage = (categoryId: string): string => {
     if (categoryId === "all") return ""
 
-    // Find the category in the sheet data - match by ID
     const sheetCategory = categoriesFromSheet.find(
       (cat) => mapCategoryToId(cat.Category || cat.category) === categoryId,
     )
 
     console.log("Looking for category:", categoryId, "Found:", sheetCategory)
 
-    // Use the correct column name from your sheet - "Image URL"
     return sheetCategory?.["Image URL"] || sheetCategory?.["image url"] || ""
   }
 
+  // Enhance products with discount information
+  const productsWithDiscounts = useMemo(() => {
+    if (!discounts.length) return products
+
+    return products.map(product => {
+      // Find active discounts for this product - IMPROVED MATCHING LOGIC
+      const productDiscounts = discounts.filter(discount => {
+        if (!discount.isActive) return false
+        
+        // Clean and compare product names (case insensitive, trim whitespace)
+        const discountProductName = discount.productName?.toLowerCase().trim() || ''
+        const productName = product.name.toLowerCase().trim()
+        
+        // Debug logging
+        console.log('Discount matching:', {
+          productName: product.name,
+          discountProductName: discount.productName,
+          matches: productName === discountProductName,
+          productNameLower: productName,
+          discountProductNameLower: discountProductName
+        })
+        
+        // Also check if product name contains discount product name or vice versa
+        return productName === discountProductName || 
+              productName.includes(discountProductName) ||
+              discountProductName.includes(productName)
+      })
+
+      if (productDiscounts.length > 0) {
+        console.log('FOUND DISCOUNT for product:', product.name, 'Discount:', productDiscounts[0])
+        // Take the first active discount
+        const discount = productDiscounts[0]
+        
+        // Calculate discounted price safely
+        const discountPercent = discount.discountPercent || 0
+        const originalPrice = discount.originalPrice > 0 ? discount.originalPrice : product.price
+        const discountedPrice = originalPrice - (originalPrice * (discountPercent / 100))
+
+        return {
+          ...product,
+          originalPrice: originalPrice,
+          price: discountedPrice,
+          discount: discountPercent,
+          isDiscounted: true
+        }
+      } else {
+        console.log('NO DISCOUNT for product:', product.name)
+      }
+
+      return product
+    })
+  }, [products, discounts])
+
+
+
   const filteredProducts = useMemo(() => {
-    let filtered = products
+    let filtered = productsWithDiscounts
 
     if (searchQuery) {
       filtered = filtered.filter(
@@ -120,7 +207,7 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
     }
 
     return filtered
-  }, [products, searchQuery, selectedCategory])
+  }, [productsWithDiscounts, searchQuery, selectedCategory])
 
   const productsByCategory = useMemo(() => {
     const grouped: Record<string, Product[]> = {}
@@ -142,24 +229,22 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
     return grouped
   }, [filteredProducts, selectedCategory])
 
-  // Get available categories from actual products (both mapped and unmapped)
+  // Get available categories from actual products
   const availableCategories = useMemo(() => {
     const uniqueCategories = new Set<string>()
-    products.forEach((product) => {
+    productsWithDiscounts.forEach((product) => {
       const mappedId = mapCategoryToId(product.category)
       uniqueCategories.add(mappedId)
     })
     return Array.from(uniqueCategories)
-  }, [products])
+  }, [productsWithDiscounts])
 
-  // Create dynamic categories that include both predefined and Google Sheet categories
+  // Create dynamic categories
   const dynamicCategories = useMemo(() => {
     const dynamicCats = [...categories]
 
-    // Add categories from available products that aren't in predefined list
     availableCategories.forEach((categoryId) => {
       if (!dynamicCats.find((cat) => cat.id === categoryId) && categoryId !== "all") {
-        // Try to find this category in the sheet data
         const sheetCategory = categoriesFromSheet.find(
           (cat) => mapCategoryToId(cat.Category || cat.category) === categoryId,
         )
@@ -205,15 +290,13 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
     setSelectedCategory(categoryId)
   }
 
-  // Get display name for category (fallback to original if not found in predefined)
+  // Get display name for category
   const getCategoryDisplayName = (categoryId: string) => {
-    // First check predefined categories
     const predefinedCategory = categories.find((cat) => cat.id === categoryId)
     if (predefinedCategory) {
       return predefinedCategory.name[language]
     }
 
-    // Then check sheet categories
     const sheetCategory = categoriesFromSheet.find(
       (cat) => mapCategoryToId(cat.Category || cat.category) === categoryId,
     )
@@ -224,9 +307,9 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
         : sheetCategory.Category || sheetCategory.category
     }
 
-    // Fallback: capitalize the first letter for display
     return categoryId.charAt(0).toUpperCase() + categoryId.slice(1)
   }
+
 
   return (
     <section className="py-3 px-3 sm:py-4 sm:px-4 bg-gradient-to-br from-amber-50 to-orange-50 min-h-screen">
@@ -250,7 +333,6 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
                           : "bg-white/70 text-amber-800 hover:bg-amber-50 hover:scale-102"
                       } ${language === "kh" ? "font-mono" : "font-sans"}`}
                       style={{
-                        // All buttons now have the same parallelogram shape
                         clipPath: "polygon(15% 0, 100% 0, 85% 100%, 0% 100%)",
                         marginLeft: index === 0 ? "0" : "-15px",
                         ...(imageUrl && isSelected
@@ -302,8 +384,6 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
             if (categoryProducts.length === 0) return null
 
             const categoryName = getCategoryDisplayName(categoryId)
-
-            // Limit to 4 products per category when viewing "All"
             const displayProducts = selectedCategory === "all" ? categoryProducts.slice(0, 4) : categoryProducts
             const hasMoreProducts = selectedCategory === "all" && categoryProducts.length > 4
 
@@ -340,8 +420,10 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
                     >
                       <CardContent className="p-0">
                         <div className="relative aspect-square bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
-                          {product.discount && (
-                            <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-md z-10">
+                          {/* DISCOUNT BADGE - Updated with better styling */}
+                          {product.isDiscounted && product.discount && (
+                            <div className="absolute top-2 left-2 bg-gradient-to-r from-red-600 to-red-500 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-lg z-10 flex items-center gap-1">
+                              <Tag className="h-3 w-3" />
                               {product.discount}% OFF
                             </div>
                           )}
@@ -391,10 +473,22 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
                           </p>
 
                           <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-1">
-                            <span className="text-base sm:text-lg font-bold text-amber-700">
-                              ${product.price.toFixed(2)}
-                            </span>
-                            <span className="text-xs sm:text-sm text-amber-600 font-medium">
+                            {/* Updated price display with discount styling */}
+                            {product.isDiscounted ? (
+                              <div className="flex items-center gap-2">
+                                <span className="text-base sm:text-lg font-bold text-red-600">
+                                  ${product.price.toFixed(2)}
+                                </span>
+                                <span className="text-xs sm:text-sm text-gray-500 line-through">
+                                  ${product.originalPrice?.toFixed(2)}
+                                </span>
+                              </div>
+                            ) : (
+                              <span className="text-base sm:text-lg font-bold text-amber-700">
+                                ${product.price.toFixed(2)}
+                              </span>
+                            )}
+                            <span className={`text-xs sm:text-sm ${product.isDiscounted ? 'text-red-500' : 'text-amber-600'} font-medium`}>
                               KHR {(product.price * 4000).toLocaleString()}
                             </span>
                           </div>
@@ -404,9 +498,16 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
                               e.stopPropagation()
                               onAddToCart(product)
                             }}
-                            className={`w-full mt-1.5 sm:mt-2 bg-amber-600 hover:bg-amber-700 text-white text-xs sm:text-sm font-semibold py-2 sm:py-2.5 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 ${language === "kh" ? "font-mono" : "font-sans"}`}
+                            className={`w-full mt-1.5 sm:mt-2 ${
+                              product.isDiscounted 
+                                ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700' 
+                                : 'bg-amber-600 hover:bg-amber-700'
+                            } text-white text-xs sm:text-sm font-semibold py-2 sm:py-2.5 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 ${language === "kh" ? "font-mono" : "font-sans"}`}
                           >
-                            {language === "en" ? "Add to Cart" : "បន្ថែមទៅកន្ត្រក"}
+                            {product.isDiscounted 
+                              ? (language === "en" ? "Add Discounted Item" : "បន្ថែមវត្ថុបញ្ចុះតម្លៃ") 
+                              : (language === "en" ? "Add to Cart" : "បន្ថែមទៅកន្ត្រក")
+                            }
                           </Button>
                         </div>
                       </CardContent>
