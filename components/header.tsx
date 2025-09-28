@@ -126,7 +126,7 @@ export function Header({
 
 
       {/* Simple top header with logo */}
-      <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-100 shadow-sm">
+      <header className="top-0 z-40 w-full bg-white border-b border-gray-100 shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-14 sm:h-16 items-center justify-between">
             <div className="flex items-center">
