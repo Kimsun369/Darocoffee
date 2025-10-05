@@ -1,42 +1,159 @@
 // Free Google Sheets integration using JSON API
-async function fetchProductsFromGoogleSheet() {
-  try {
-    const SHEET_ID = '1IxeuobNv6Qk7-EbGn4qzTxT4xRwoMqH_1hT2-pRSpPU';
-    
-    // First, fetch categories from the 'Categories' sheet
-    const categoriesData = await fetchSheetData(SHEET_ID, 'Categories');
-    const categoriesMap = processCategoriesData(categoriesData);
-    
-    // Then, fetch products from the main sheet (try multiple possible names)
-    const SHEET_NAMES = ['Sheet1', 'Products', 'Menu'];
-    let productsFromSheet = [];
-    
-    for (const SHEET_NAME of SHEET_NAMES) {
-      const data = await fetchSheetData(SHEET_ID, SHEET_NAME);
-      if (data && data.length > 0) {
-        productsFromSheet = processProductsData(data, categoriesMap);
-        break;
-      }
-    }
 
-    console.log('Processed products with categories:', productsFromSheet);
-    return productsFromSheet;
+// Configuration
+const SHEET_CONFIG = {
+  ID: '1IxeuobNv6Qk7-EbGn4qzTxT4xRwoMqH_1hT2-pRSpPU',
+  NAMES: {
+    CATEGORIES: 'Categories',
+    PRODUCTS: ['Sheet1', 'Products', 'Menu'],
+    DISCOUNTS: 'Discount',
+    EVENTS: 'Events'
+  }
+};
+
+export async function fetchAllDataFromGoogleSheet() {
+  try {
+    console.log('Starting to fetch all data from Google Sheets...');
+    
+    const [products, discounts, events] = await Promise.all([
+      fetchProductsFromGoogleSheet(),
+      fetchDiscountsFromGoogleSheet(),
+      fetchEventsFromGoogleSheet()
+    ]);
+
+    console.log('All data fetched successfully:', {
+      products: products.length,
+      discounts: discounts.length,
+      events: events.length
+    });
+
+    return { products, discounts, events };
   } catch (error) {
-    console.error('Error fetching from Google Sheets:', error);
+    console.error('Error fetching all data from Google Sheets:', error);
+    return { products: [], discounts: [], events: [] };
+  }
+}
+
+export async function fetchEventsFromGoogleSheet() {
+  try {
+    console.log('Fetching events from Google Sheet...');
+    const data = await fetchSheetData(SHEET_CONFIG.ID, SHEET_CONFIG.NAMES.EVENTS);
+    
+    if (data && data.length > 0) {
+      const processedEvents = processEventsData(data);
+      console.log('Processed events:', processedEvents);
+      return processedEvents;
+    } else {
+      console.warn('No events data found in Google Sheets.');
+      return [];
+    }
+  } catch (error) {
+    console.error('Error fetching events from Google Sheets:', error);
     return [];
   }
 }
 
-// NEW FUNCTION: Fetch discount data from Discount sheet
-async function fetchDiscountsFromGoogleSheet() {
+// Helper function to fetch data from any sheet
+async function fetchSheetData(sheetId, sheetName) {
   try {
-    const SHEET_ID = '1IxeuobNv6Qk7-EbGn4qzTxT4xRwoMqH_1hT2-pRSpPU';
-    const SHEET_NAME = 'Discount';
+    const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
+    console.log(`Fetching data from: ${url}`);
     
-    const discountData = await fetchSheetData(SHEET_ID, SHEET_NAME);
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.error(`HTTP error! status: ${res.status} for sheet: ${sheetName}`);
+      return [];
+    }
+    
+    const data = await res.json();
+    console.log(`Fetched ${data.length} rows from ${sheetName}`);
+    return data || [];
+  } catch (err) {
+    console.error(`Error fetching sheet ${sheetName}:`, err);
+    return [];
+  }
+}
+
+// Process events data
+function processEventsData(eventsData) {
+  if (!eventsData || eventsData.length === 0) {
+    console.log('No events data to process from Google Sheets');
+    return [];
+  }
+
+  console.log('Processing events data from Google Sheets:', eventsData);
+
+  const processedEvents = eventsData
+    .map((row, index) => {
+      // Skip header row
+      if (row['Event ID'] === 'Event ID' || row['Event Name'] === 'Event Name') {
+        console.log('Skipping header row');
+        return null;
+      }
+
+      // Validate required fields
+      const eventName = row['Event Name']?.trim();
+      const eventAbbreviation = row['Event Abbreviation']?.trim();
+      const posterUrl = row['Poster Image URL']?.trim();
+
+      if (!eventName) {
+        console.warn('Skipping event - missing Event Name:', row);
+        return null;
+      }
+
+      const event = {
+        id: row['Event ID'] || (index + 1),
+        name: eventName,
+        abbreviation: eventAbbreviation || eventName,
+        poster: posterUrl || '/placeholder.svg',
+      };
+
+      console.log('Processed event from Google Sheets:', event);
+      return event;
+    })
+    .filter(Boolean);
+
+  console.log('Final processed events from Google Sheets:', processedEvents);
+  return processedEvents;
+}
+
+// Rest of your existing functions remain the same
+export async function fetchProductsFromGoogleSheet() {
+  try {
+    const categoriesData = await fetchSheetData(SHEET_CONFIG.ID, SHEET_CONFIG.NAMES.CATEGORIES);
+    const categoriesMap = processCategoriesData(categoriesData);
+
+    let productsFromSheet = [];
+
+    for (const sheetName of SHEET_CONFIG.NAMES.PRODUCTS) {
+      const data = await fetchSheetData(SHEET_CONFIG.ID, sheetName);
+      if (data && data.length > 0) {
+        productsFromSheet = processProductsData(data, categoriesMap);
+        console.log(`Found products in sheet: ${sheetName}`);
+        break;
+      }
+    }
+
+    if (productsFromSheet.length === 0) {
+      console.warn('No products found in any of the specified sheets');
+    }
+
+    return productsFromSheet;
+  } catch (error) {
+    console.error('Error fetching products from Google Sheets:', error);
+    return [];
+  }
+}
+
+export async function fetchDiscountsFromGoogleSheet() {
+  try {
+    const discountData = await fetchSheetData(SHEET_CONFIG.ID, SHEET_CONFIG.NAMES.DISCOUNTS);
     const processedDiscounts = processDiscountsData(discountData);
-    
-    console.log('Processed discounts:', processedDiscounts);
+
+    if (processedDiscounts.length === 0) {
+      console.warn('No discounts found in the Discount sheet');
+    }
+
     return processedDiscounts;
   } catch (error) {
     console.error('Error fetching discounts from Google Sheets:', error);
@@ -44,203 +161,107 @@ async function fetchDiscountsFromGoogleSheet() {
   }
 }
 
-// NEW FUNCTION: Process discount data
-function processDiscountsData(discountData) {
-  if (!discountData || discountData.length === 0) {
-    console.log('No discount data found');
-    return [];
-  }
-  
-  console.log('Raw discount data from Google Sheets:', discountData);
-  
-  const discounts = [];
-  
-  discountData.forEach((item, index) => {
-    console.log('Processing discount row:', item);
-    
-    // Handle various column name formats
-    const discountId = item['Discount ID'] || item.discount_id || item.id || (index + 1);
-    const discountName = item['Discount Name'] || item.discount_name || item.name || '';
-    const duplicateCheck = item['Duplicate Check'] || item.duplicate_check || item.status || '';
-    const discountPercent = parseFloat(item['Discount %'] || item.discount_percent || item.percent || 0);
-    const price = parseFloat(item.Price || item.price || item.discount_price || 0);
-    const isActive = (item['Is Active'] || item.is_active || item.active || '').toLowerCase() === 'active';
-    const productName = item['Product Name'] || item.product_name || item.product || '';
-    
-    // Only add discount if it has basic required information
-    if (discountName || productName) {
-      const discount = {
+export function processDiscountsData(discountData) {
+  if (!discountData || discountData.length === 0) return [];
+
+  return discountData
+    .map((item, index) => {
+      const discountId = item['Discount ID'] || index + 1;
+      const discountName = item['Discount Name'] || '';
+      const duplicateCheck = item['Duplicate Check'] || '';
+      const discountPercent = parseFloat(item['Discount %'] || '0');
+      const price = parseFloat(item.Price || '0');
+      const isActive = (item['Is Active'] || '').toLowerCase() === 'active';
+      const productName = item['Product Name'] || '';
+      const event = item['Event'] || '';
+
+      if (!discountName && !productName) return null;
+
+      return {
         id: discountId,
-        discountName: discountName,
-        productName: productName,
-        duplicateCheck: duplicateCheck,
-        discountPercent: discountPercent,
+        discountName,
+        productName,
+        duplicateCheck,
+        discountPercent,
         originalPrice: price,
-        isActive: isActive,
-        calculatedPrice: duplicateCheck === 'DUPLICATE' ? 'DUPLICATE' : price - (price * (discountPercent / 100))
+        calculatedPrice:
+          duplicateCheck === 'DUPLICATE' ? 'DUPLICATE' : price - price * (discountPercent / 100),
+        isActive,
+        event,
       };
-      
-      discounts.push(discount);
-      console.log('Added discount:', discount);
-    }
-  });
-  
-  // Filter out empty rows and sort by discount ID
-  const filteredDiscounts = discounts.filter(discount => 
-    discount.discountName || discount.productName
-  ).sort((a, b) => a.id - b.id);
-  
-  console.log('Final processed discounts:', filteredDiscounts);
-  return filteredDiscounts;
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.id - b.id);
 }
 
-// Helper function to fetch data from any sheet
-async function fetchSheetData(sheetId, sheetName) {
-  try {
-    const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
-    console.log('Fetching from URL:', url);
-
-    const response = await fetch(url);
-    if (!response.ok) {
-      console.error(`HTTP error! status: ${response.status} for sheet "${sheetName}"`);
-      return null;
-    }
-
-    const data = await response.json();
-    if (!data || data.length === 0) {
-      console.log(`No data found in sheet "${sheetName}"`);
-      return null;
-    }
-
-    return data;
-  } catch (error) {
-    console.error(`Error fetching from sheet "${sheetName}":`, error);
-    return null;
-  }
-}
-
-// Process categories data and create a mapping object
 function processCategoriesData(categoriesData) {
-  if (!categoriesData) return {};
-  
-  const categoriesMap = {};
-  
-  categoriesData.forEach(item => {
-    const category = item.Category || item.category || '';
-    const category_kh = item.category_kh || item['Category_KH'] || category;
-    const displayOrder = parseInt(item['Display Order'] || item.display_order || item.order || '0');
-    const description = item.Description || item.description || '';
-    const description_kh = item.description_kh || item['Description_KH'] || description;
-    
-    if (category) {
-      categoriesMap[category.toLowerCase()] = {
-        category_kh,
-        displayOrder,
-        description,
-        description_kh
-      };
-    }
+  const map = {};
+  if (!categoriesData) return map;
+
+  categoriesData.forEach((item) => {
+    const category = item.Category || '';
+    if (!category) return;
+    map[category.toLowerCase()] = {
+      category_kh: item['Category_KH'] || category,
+      displayOrder: parseInt(item['Display Order'] || '999'),
+      description: item.Description || '',
+      description_kh: item['Description_KH'] || '',
+    };
   });
-  
-  console.log('Categories map:', categoriesMap);
-  return categoriesMap;
+
+  return map;
 }
 
-// Process products data with categories information
 function processProductsData(data, categoriesMap) {
-  console.log('Raw data from Google Sheets:', data);
-  
-  // Group rows by product name to combine multiple option rows
   const productsMap = {};
-  
+
   data.forEach((item, index) => {
-    console.log('Processing row:', item);
-    
-    const name = item.Name || item.name || item['Product Name'] || '';
-    if (!name) {
-      console.log('Skipping row without product name');
-      return;
-    }
-    
+    const name = item.Name || item['Product Name'];
+    if (!name) return;
+
     if (!productsMap[name]) {
-      // Handle different possible column names
-      const name_kh = item['Name_KH'] || item.name_kh || item['Khmer Name'] || name;
-      const image = item.Image || item.image || item.Photo || item.Picture || '/api/placeholder/300/200';
-      const price = parseFloat(item.Price || item.price || item.Cost || 0);
-      const category = item.Category || item.category || item.Type || 'Uncategorized';
-      const description = item.Description || item.description || item.Desc || '';
-      const description_kh = item['Description_KH'] || item.description_kh || item['Khmer Description'] || description;
-      
-      // Get category info from categories map
-      const categoryInfo = categoriesMap[category.toLowerCase()] || {};
-      
+      const category = item.Category || 'Uncategorized';
+      const catInfo = categoriesMap[category.toLowerCase()] || {};
       productsMap[name] = {
         id: index + 1,
-        name: name,
-        name_kh: name_kh,
-        image: image,
-        price: price,
-        category: category,
-        category_kh: categoryInfo.category_kh || category,
-        description: description,
-        description_kh: categoryInfo.description_kh || description_kh || description,
-        displayOrder: categoryInfo.displayOrder || 999,
-        options: {}
+        name,
+        image: item.Image || '/via.placeholder.com/400x300',
+        price: parseFloat(item.Price || '0'),
+        category,
+        category_kh: catInfo.category_kh || category,
+        description: item.Description || '',
+        description_kh: catInfo.description_kh || item.Description || '',
+        displayOrder: catInfo.displayOrder || 999,
+        options: {},
       };
-      
-      console.log('Created new product:', productsMap[name]);
     }
-    
-    // Process options from the new columns - check ALL possible column name formats
+
     for (let i = 1; i <= 10; i++) {
-      // Try multiple column name formats
-      const optionName = item[`Option ${i} - Name`] || item[`Option ${i} Name`] || item[`option${i}_name`] || item[`Option_${i}_Name`] || '';
-      const choicesStr = item[`Option ${i} - Choices`] || item[`Option ${i} Choices`] || item[`option${i}_choices`] || item[`Option_${i}_Choices`] || '';
-      const pricesStr = item[`Option ${i} - Prices`] || item[`Option ${i} Prices`] || item[`option${i}_prices`] || item[`Option_${i}_Prices`] || '';
-      
-      console.log(`Option ${i} data:`, { optionName, choicesStr, pricesStr });
-      
-      if (optionName && choicesStr) {
-        try {
-          // Parse choices and prices
-          const choices = choicesStr.split(',').map(v => v.trim()).filter(v => v !== '');
-          const prices = pricesStr.split(',').map(p => {
-            const trimmed = p.trim();
-            return trimmed === '' ? 0 : parseFloat(trimmed) || 0;
-          });
-          
-          // Ensure we have the same number of prices as choices
-          while (prices.length < choices.length) {
-            prices.push(0);
-          }
-          while (prices.length > choices.length) {
-            prices.pop();
-          }
-          
-          // FIX: Create the correct structure expected by the modal
-          const optionValues = choices.map((choice, idx) => ({
-            name: choice,
-            price: prices[idx] || 0
-          }));
-          
-          // FIX: Use the correct structure - array directly, not nested object
-          productsMap[name].options[optionName.toLowerCase()] = optionValues;
-          
-          console.log(`Added option "${optionName}":`, optionValues);
-        } catch (error) {
-          console.error('Error parsing options:', error, {optionName, choicesStr, pricesStr});
-        }
-      }
+      const optionName = item[`Option ${i} - Name`] || '';
+      const choicesStr = item[`Option ${i} - Choices`] || '';
+      const pricesStr = item[`Option ${i} - Prices`] || '';
+
+      if (!optionName || !choicesStr) continue;
+
+      const choices = choicesStr.split(',').map((v) => v.trim());
+      const prices = pricesStr
+        .split(',')
+        .map((p) => parseFloat(p.trim()) || 0)
+        .slice(0, choices.length);
+
+      productsMap[name].options[optionName.toLowerCase()] = choices.map((c, idx) => ({
+        name: c,
+        price: prices[idx] || 0,
+      }));
     }
   });
-  
-  const result = Object.values(productsMap).sort((a, b) => a.displayOrder - b.displayOrder);
-  console.log('Final processed products:', result);
-  return result;
+
+  return Object.values(productsMap).sort((a, b) => a.displayOrder - b.displayOrder);
 }
 
-module.exports = {
-  fetchProductsFromGoogleSheet,
-  fetchDiscountsFromGoogleSheet, // NEW EXPORT
-  processDiscountsData // NEW EXPORT (for testing)
+export {
+  fetchSheetData,
+  processEventsData,
+  processCategoriesData,
+  processProductsData
 };
