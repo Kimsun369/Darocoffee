@@ -416,43 +416,86 @@ export function MenuSection({
     <Card
       key={product.id}
       onClick={() => onProductClick(product)}
-      className="group cursor-pointer overflow-hidden border border-border/50 bg-card hover:shadow-lg hover:border-primary/30 transition-all duration-300 animate-slide-in"
-      style={{ animationDelay: `${index * 50}ms` }}
+      className="group cursor-pointer overflow-hidden border-0 hover:shadow-2xl transition-all duration-300"
+      style={{
+        backgroundColor: "#ffffff",
+        border: "2px solid #fcd34d",
+        animation: "scaleIn 0.4s ease-out forwards",
+        animationDelay: `${index * 50}ms`,
+        opacity: 0,
+        transform: "scale(0.9)",
+      }}
     >
       <CardContent className="p-0">
         {/* Product Image */}
-        <div className="relative aspect-[4/3] overflow-hidden bg-secondary/30">
+        <div
+          className="relative aspect-[4/3] overflow-hidden"
+          style={{ background: "linear-gradient(135deg, #fffbeb 0%, #fed7aa 100%)" }}
+        >
           <img
             src={product.image || "/placeholder.svg"}
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-cover transition-transform duration-500"
+            style={{
+              transform: "scale(1)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.1)"
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)"
+            }}
           />
 
           {product.isDiscounted && product.discount && (
-            <div className="absolute top-3 left-3 bg-red-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg animate-pulse-subtle">
-              -{product.discount}%
+            <div
+              className="absolute top-2 left-2 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1"
+              style={{
+                background: "linear-gradient(135deg, #dc2626 0%, #ea580c 100%)",
+                animation: "glowPulse 2s ease-in-out infinite",
+              }}
+            >
+              <Sparkles
+                className="h-3 w-3"
+                style={{
+                  animation: "spin 3s linear infinite",
+                }}
+              />
+              <span style={{ animation: "pulse 1.5s ease-in-out infinite" }}>-{product.discount}%</span>
             </div>
           )}
 
           {/* Favorite Button */}
           <button
             onClick={(e) => toggleFavorite(product.id, e)}
-            className="absolute top-3 right-3 w-9 h-9 rounded-full bg-card/90 backdrop-blur-sm flex items-center justify-center hover:bg-card transition-colors shadow-md"
+            className="absolute top-2 right-2 w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-md"
+            style={{
+              backgroundColor: "rgba(255, 255, 255, 0.95)",
+              backdropFilter: "blur(4px)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.1)"
+              e.currentTarget.style.backgroundColor = "#ffffff"
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)"
+              e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.95)"
+            }}
           >
             <Heart
-              className={`h-5 w-5 transition-colors ${
-                favorites.has(product.id) ? "fill-red-500 text-red-500" : "text-muted-foreground"
+              className={`h-5 w-5 transition-all ${
+                favorites.has(product.id) ? "fill-red-500 text-red-500" : "text-gray-400"
               }`}
+              style={favorites.has(product.id) ? { animation: "pulse 1s ease-in-out infinite" } : {}}
             />
           </button>
         </div>
 
-        {/* Product Info */}
-        <div className="p-4">
-          <h3 className="font-semibold text-foreground text-base mb-1 line-clamp-1">
+        <div className="p-4" style={{ backgroundColor: "#ffffff" }}>
+          <h3 className="font-semibold text-base mb-1 line-clamp-1" style={{ color: "#111827" }}>
             {language === "en" ? product.name : product.name_kh}
           </h3>
-          <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
+          <p className="text-xs mb-3 line-clamp-2" style={{ color: "#4b5563" }}>
             {language === "en" ? product.description : product.description_kh}
           </p>
 
@@ -460,13 +503,23 @@ export function MenuSection({
             <div className="flex items-baseline gap-2">
               {product.isDiscounted && product.originalPrice ? (
                 <>
-                  <span className="text-lg font-bold text-red-600 animate-pulse-subtle">
+                  <span
+                    className="text-lg font-bold"
+                    style={{
+                      color: "#dc2626",
+                      animation: "priceBounce 1s ease-in-out infinite",
+                    }}
+                  >
                     ${product.price.toFixed(2)}
                   </span>
-                  <span className="text-sm text-amber-700 line-through">${product.originalPrice.toFixed(2)}</span>
+                  <span className="text-sm font-medium line-through" style={{ color: "#78350f" }}>
+                    ${product.originalPrice.toFixed(2)}
+                  </span>
                 </>
               ) : (
-                <span className="text-lg font-bold text-amber-700">${product.price.toFixed(2)}</span>
+                <span className="text-lg font-bold" style={{ color: "#78350f" }}>
+                  ${product.price.toFixed(2)}
+                </span>
               )}
             </div>
 
@@ -476,7 +529,20 @@ export function MenuSection({
                 e.stopPropagation()
                 onAddToCart(product)
               }}
-              className="rounded-full h-8 w-8 p-0 bg-amber-600 hover:bg-amber-700 text-white shadow-sm"
+              className="rounded-full h-8 w-8 p-0 text-white shadow-md transition-all"
+              style={{
+                backgroundColor: "#d97706",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#b45309"
+                e.currentTarget.style.transform = "scale(1.1)"
+                e.currentTarget.style.boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "#d97706"
+                e.currentTarget.style.transform = "scale(1)"
+                e.currentTarget.style.boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+              }}
             >
               <Plus className="h-4 w-4" />
             </Button>
@@ -487,113 +553,251 @@ export function MenuSection({
   )
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Search Bar */}
-      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
+    <div className="min-h-screen" style={{ background: "linear-gradient(to bottom right, #fffbeb, #fef3c7)" }}>
+      <div
+        className="sticky top-0 z-40 border-b-2 shadow-md"
+        style={{ backgroundColor: "#ffffff", borderColor: "#fcd34d" }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="relative max-w-2xl mx-auto">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Search
+              className="absolute left-4 top-1/2 h-5 w-5"
+              style={{ transform: "translateY(-50%)", color: "#d97706" }}
+            />
             <Input
               type="text"
               placeholder={language === "en" ? "Search menu..." : "ស្វែងរកម្ហូប..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 pr-4 h-12 bg-card border-border/50 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary/20 rounded-xl"
+              className="pl-12 pr-4 h-12 border-2 rounded-xl shadow-sm focus-visible:ring-2"
+              style={{
+                backgroundColor: "#ffffff",
+                color: "#111827",
+                borderColor: "#fcd34d",
+              }}
             />
           </div>
         </div>
       </div>
 
       {discountedProducts.length > 0 && (
-        <div className="bg-gradient-to-br from-red-50 to-orange-50 border-b border-red-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-            {/* Discount Header */}
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center">
-                  <Sparkles className="h-5 w-5 text-white" />
+        <div
+          className="relative border-y-4 shadow-2xl overflow-hidden"
+          style={{
+            background: "linear-gradient(135deg, #dc2626 0%, #ea580c 100%)",
+            borderColor: "#b91c1c",
+          }}
+        >
+          <div
+            className="absolute inset-0"
+            style={{
+              opacity: 0.1,
+              backgroundImage:
+                "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')",
+              animation: "shimmer 20s linear infinite",
+            }}
+          />
+
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <div
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg"
+                  style={{
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                    backdropFilter: "blur(4px)",
+                    animation: "float 3s ease-in-out infinite",
+                  }}
+                >
+                  <Sparkles className="h-7 w-7" style={{ color: "#ffffff" }} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-red-700">
-                    {language === "en" ? "Special Offers" : "ការផ្តល់ជូនពិសេស"}
+                  <h2
+                    className="text-3xl font-bold flex items-center gap-2"
+                    style={{
+                      color: "#ffffff",
+                      textShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                      animation: "slideRight 0.6s ease-out",
+                    }}
+                  >
+                    {language === "en" ? "🔥 Hot Deals" : "🔥 ការផ្តល់ជូនពិសេស"}
                   </h2>
-                  <p className="text-sm text-red-600">
+                  <p
+                    className="text-base font-medium mt-1"
+                    style={{
+                      color: "rgba(255, 255, 255, 0.9)",
+                      animation: "fadeIn 0.8s ease-out",
+                    }}
+                  >
                     {language === "en"
-                      ? `${eventFilteredDiscountedProducts.length} items on sale`
-                      : `${eventFilteredDiscountedProducts.length} ធាតុកំពុងបញ្ចុះតម្លៃ`}
+                      ? `${eventFilteredDiscountedProducts.length} amazing offers waiting for you!`
+                      : `${eventFilteredDiscountedProducts.length} ការផ្តល់ជូនពិសេសសម្រាប់អ្នក!`}
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Event Filters */}
             {events.length > 0 && (
-              <div className="flex items-center gap-2 overflow-x-auto scrollbar-thin pb-2 mb-4">
+              <div className="flex items-center gap-3 overflow-x-auto pb-3 mb-6" style={{ scrollbarWidth: "thin" }}>
                 <button
                   onClick={() => onEventChange("all")}
-                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                    !selectedEvent || selectedEvent === "all"
-                      ? "bg-red-600 text-white shadow-md"
-                      : "bg-white text-red-600 border border-red-200 hover:bg-red-50"
-                  }`}
+                  className="flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-lg"
+                  style={{
+                    backgroundColor: !selectedEvent || selectedEvent === "all" ? "#ffffff" : "rgba(255, 255, 255, 0.2)",
+                    color: !selectedEvent || selectedEvent === "all" ? "#dc2626" : "#ffffff",
+                    backdropFilter: "blur(4px)",
+                    transform: !selectedEvent || selectedEvent === "all" ? "scale(1.05)" : "scale(1)",
+                    animation: !selectedEvent || selectedEvent === "all" ? "pulse 2s ease-in-out infinite" : "none",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "scale(1.05)"
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform =
+                      !selectedEvent || selectedEvent === "all" ? "scale(1.05)" : "scale(1)"
+                  }}
                 >
                   <Tag className="h-4 w-4" />
                   <span>{language === "en" ? "All Offers" : "ទាំងអស់"}</span>
-                  <span className="ml-1 text-xs opacity-90">({getEventProductCount.all})</span>
+                  <span
+                    className="ml-1 px-2 py-0.5 rounded-full text-xs font-bold"
+                    style={{ backgroundColor: "#dc2626", color: "#ffffff" }}
+                  >
+                    {getEventProductCount.all}
+                  </span>
                 </button>
 
                 {events.map((event) => (
                   <button
                     key={event}
                     onClick={() => onEventChange(event)}
-                    className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                      selectedEvent === event
-                        ? "bg-red-600 text-white shadow-md"
-                        : "bg-white text-red-600 border border-red-200 hover:bg-red-50"
-                    }`}
+                    className="flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-lg"
+                    style={{
+                      backgroundColor: selectedEvent === event ? "#ffffff" : "rgba(255, 255, 255, 0.2)",
+                      color: selectedEvent === event ? "#dc2626" : "#ffffff",
+                      backdropFilter: "blur(4px)",
+                      transform: selectedEvent === event ? "scale(1.05)" : "scale(1)",
+                      animation: selectedEvent === event ? "pulse 2s ease-in-out infinite" : "none",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "scale(1.05)"
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = selectedEvent === event ? "scale(1.05)" : "scale(1)"
+                    }}
                   >
                     <span>{event}</span>
-                    <span className="ml-1 text-xs opacity-90">({getEventProductCount[event]})</span>
+                    <span
+                      className="ml-1 px-2 py-0.5 rounded-full text-xs font-bold"
+                      style={{ backgroundColor: "#dc2626", color: "#ffffff" }}
+                    >
+                      {getEventProductCount[event]}
+                    </span>
                   </button>
                 ))}
               </div>
             )}
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-              {eventFilteredDiscountedProducts.map((product, index) => (
-                <ProductCard key={product.id} product={product} index={index} />
-              ))}
+            <div className="overflow-x-auto pb-4" style={{ scrollbarWidth: "thin" }}>
+              <div className="flex gap-4 sm:gap-5" style={{ minWidth: "min-content" }}>
+                {eventFilteredDiscountedProducts.map((product, index) => (
+                  <div
+                    key={product.id}
+                    className="flex-shrink-0 w-[160px] sm:w-[200px]"
+                    style={{
+                      animation: "slideRight 0.5s ease-out forwards",
+                      animationDelay: `${index * 100}ms`,
+                      opacity: 0,
+                    }}
+                  >
+                    <ProductCard product={product} index={index} />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      <div className="sticky top-[73px] z-30 bg-background/95 backdrop-blur-lg border-b border-border/50">
+      <div
+        className="sticky z-30 border-b shadow-sm"
+        style={{
+          top: "73px",
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          backdropFilter: "blur(12px)",
+          borderColor: "#fef3c7",
+        }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
-            {visibleCategories.map((category) => {
-              const isActive = selectedCategory === category.id
+          <div className="relative flex gap-0 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+            {visibleCategories.map((category, index) => {
+              const imageUrl = getCategoryImage(category.id)
+              const isSelected = selectedCategory === category.id
+
               return (
-                <button
-                  key={category.id}
-                  onClick={() => {
-                    setSelectedCategory(category.id)
-                  }}
-                  className={`flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                    isActive
-                      ? "bg-amber-600 text-white shadow-sm"
-                      : "bg-secondary/60 text-secondary-foreground hover:bg-secondary hover:shadow-sm"
-                  }`}
-                >
-                  {category.name[language]}
-                </button>
+                <div key={category.id} className="relative flex-shrink-0">
+                  <Button
+                    variant="ghost"
+                    onClick={() => setSelectedCategory(category.id)}
+                    className="relative text-xs sm:text-sm font-bold whitespace-nowrap px-4 sm:px-6 py-3 sm:py-4 h-auto transition-all duration-300 border-0 overflow-hidden min-h-[50px] sm:min-h-[60px] min-w-[90px] sm:min-w-[110px] shadow-md"
+                    style={{
+                      clipPath: "polygon(15% 0, 100% 0, 85% 100%, 0% 100%)",
+                      marginLeft: index === 0 ? "0" : "-15px",
+                      backgroundColor: isSelected ? "rgba(217, 119, 6, 0.8)" : "rgba(255, 255, 255, 0.7)",
+                      color: isSelected ? "#ffffff" : "#92400e",
+                      transform: isSelected ? "scale(1.05)" : "scale(1)",
+                      zIndex: isSelected ? 10 : 1,
+                      boxShadow: isSelected
+                        ? "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
+                        : "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                      ...(imageUrl && isSelected
+                        ? {
+                            backgroundImage: `linear-gradient(rgba(217, 119, 6, 0.6), rgba(180, 83, 9, 0.6)), url(${imageUrl})`,
+                            backgroundSize: "120%",
+                            backgroundPosition: "center",
+                          }
+                        : imageUrl && !isSelected
+                          ? {
+                              backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url(${imageUrl})`,
+                              backgroundSize: "120%",
+                              backgroundPosition: "center",
+                            }
+                          : undefined),
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isSelected) {
+                        e.currentTarget.style.backgroundColor = "#fef3c7"
+                        e.currentTarget.style.transform = "scale(1.02)"
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isSelected) {
+                        e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.7)"
+                        e.currentTarget.style.transform = "scale(1)"
+                      }
+                    }}
+                  >
+                    <span
+                      className={`relative z-10 text-center font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
+                      style={{
+                        color: isSelected ? "#ffffff" : "#92400e",
+                        textShadow: isSelected ? "0 2px 4px rgba(0, 0, 0, 0.1)" : "none",
+                      }}
+                    >
+                      {category.name[language]}
+                    </span>
+                  </Button>
+                </div>
               )
             })}
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <div
+        className="max-w-7xl mx-auto px-4 sm:px-6 py-8"
+        style={{ background: "linear-gradient(to bottom right, #fffbeb, #fef3c7)" }}
+      >
         {Object.entries(productsByCategory).map(([categoryId, categoryProducts]) => {
           if (categoryProducts.length === 0) return null
 
@@ -604,12 +808,29 @@ export function MenuSection({
           const hasMore = categoryProducts.length > 4
 
           return (
-            <div key={categoryId} className="mb-12">
+            <div
+              key={categoryId}
+              className="mb-12"
+              style={{
+                animation: "fadeIn 0.6s ease-out",
+              }}
+            >
               {/* Category Header */}
               {selectedCategory === "all" && category && (
-                <div className="mb-6 flex items-center gap-4">
+                <div
+                  className="mb-6 flex items-center gap-4"
+                  style={{
+                    animation: "slideRight 0.5s ease-out",
+                  }}
+                >
                   {categoryImage && (
-                    <div className="w-12 h-12 rounded-xl overflow-hidden bg-secondary/50 flex-shrink-0">
+                    <div
+                      className="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 shadow-md border-2"
+                      style={{
+                        backgroundColor: "#fef3c7",
+                        borderColor: "#fcd34d",
+                      }}
+                    >
                       <img
                         src={categoryImage || "/placeholder.svg"}
                         alt={category.name[language]}
@@ -617,11 +838,13 @@ export function MenuSection({
                       />
                     </div>
                   )}
-                  <h2 className="text-2xl font-semibold text-foreground tracking-tight">{category.name[language]}</h2>
+                  <h2 className="text-2xl font-bold tracking-tight" style={{ color: "#111827" }}>
+                    {category.name[language]}
+                  </h2>
                 </div>
               )}
 
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
                 {displayProducts.map((product, index) => (
                   <ProductCard key={product.id} product={product} index={index} />
                 ))}
@@ -632,7 +855,24 @@ export function MenuSection({
                   <Button
                     onClick={() => toggleCategoryExpansion(categoryId)}
                     variant="outline"
-                    className="px-6 py-2 rounded-full border-amber-600 text-amber-700 hover:bg-amber-50 hover:text-amber-800"
+                    className="px-6 py-2 rounded-full border-2 font-semibold shadow-sm transition-all"
+                    style={{
+                      borderColor: "#d97706",
+                      color: "#92400e",
+                      backgroundColor: "#ffffff",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#fef3c7"
+                      e.currentTarget.style.color = "#78350f"
+                      e.currentTarget.style.transform = "scale(1.05)"
+                      e.currentTarget.style.boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "#ffffff"
+                      e.currentTarget.style.color = "#92400e"
+                      e.currentTarget.style.transform = "scale(1)"
+                      e.currentTarget.style.boxShadow = "0 1px 2px 0 rgba(0, 0, 0, 0.05)"
+                    }}
                   >
                     {isExpanded ? (
                       <>
@@ -656,17 +896,124 @@ export function MenuSection({
 
         {/* Empty State */}
         {filteredProducts.length === 0 && (
-          <div className="text-center py-16">
-            <Coffee className="h-16 w-16 text-muted-foreground/40 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-foreground mb-2">
+          <div
+            className="text-center py-16"
+            style={{
+              animation: "fadeIn 0.6s ease-out",
+            }}
+          >
+            <Coffee
+              className="h-16 w-16 mx-auto mb-4"
+              style={{
+                color: "#fbbf24",
+                animation: "bounce 2s ease-in-out infinite",
+              }}
+            />
+            <h3 className="text-xl font-semibold mb-2" style={{ color: "#111827" }}>
               {language === "en" ? "No items found" : "រកមិនឃើញទេ"}
             </h3>
-            <p className="text-muted-foreground">
+            <p style={{ color: "#4b5563" }}>
               {language === "en" ? "Try adjusting your filters or search query" : "សូមព្យាយាមកែប្រែការស្វែងរករបស់អ្នក"}
             </p>
           </div>
         )}
       </div>
+
+      <style jsx>{`
+        @keyframes scaleIn {
+          from {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        @keyframes glowPulse {
+          0%, 100% {
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+          }
+          50% {
+            box-shadow: 0 0 30px rgba(220, 38, 38, 0.8);
+          }
+        }
+
+        @keyframes priceBounce {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-3px);
+          }
+        }
+
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+        }
+
+        @keyframes shimmer {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
+        }
+
+        @keyframes slideRight {
+          from {
+            opacity: 0;
+            transform: translateX(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.8;
+          }
+        }
+
+        @keyframes spin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        @keyframes bounce {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+        }
+      `}</style>
     </div>
   )
 }
