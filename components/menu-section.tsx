@@ -208,42 +208,50 @@ export function MenuSection({
     return activeDiscounts
   }, [discounts])
 
-  const matchProductWithDiscount = (productName: string, discountProductName: string): boolean => {
-    if (!productName || !discountProductName) return false
+ const matchProductWithDiscount = (productName: string, discountProductName: string): boolean => {
+  if (!productName || !discountProductName) return false
 
-    const productClean = productName.toLowerCase().trim()
-    const discountClean = discountProductName.toLowerCase().trim()
+  const productClean = productName.toLowerCase().trim()
+  const discountClean = discountProductName.toLowerCase().trim()
 
-    if (productClean === discountClean) return true
-    if (productClean.includes(discountClean) || discountClean.includes(productClean)) return true
+  // 1. Exact match (highest priority)
+  if (productClean === discountClean) return true
 
-    const variations: Record<string, string[]> = {
-      iced: ["ice"],
-      latte: ["late"],
-      cappuccino: ["capuccino", "cappucino"],
-      americano: ["american"],
-      matcha: ["maccha", "green tea"],
-      chocolate: ["choco"],
-      cake: ["cakes"],
-      tea: ["teas"],
-    }
+  // 2. Word boundary matching - more strict than includes()
+  const productWords = productClean.split(/\s+/)
+  const discountWords = discountClean.split(/\s+/)
+  
+  // Check if all discount words appear in product name as whole words
+  const allDiscountWordsMatch = discountWords.every(discountWord => 
+    productWords.some(productWord => productWord === discountWord)
+  )
+  
+  if (allDiscountWordsMatch) return true
 
-    let productVar = productClean
-    let discountVar = discountClean
-
-    Object.entries(variations).forEach(([standard, alts]) => {
-      alts.forEach((alt) => {
-        productVar = productVar.replace(alt, standard)
-        discountVar = discountVar.replace(alt, standard)
-      })
-    })
-
-    if (productVar === discountVar || productVar.includes(discountVar) || discountVar.includes(productVar)) {
-      return true
-    }
-
-    return false
+  // 3. Handle common variations but be more specific
+  const variations: Record<string, string[]> = {
+    iced: ["ice"],
+    latte: ["late"],
+    cappuccino: ["capuccino", "cappucino"],
+    americano: ["american"],
+    matcha: ["maccha", "green tea"],
+    chocolate: ["choco"],
   }
+
+  let productVar = productClean
+  let discountVar = discountClean
+
+  Object.entries(variations).forEach(([standard, alts]) => {
+    alts.forEach((alt) => {
+      // Use word boundaries to avoid partial matches
+      productVar = productVar.replace(new RegExp(`\\b${alt}\\b`, 'g'), standard)
+      discountVar = discountVar.replace(new RegExp(`\\b${alt}\\b`, 'g'), standard)
+    })
+  })
+
+  // Only return true if we have exact match after variations
+  return productVar === discountVar
+}
 
   const productsWithDiscounts = useMemo(() => {
     if (getActiveDiscounts.length === 0) {
