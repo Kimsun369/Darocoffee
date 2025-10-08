@@ -1,9 +1,8 @@
 "use client"
 
-import { Minus, Plus, Trash2, ShoppingBag, Clock } from "lucide-react"
+import { Plus, Minus, Trash2, ShoppingBag, Clock, Send } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
-import { Badge } from "@/components/ui/badge"
+import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { useState } from "react"
 
 interface CartItem {
@@ -36,16 +35,14 @@ export function CartSidebar({
   onCheckout,
   language,
 }: CartSidebarProps) {
-  const totalPrice = cartItems.reduce((sum, item) => sum + item.price, 0)
-  const totalPriceKHR = totalPrice * 4000 // Convert USD to KHR
-
-  // Pickup time state
   const [pickupOption, setPickupOption] = useState<"now" | "15" | "30" | "45" | "60" | "other">("now")
   const [customMinutes, setCustomMinutes] = useState<number>(5)
 
-  // Calculate pick up time string
+  const totalPrice = cartItems.reduce((sum, item) => sum + item.price, 0)
+  const totalPriceKHR = totalPrice * 4000
+
   const getPickupTimeString = () => {
-    if (pickupOption === "now") return language === "en" ? "Now" : "ឥឡូវនេះ"
+    if (pickupOption === "now") return language === "en" ? "ASAP" : "ឥឡូវនេះ"
     const now = new Date()
     let minutesToAdd = 0
     if (pickupOption === "other") {
@@ -54,81 +51,39 @@ export function CartSidebar({
       minutesToAdd = Number.parseInt(pickupOption, 10)
     }
     const pickupDate = new Date(now.getTime() + minutesToAdd * 60000)
-    return pickupDate.toLocaleTimeString("en-GB", { 
+    return pickupDate.toLocaleTimeString("en-GB", {
       hour12: false,
-      hour: '2-digit',
-      minute: '2-digit'
+      hour: "2-digit",
+      minute: "2-digit",
     })
-  }
-
-  const formatOptions = (options: Record<string, string>) => {
-    return Object.entries(options)
-      .map(([key, value]) => `${key}: ${value}`)
-      .join(" • ")
   }
 
   const generateTelegramMessage = () => {
     const now = new Date()
-    const year = now.getFullYear()
-    const month = String(now.getMonth() + 1).padStart(2, '0')
-    const day = String(now.getDate()).padStart(2, '0')
-    const hours = String(now.getHours()).padStart(2, '0')
-    const minutes = String(now.getMinutes()).padStart(2, '0')
-    
-    const dateStr = `${day}/${month}/${year}`
-    const timeStr = `${hours}:${minutes}`
+    const dateStr = now.toLocaleDateString("en-GB")
+    const timeStr = now.toLocaleTimeString("en-GB", { hour12: false, hour: "2-digit", minute: "2-digit" })
     const pickupTimeStr = getPickupTimeString()
 
-    // 100% TEXT-ONLY VERSION - NO SPECIAL CHARACTERS
-    if (language === "kh") {
-      let message = "FRESTHIE'S COFFEE ORDER\n\n"
-      message += "Date: " + dateStr + " | Time: " + timeStr + "\n"
-      message += "Pickup: " + pickupTimeStr + "\n\n"
-      message += "----------------------------\n\n"
-
-      cartItems.forEach((item, index) => {
-        message += "- " + item.quantity + "x " + (item.name_kh || item.name) + "\n"
-        message += "$" + (item.price * item.quantity).toFixed(2) + " | R " + (item.price * item.quantity * 4000).toLocaleString() + "\n"
-
-        if (Object.keys(item.options).length > 0) {
-          const optionsText = Object.entries(item.options)
-            .map(([key, value]) => key + ": " + value)
-            .join(", ")
-          message += "Options: " + optionsText + "\n"
-        }
-        message += "\n"
-      })
-
-      message += "----------------------------\n"
-      message += "TOTAL: $" + totalPrice.toFixed(2) + " | R " + totalPriceKHR.toLocaleString() + "\n"
-      message += "Pickup: " + (pickupOption === "now" ? "ASAP" : pickupOption === "other" ? customMinutes + " min" : pickupOption + " min") + "\n\n"
-      message += "Thank you!"
-
-      return message
-    }
-
-    // English version - 100% basic ASCII
-    let message = "FRESTHIE'S COFFEE ORDER\n\n"
-    message += "Date: " + dateStr + " | Time: " + timeStr + "\n"
+    let message = "FRESTHIES COFFEE ORDER\n\n"
+    message += "Date: " + dateStr + " Time: " + timeStr + "\n"
     message += "Pickup: " + pickupTimeStr + "\n\n"
     message += "----------------------------\n\n"
 
-    cartItems.forEach((item, index) => {
-      message += "- " + item.quantity + "x " + item.name + "\n"
-      message += "$" + (item.price * item.quantity).toFixed(2) + " | R " + (item.price * item.quantity * 4000).toLocaleString() + "\n"
+    cartItems.forEach((item) => {
+      message += item.quantity + "x " + (language === "kh" && item.name_kh ? item.name_kh : item.name) + "\n"
+      message += "$" + item.price.toFixed(2) + " | R" + (item.price * 4000).toLocaleString() + "\n"
 
       if (Object.keys(item.options).length > 0) {
         const optionsText = Object.entries(item.options)
           .map(([key, value]) => key + ": " + value)
           .join(", ")
-        message += "Options: " + optionsText + "\n"
+        message += optionsText + "\n"
       }
       message += "\n"
     })
 
     message += "----------------------------\n"
-    message += "TOTAL: $" + totalPrice.toFixed(2) + " | R " + totalPriceKHR.toLocaleString() + "\n"
-    message += "Pickup: " + (pickupOption === "now" ? "ASAP" : pickupOption === "other" ? customMinutes + " min" : pickupOption + " min") + "\n\n"
+    message += "TOTAL: $" + totalPrice.toFixed(2) + " | R" + totalPriceKHR.toLocaleString() + "\n\n"
     message += "Thank you!"
 
     return message
@@ -136,200 +91,344 @@ export function CartSidebar({
 
   const handleTelegramOrder = () => {
     const message = generateTelegramMessage()
-    // Use encodeURIComponent but with basic text that won't cause issues
     const encodedMessage = encodeURIComponent(message)
     const telegramUrl = `https://t.me/Hen_Chandaro?text=${encodedMessage}`
-    
-    console.log("Final URL:", telegramUrl) // Debug log
-    
     window.open(telegramUrl, "_blank")
     onCheckout()
   }
 
-  
-
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className="w-full sm:max-w-lg bg-white dark:bg-gray-900 p-0 flex flex-col">
-        <div className="flex flex-col h-full">
-          {/* Header */}
-          <div className="px-4 py-4 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center">
-              <ShoppingBag className="mr-2 h-5 w-5 text-amber-600" />
-              <h2 className={`text-xl font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                {language === "en" ? "Your Cart" : "កន្ត្រករបស់អ្នក"}
-              </h2>
+      <SheetContent
+        side="right"
+        className="w-full sm:max-w-lg flex flex-col p-0"
+        style={{
+          backgroundColor: "white",
+          color: "#1f2937",
+        }}
+      >
+        <div
+          className="px-6 py-5 border-b"
+          style={{
+            background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)",
+            borderColor: "#fbbf24",
+          }}
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className="p-2 rounded-full"
+              style={{
+                background: "linear-gradient(135deg, #d97706 0%, #b45309 100%)",
+                animation: "pulse-icon 2s ease-in-out infinite",
+              }}
+            >
+              <ShoppingBag className="h-5 w-5" style={{ color: "white" }} />
             </div>
+            <h2 className="text-xl font-bold" style={{ color: "#92400e" }}>
+              {language === "en" ? "Your Cart" : "កន្ត្រករបស់អ្នក"}
+            </h2>
           </div>
+        </div>
 
-          {cartItems.length === 0 ? (
-            <div className="flex-1 flex items-center justify-center p-4">
-              <div className="text-center p-6 max-w-sm w-full">
-                <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <ShoppingBag className="text-amber-600 h-6 w-6" />
-                </div>
-                <p className={`text-gray-600 dark:text-gray-400 mb-6 ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                  {language === "en" ? "Your cart is empty" : "កន្ត្រករបស់អ្នកទទេ"}
-                </p>
-                <Button
-                  onClick={onClose}
-                  variant="outline"
-                  className={`border-amber-300 text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/20 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                >
-                  {language === "en" ? "Continue Shopping" : "បន្តទិញ"}
-                </Button>
-              </div>
+        {cartItems.length === 0 ? (
+          <div
+            className="flex-1 flex flex-col items-center justify-center text-center p-8"
+            style={{
+              animation: "fadeIn 0.5s ease-out",
+            }}
+          >
+            <div
+              className="w-24 h-24 rounded-full flex items-center justify-center mb-6"
+              style={{
+                backgroundColor: "#fef3c7",
+                animation: "pulse-icon 2s ease-in-out infinite",
+              }}
+            >
+              <ShoppingBag className="h-12 w-12" style={{ color: "#d97706" }} />
             </div>
-          ) : (
-            <>
-              {/* Scrollable Cart Items */}
-              <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
-                {cartItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="bg-white dark:bg-gray-800 rounded-lg p-4 space-y-3 border border-gray-200 dark:border-gray-700"
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h4 className={`font-semibold text-gray-900 dark:text-gray-100 ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                          {language === "kh" && item.name_kh ? item.name_kh : item.name}
-                        </h4>
-                        {Object.keys(item.options).length > 0 && (
-                          <p className={`text-sm text-gray-600 dark:text-gray-400 mt-1 bg-amber-50 dark:bg-amber-900/20 rounded-md px-2 py-1 ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                            {formatOptions(item.options)}
-                          </p>
-                        )}
-                      </div>
+            <h3 className="text-xl font-semibold mb-2" style={{ color: "#1f2937" }}>
+              {language === "en" ? "Your cart is empty" : "កន្ត្រករបស់អ្នកទទេ"}
+            </h3>
+            <p className="mb-6" style={{ color: "#6b7280" }}>
+              {language === "en" ? "Add some delicious items to get started!" : "បន្ថែមធាតុឆ្ងាញ់ៗដើម្បីចាប់ផ្តើម!"}
+            </p>
+            <Button
+              onClick={onClose}
+              className="px-8 py-3 rounded-xl font-semibold text-base transition-all duration-300 flex items-center justify-center gap-2"
+              style={{
+                background: "linear-gradient(135deg, #d97706 0%, #b45309 100%)",
+                color: "white",
+                boxShadow: "0 4px 12px rgba(217, 119, 6, 0.3)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-2px)"
+                e.currentTarget.style.boxShadow = "0 8px 20px rgba(217, 119, 6, 0.4)"
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)"
+                e.currentTarget.style.boxShadow = "0 4px 12px rgba(217, 119, 6, 0.3)"
+              }}
+            >
+              {language === "en" ? "Continue Shopping" : "បន្តទិញទំនិញ"}
+            </Button>
+          </div>
+        ) : (
+          <>
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+              {cartItems.map((item, index) => (
+                <div
+                  key={item.id}
+                  className="rounded-xl p-4 border transition-all duration-300"
+                  style={{
+                    backgroundColor: "white",
+                    borderColor: "#fbbf24",
+                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
+                    animation: `slideInRight 0.4s ease-out ${index * 0.1}s both`,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.boxShadow = "0 8px 20px rgba(217, 119, 6, 0.15)"
+                    e.currentTarget.style.transform = "translateX(-4px)"
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.05)"
+                    e.currentTarget.style.transform = "translateX(0)"
+                  }}
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <h4 className="font-semibold mb-1" style={{ color: "#1f2937" }}>
+                        {language === "kh" && item.name_kh ? item.name_kh : item.name}
+                      </h4>
+                      {Object.keys(item.options).length > 0 && (
+                        <div
+                          className="text-xs mt-2 px-3 py-2 rounded-lg"
+                          style={{
+                            backgroundColor: "#fef3c7",
+                            color: "#92400e",
+                          }}
+                        >
+                          {Object.entries(item.options).map(([key, value]) => (
+                            <p key={key}>
+                              {key}: {value}
+                            </p>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => onRemoveItem(item.id)}
+                      className="p-2 rounded-full transition-all duration-300"
+                      style={{
+                        color: "#ef4444",
+                        backgroundColor: "#fee2e2",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#ef4444"
+                        e.currentTarget.style.color = "white"
+                        e.currentTarget.style.transform = "scale(1.1)"
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "#fee2e2"
+                        e.currentTarget.style.color = "#ef4444"
+                        e.currentTarget.style.transform = "scale(1)"
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <div
+                      className="flex items-center gap-2 px-3 py-2 rounded-full"
+                      style={{
+                        backgroundColor: "#fef3c7",
+                        border: "2px solid #fbbf24",
+                      }}
+                    >
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => onRemoveItem(item.id)}
-                        className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 h-8 w-8 ml-2"
+                        onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                        disabled={item.quantity <= 1}
+                        className="h-6 w-6 rounded-full p-0 transition-all duration-300"
+                        style={{
+                          backgroundColor: "white",
+                          color: "#d97706",
+                        }}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Minus className="h-3 w-3" />
                       </Button>
-                    </div>
-
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center space-x-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg p-2">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                          disabled={item.quantity <= 1}
-                          className="h-7 w-7 border-amber-300 hover:bg-amber-100 dark:hover:bg-amber-800/30"
-                        >
-                          <Minus className="h-3 w-3" />
-                        </Button>
-                        <span className={`font-medium w-6 text-center text-amber-800 dark:text-amber-200 ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                          {item.quantity}
-                        </span>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                          className="h-7 w-7 border-amber-300 hover:bg-amber-100 dark:hover:bg-amber-800/30"
-                        >
-                          <Plus className="h-3 w-3" />
-                        </Button>
-                      </div>
-                      <div className="flex flex-col items-end">
-                        <Badge className={`bg-amber-600 text-white font-medium px-3 py-1 mb-1 ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                          ${item.price.toFixed(2)}
-                        </Badge>
-                        <span className={`text-xs text-amber-600 font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                          KHR {(item.price * 4000).toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Fixed Bottom Section */}
-              <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
-                {/* Pick up time selector */}
-                <div className="mb-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4">
-                  <label className={`block font-medium mb-3 text-gray-900 dark:text-gray-100 flex items-center ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                    <Clock className="w-4 h-4 text-amber-600 mr-2" />
-                    {language === "en" ? "Pick up time:" : "ពេលយក:"}
-                  </label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {[
-                      { value: "now", label: language === "en" ? "Now" : "ឥឡូវនេះ" },
-                      { value: "15", label: `15 ${language === "en" ? "min" : "នាទី"}` },
-                      { value: "30", label: `30 ${language === "en" ? "min" : "នាទី"}` },
-                      { value: "45", label: `45 ${language === "en" ? "min" : "នាទី"}` },
-                      { value: "60", label: `1 ${language === "en" ? "hr" : "ម៉ោង"}` },
-                      { value: "other", label: language === "en" ? "Other" : "ផ្សេងទៀត" },
-                    ].map((option) => (
+                      <span className="font-bold w-8 text-center" style={{ color: "#92400e" }}>
+                        {item.quantity}
+                      </span>
                       <Button
-                        key={option.value}
-                        variant={pickupOption === option.value ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setPickupOption(option.value as any)}
-                        className={`text-xs h-8 ${language === "kh" ? "font-mono" : "font-sans"} ${
-                          pickupOption === option.value
-                            ? "bg-amber-600 hover:bg-amber-700 text-white"
-                            : "border-amber-300 text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/20"
-                        }`}
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                        className="h-6 w-6 rounded-full p-0 transition-all duration-300"
+                        style={{
+                          backgroundColor: "white",
+                          color: "#d97706",
+                        }}
                       >
-                        {option.label}
+                        <Plus className="h-3 w-3" />
                       </Button>
-                    ))}
-                  </div>
-                  {pickupOption === "other" && (
-                    <div className="mt-3 flex items-center space-x-2 bg-white dark:bg-gray-800 rounded-md p-2">
-                      <input
-                        type="number"
-                        min={1}
-                        max={180}
-                        value={customMinutes}
-                        onChange={(e) => setCustomMinutes(Number(e.target.value))}
-                        className={`border border-amber-300 rounded-md px-2 py-1 w-16 text-center bg-white dark:bg-gray-800 focus:border-amber-500 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                        placeholder="5"
-                      />
-                      <span className={`text-sm text-gray-600 dark:text-gray-400 ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                        {language === "en" ? "minutes" : "នាទី"}
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <span className="text-lg font-bold" style={{ color: "#d97706" }}>
+                        ${item.price.toFixed(2)}
+                      </span>
+                      <span className="text-xs font-medium" style={{ color: "#92400e" }}>
+                        R{(item.price * 4000).toLocaleString()}
                       </span>
                     </div>
-                  )}
-                  <div className={`mt-3 text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 rounded-md px-3 py-2 ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                    {language === "en" ? `Pick up at: ${getPickupTimeString()}` : `យកនៅម៉ោង: ${getPickupTimeString()}`}
                   </div>
                 </div>
+              ))}
+            </div>
 
-                {/* Cart Summary */}
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center text-lg font-semibold">
-                    <span className={`text-gray-900 dark:text-gray-100 ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                      {language === "en" ? "Total:" : "សរុប:"}
-                    </span>
-                    <div className="flex flex-col items-end">
-                      <span className={`text-amber-700 dark:text-amber-300 ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                        ${totalPrice.toFixed(2)}
-                      </span>
-                      <span className={`text-sm text-amber-600 font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                        KHR {totalPriceKHR.toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                  <Button
-                    onClick={handleTelegramOrder}
-                    className={`w-full bg-amber-600 hover:bg-amber-700 text-white py-3 ${language === "kh" ? "font-mono" : "font-sans"}`}
+            <div
+              className="flex-shrink-0 border-t px-4 py-4"
+              style={{
+                backgroundColor: "white",
+                borderColor: "#fbbf24",
+                boxShadow: "0 -4px 12px rgba(0, 0, 0, 0.05)",
+              }}
+            >
+              <div
+                className="mb-4 rounded-xl p-4"
+                style={{
+                  background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)",
+                  border: "2px solid #fbbf24",
+                }}
+              >
+                <label className="block font-semibold mb-3 flex items-center gap-2" style={{ color: "#92400e" }}>
+                  <Clock className="w-5 h-5" style={{ color: "#d97706" }} />
+                  {language === "en" ? "Pick up time:" : "ពេលយក:"}
+                </label>
+                <div className="grid grid-cols-3 gap-2 mb-3">
+                  {[
+                    { value: "now", label: language === "en" ? "Now" : "ឥឡូវនេះ" },
+                    { value: "15", label: `15 ${language === "en" ? "min" : "នាទី"}` },
+                    { value: "30", label: `30 ${language === "en" ? "min" : "នាទី"}` },
+                    { value: "45", label: `45 ${language === "en" ? "min" : "នាទី"}` },
+                    { value: "60", label: `1 ${language === "en" ? "hr" : "ម៉ោង"}` },
+                    { value: "other", label: language === "en" ? "Other" : "ផ្សេងទៀត" },
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => setPickupOption(option.value as any)}
+                      className="px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-300"
+                      style={{
+                        backgroundColor: pickupOption === option.value ? "#d97706" : "white",
+                        color: pickupOption === option.value ? "white" : "#92400e",
+                        border: `2px solid ${pickupOption === option.value ? "#d97706" : "#fbbf24"}`,
+                        transform: pickupOption === option.value ? "scale(1.05)" : "scale(1)",
+                        boxShadow: pickupOption === option.value ? "0 4px 12px rgba(217, 119, 6, 0.3)" : "none",
+                      }}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+                {pickupOption === "other" && (
+                  <div
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg"
+                    style={{
+                      backgroundColor: "white",
+                      border: "2px solid #fbbf24",
+                    }}
                   >
-                    {language === "en" ? "Order via Telegram" : "បញ្ជាទិញតាម Telegram"}
-                  </Button>
-                  <p className={`text-xs text-gray-500 dark:text-gray-400 text-center ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                    {language === "en"
-                      ? "You will be redirected to Telegram to complete your order"
-                      : "អ្នកនឹងត្រូវបានបញ្ជូនទៅ Telegram ដើម្បីបញ្ចប់ការបញ្ជាទិញ"}
-                  </p>
+                    <input
+                      type="number"
+                      min={1}
+                      max={180}
+                      value={customMinutes}
+                      onChange={(e) => setCustomMinutes(Number(e.target.value))}
+                      className="border-0 rounded-md px-2 py-1 w-16 text-center font-semibold"
+                      style={{
+                        backgroundColor: "#fef3c7",
+                        color: "#92400e",
+                      }}
+                    />
+                    <span className="text-sm font-medium" style={{ color: "#92400e" }}>
+                      {language === "en" ? "minutes" : "នាទី"}
+                    </span>
+                  </div>
+                )}
+                <div
+                  className="mt-3 text-sm font-semibold px-3 py-2 rounded-lg text-center"
+                  style={{
+                    backgroundColor: "white",
+                    color: "#92400e",
+                    border: "2px solid #fbbf24",
+                  }}
+                >
+                  {language === "en" ? `Pick up at: ${getPickupTimeString()}` : `យកនៅម៉ោង: ${getPickupTimeString()}`}
                 </div>
               </div>
-            </>
-          )}
-        </div>
+
+              <div className="space-y-3 mb-4">
+                <div
+                  className="flex justify-between items-center text-xl font-bold px-4 py-3 rounded-xl"
+                  style={{
+                    background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)",
+                    border: "2px solid #fbbf24",
+                  }}
+                >
+                  <span style={{ color: "#92400e" }}>{language === "en" ? "Total:" : "សរុប:"}</span>
+                  <div className="flex flex-col items-end">
+                    <span style={{ color: "#d97706" }}>${totalPrice.toFixed(2)}</span>
+                    <span className="text-sm font-semibold" style={{ color: "#92400e" }}>
+                      R{totalPriceKHR.toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <Button
+                onClick={handleTelegramOrder}
+                className="w-full py-4 rounded-xl font-bold text-base transition-all duration-300 flex items-center justify-center gap-2"
+                style={{
+                  background: "linear-gradient(135deg, #0088cc 0%, #006699 100%)",
+                  color: "white",
+                  boxShadow: "0 8px 20px rgba(0, 136, 204, 0.3)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px)"
+                  e.currentTarget.style.boxShadow = "0 12px 28px rgba(0, 136, 204, 0.4)"
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)"
+                  e.currentTarget.style.boxShadow = "0 8px 20px rgba(0, 136, 204, 0.3)"
+                }}
+              >
+                <Send className="h-5 w-5" />
+                {language === "en" ? "Order via Telegram" : "បញ្ជាទិញតាម Telegram"}
+              </Button>
+              <p className="text-xs text-center mt-3" style={{ color: "#6b7280" }}>
+                {language === "en"
+                  ? "You will be redirected to Telegram to complete your order"
+                  : "អ្នកនឹងត្រូវបានបញ្ជូនទៅ Telegram ដើម្បីបញ្ចប់ការបញ្ជាទិញ"}
+              </p>
+            </div>
+          </>
+        )}
+
+        <style jsx>{`
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+          }
+          @keyframes pulse-icon {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+          }
+        `}</style>
       </SheetContent>
     </Sheet>
   )
