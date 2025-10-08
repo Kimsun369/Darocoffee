@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState, useMemo, useEffect } from "react"
-import { Search, Heart, Plus, ChevronRight, Tag, Filter, X, Percent, Sparkles } from "lucide-react"
+import { Search, Heart, Plus, Tag, Sparkles, Coffee, ChevronDown, ChevronUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
@@ -72,6 +72,7 @@ export function MenuSection({
   const [discounts, setDiscounts] = useState<Discount[]>([])
   const [events, setEvents] = useState<string[]>([])
   const [discountsLoading, setDiscountsLoading] = useState(true)
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     async function loadCategories() {
@@ -244,7 +245,6 @@ export function MenuSection({
     return false
   }
 
-  // Apply discounts to products automatically
   const productsWithDiscounts = useMemo(() => {
     if (getActiveDiscounts.length === 0) {
       return products.map((product) => ({
@@ -283,24 +283,29 @@ export function MenuSection({
     return processedProducts
   }, [products, getActiveDiscounts])
 
-  // Get count of products for each event
+  const discountedProducts = useMemo(() => {
+    return productsWithDiscounts.filter((p) => p.isDiscounted)
+  }, [productsWithDiscounts])
+
+  const eventFilteredDiscountedProducts = useMemo(() => {
+    if (!selectedEvent || selectedEvent === "all") {
+      return discountedProducts
+    }
+    return discountedProducts.filter((product) => product.discountEvent === selectedEvent)
+  }, [discountedProducts, selectedEvent])
+
   const getEventProductCount = useMemo(() => {
     const eventCounts: Record<string, number> = { all: 0 }
-    
-    // Count all discounted products for "all" filter
-    eventCounts.all = productsWithDiscounts.filter(p => p.isDiscounted).length
-    
-    // Count products for each specific event
-    events.forEach(event => {
-      eventCounts[event] = productsWithDiscounts.filter(p => 
-        p.isDiscounted && p.discountEvent === event
-      ).length
-    })
-    
-    return eventCounts
-  }, [productsWithDiscounts, events])
 
-  // Filter products based on search and category
+    eventCounts.all = discountedProducts.length
+
+    events.forEach((event) => {
+      eventCounts[event] = discountedProducts.filter((p) => p.discountEvent === event).length
+    })
+
+    return eventCounts
+  }, [discountedProducts, events])
+
   const filteredProducts = useMemo(() => {
     let filtered = productsWithDiscounts
 
@@ -321,23 +326,11 @@ export function MenuSection({
     return filtered
   }, [productsWithDiscounts, searchQuery, selectedCategory])
 
-  // Get products for the selected discount event
-  const eventFilteredProducts = useMemo(() => {
-    if (!selectedEvent || selectedEvent === "all") {
-      return filteredProducts
-    }
-
-    // When a specific event is selected, show only discounted products from that event
-    return filteredProducts.filter((product) => 
-      product.isDiscounted && product.discountEvent === selectedEvent
-    )
-  }, [filteredProducts, selectedEvent])
-
   const productsByCategory = useMemo(() => {
     const grouped: Record<string, Product[]> = {}
 
     if (selectedCategory === "all") {
-      eventFilteredProducts.forEach((product) => {
+      filteredProducts.forEach((product) => {
         const categoryId = mapCategoryToId(product.category)
         if (!grouped[categoryId]) {
           grouped[categoryId] = []
@@ -345,13 +338,13 @@ export function MenuSection({
         grouped[categoryId].push(product)
       })
     } else {
-      grouped[selectedCategory] = eventFilteredProducts.filter(
+      grouped[selectedCategory] = filteredProducts.filter(
         (product) => mapCategoryToId(product.category) === selectedCategory,
       )
     }
 
     return grouped
-  }, [eventFilteredProducts, selectedCategory])
+  }, [filteredProducts, selectedCategory])
 
   const availableCategories = useMemo(() => {
     const uniqueCategories = new Set<string>()
@@ -407,479 +400,273 @@ export function MenuSection({
     })
   }
 
-  const handleSeeMore = (categoryId: string) => {
-    setSelectedCategory(categoryId)
+  const toggleCategoryExpansion = (categoryId: string) => {
+    setExpandedCategories((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(categoryId)) {
+        newSet.delete(categoryId)
+      } else {
+        newSet.add(categoryId)
+      }
+      return newSet
+    })
   }
 
-  const clearEventFilter = () => {
-    onEventChange("all")
-  }
+  const ProductCard = ({ product, index }: { product: Product; index: number }) => (
+    <Card
+      key={product.id}
+      onClick={() => onProductClick(product)}
+      className="group cursor-pointer overflow-hidden border border-border/50 bg-card hover:shadow-lg hover:border-primary/30 transition-all duration-300 animate-slide-in"
+      style={{ animationDelay: `${index * 50}ms` }}
+    >
+      <CardContent className="p-0">
+        {/* Product Image */}
+        <div className="relative aspect-[4/3] overflow-hidden bg-secondary/30">
+          <img
+            src={product.image || "/placeholder.svg"}
+            alt={product.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
 
-  const getCategoryDisplayName = (categoryId: string) => {
-    const predefinedCategory = categories.find((cat) => cat.id === categoryId)
-    if (predefinedCategory) {
-      return predefinedCategory.name[language]
-    }
-
-    const sheetCategory = categoriesFromSheet.find(
-      (cat) => mapCategoryToId(cat.Category || cat.category) === categoryId,
-    )
-
-    if (sheetCategory) {
-      return language === "kh"
-        ? sheetCategory.category_kh || sheetCategory["Category_KH"] || sheetCategory.Category || sheetCategory.category
-        : sheetCategory.Category || sheetCategory.category
-    }
-
-    return categoryId.charAt(0).toUpperCase() + categoryId.slice(1)
-  }
-
-  return (
-    <section className="min-h-screen bg-gradient-to-br from-amber-50/50 to-orange-50/30">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6">
-        {/* Main Layout Container */}
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
-          {/* DISCOUNT FILTER SIDEBAR */}
-          {getActiveDiscounts.length > 0 && (
-            <aside className="w-full lg:w-80 flex-shrink-0">
-              <div className="sticky top-4 bg-gradient-to-b from-white to-amber-50 rounded-2xl shadow-lg border border-amber-200 overflow-hidden">
-                {/* Sidebar Header */}
-                <div className="bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                      <Sparkles className="h-6 w-6 text-white" />
-                    </div>
-                    <div>
-                      <h2 className={`font-bold text-xl text-white ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                        {language === "en" ? "Special Offers" : "ការផ្តល់ជូនពិសេស"}
-                      </h2>
-                      <p className="text-amber-100 text-sm mt-1">
-                        {getActiveDiscounts.length} {language === "en" ? "active promotions" : "ការផ្សព្វផ្សាយសកម្ម"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Discount Filter Options */}
-                <div className="p-5 space-y-3 max-h-[500px] overflow-y-auto">
-                  {/* All Discounts Option */}
-                  <button
-                    onClick={() => onEventChange("all")}
-                    className={`w-full text-left px-5 py-4 rounded-xl transition-all duration-300 border-2 group ${
-                      selectedEvent === "all" || !selectedEvent
-                        ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white border-emerald-600 shadow-lg"
-                        : "bg-white text-gray-700 border-amber-100 hover:border-amber-300 hover:bg-amber-50 hover:shadow-md"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`p-1.5 rounded-lg ${selectedEvent === "all" ? "bg-white/20" : "bg-amber-100"}`}>
-                          <Percent className={`h-4 w-4 ${selectedEvent === "all" ? "text-white" : "text-amber-600"}`} />
-                        </div>
-                        <span className={`font-semibold ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                          {language === "en" ? "All Offers" : "ការផ្តល់ជូនទាំងអស់"}
-                        </span>
-                      </div>
-                      <span
-                        className={`text-sm font-bold px-3 py-1.5 rounded-lg min-w-10 text-center ${
-                          selectedEvent === "all" || !selectedEvent
-                            ? "bg-white/20 text-white backdrop-blur-sm"
-                            : "bg-amber-100 text-amber-800"
-                        }`}
-                      >
-                        {getEventProductCount.all}
-                      </span>
-                    </div>
-                  </button>
-
-                  {/* Individual Event Options */}
-                  {events.map((eventName) => (
-                    <button
-                      key={eventName}
-                      onClick={() => onEventChange(eventName)}
-                      className={`w-full text-left px-5 py-4 rounded-xl transition-all duration-300 border-2 group ${
-                        selectedEvent === eventName
-                          ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white border-blue-600 shadow-lg"
-                          : "bg-white text-gray-700 border-amber-100 hover:border-amber-300 hover:bg-amber-50 hover:shadow-md"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className={`p-1.5 rounded-lg ${selectedEvent === eventName ? "bg-white/20" : "bg-blue-100"}`}>
-                            <Tag className={`h-4 w-4 ${selectedEvent === eventName ? "text-white" : "text-blue-600"}`} />
-                          </div>
-                          <span className={`font-semibold ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                            {eventName}
-                          </span>
-                        </div>
-                        <span
-                          className={`text-sm font-bold px-3 py-1.5 rounded-lg min-w-10 text-center ${
-                            selectedEvent === eventName
-                              ? "bg-white/20 text-white backdrop-blur-sm"
-                              : "bg-blue-100 text-blue-800"
-                          }`}
-                        >
-                          {getEventProductCount[eventName] || 0}
-                        </span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-
-                {/* Clear Filter Button */}
-                {selectedEvent && selectedEvent !== "all" && (
-                  <div className="p-5 border-t border-amber-200 bg-amber-50/50">
-                    <Button
-                      variant="outline"
-                      onClick={clearEventFilter}
-                      className="w-full text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-white border-amber-300 bg-white/80 backdrop-blur-sm"
-                    >
-                      <X className="h-4 w-4 mr-2" />
-                      {language === "en" ? "Clear Filter" : "លុបតម្រង"}
-                    </Button>
-                  </div>
-                )}
-              </div>
-
-              {/* DISCOUNT EVENT PRODUCTS - Display directly below filter when event is selected */}
-              {selectedEvent && selectedEvent !== "all" && (
-                <div className="mt-6">
-                  <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg border border-blue-600">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="font-bold text-xl">
-                        {selectedEvent}
-                      </h3>
-                      <div className="bg-white/20 px-3 py-1.5 rounded-lg text-sm font-bold backdrop-blur-sm border border-white/30">
-                        {getEventProductCount[selectedEvent] || 0} {language === "en" ? "items" : "ធាតុ"}
-                      </div>
-                    </div>
-                    <p className="text-blue-100 text-sm">
-                      {language === "en"
-                        ? `Showing ${getEventProductCount[selectedEvent] || 0} discounted products from this event`
-                        : `ការបង្ហាញផលិតផលបញ្ចុះតម្លៃ ${getEventProductCount[selectedEvent] || 0} ពីព្រឹត្តិការណ៍នេះ`}
-                    </p>
-                  </div>
-
-                  {/* Event Products Grid */}
-                  <div className="mt-4 grid grid-cols-1 gap-4 max-h-[600px] overflow-y-auto">
-                    {eventFilteredProducts.map((product) => (
-                      <Card
-                        key={product.id}
-                        className="cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-200 bg-white rounded-xl overflow-hidden"
-                        onClick={() => onProductClick(product)}
-                      >
-                        <CardContent className="p-0">
-                          <div className="flex">
-                            <div className="w-20 h-20 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden flex-shrink-0">
-                              <img
-                                src={product.image || "/placeholder.svg"}
-                                alt={product.name}
-                                className="w-full h-full object-cover"
-                                onError={(e) => {
-                                  const target = e.target as HTMLImageElement
-                                  target.src = "/placeholder.svg"
-                                }}
-                              />
-                            </div>
-                            <div className="flex-1 p-3">
-                              <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                  <h4 className={`font-semibold text-sm text-gray-900 line-clamp-1 ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                                    {language === "kh" ? product.name_kh : product.name}
-                                  </h4>
-                                  <div className="flex items-baseline gap-2 mt-1">
-                                    <span className="text-lg font-bold text-red-600">
-                                      ${product.price.toFixed(2)}
-                                    </span>
-                                    <span className="text-sm text-gray-500 line-through">
-                                      ${product.originalPrice?.toFixed(2)}
-                                    </span>
-                                  </div>
-                                </div>
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    onAddToCart(product)
-                                  }}
-                                  className="w-8 h-8 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 rounded-lg flex items-center justify-center ml-2 flex-shrink-0"
-                                >
-                                  <Plus className="h-4 w-4 text-white" />
-                                </button>
-                              </div>
-                              {product.discount && (
-                                <div className="mt-1">
-                                  <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded">
-                                    {product.discount}% OFF
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </aside>
+          {product.isDiscounted && product.discount && (
+            <div className="absolute top-3 left-3 bg-red-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg animate-pulse-subtle">
+              -{product.discount}%
+            </div>
           )}
 
-          {/* MAIN CONTENT AREA */}
-          <main className="flex-1 min-w-0">
-            {/* Category Filter & Search */}
-            <div className="sticky top-4 z-40 bg-white/80 backdrop-blur-lg border border-amber-200 rounded-2xl shadow-lg mb-8 p-6">
-              {/* Search Bar */}
-              <div className="mb-6">
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-amber-600" />
-                  <Input
-                    placeholder={language === "en" ? "Search menus..." : "ស្វែងរកម្ហូបអាហារ..."}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className={`w-full pl-12 pr-4 py-3.5 border-2 border-amber-100 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 rounded-xl bg-white/50 text-base transition-all duration-200 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                  />
-                </div>
-              </div>
+          {/* Favorite Button */}
+          <button
+            onClick={(e) => toggleFavorite(product.id, e)}
+            className="absolute top-3 right-3 w-9 h-9 rounded-full bg-card/90 backdrop-blur-sm flex items-center justify-center hover:bg-card transition-colors shadow-md"
+          >
+            <Heart
+              className={`h-5 w-5 transition-colors ${
+                favorites.has(product.id) ? "fill-red-500 text-red-500" : "text-muted-foreground"
+              }`}
+            />
+          </button>
+        </div>
 
-              {/* Category Filter - Horizontal Scroll */}
-              <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 bg-amber-100 rounded-lg">
-                    <Filter className="h-4 w-4 text-amber-700" />
-                  </div>
-                  <span
-                    className={`text-sm font-bold text-amber-900 uppercase tracking-wide ${language === "kh" ? "font-mono" : "font-sans"}`}
-                  >
-                    {language === "en" ? "Browse Categories" : "រុករកប្រភេទ"}
+        {/* Product Info */}
+        <div className="p-4">
+          <h3 className="font-semibold text-foreground text-base mb-1 line-clamp-1">
+            {language === "en" ? product.name : product.name_kh}
+          </h3>
+          <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
+            {language === "en" ? product.description : product.description_kh}
+          </p>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-baseline gap-2">
+              {product.isDiscounted && product.originalPrice ? (
+                <>
+                  <span className="text-lg font-bold text-red-600 animate-pulse-subtle">
+                    ${product.price.toFixed(2)}
                   </span>
-                </div>
-                
-                {/* Scrollable Category Container */}
-                <div className="relative">
-                  <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-amber-300 scrollbar-track-amber-100">
-                    {visibleCategories.map((category) => {
-                      const isSelected = selectedCategory === category.id
+                  <span className="text-sm text-amber-700 line-through">${product.originalPrice.toFixed(2)}</span>
+                </>
+              ) : (
+                <span className="text-lg font-bold text-amber-700">${product.price.toFixed(2)}</span>
+              )}
+            </div>
 
-                      return (
-                        <Button
-                          key={category.id}
-                          variant="ghost"
-                          onClick={() => setSelectedCategory(category.id)}
-                          className={`flex-shrink-0 font-semibold whitespace-nowrap px-6 py-3 h-auto transition-all duration-300 rounded-xl border-2 ${
-                            isSelected
-                              ? "bg-gradient-to-r from-amber-500 to-amber-600 text-white border-amber-600 shadow-lg"
-                              : "bg-white text-gray-700 border-amber-100 hover:bg-amber-50 hover:border-amber-300 hover:shadow-md"
-                          } ${language === "kh" ? "font-mono" : "font-sans"}`}
-                        >
-                          {category.name[language] || getCategoryDisplayName(category.id)}
-                        </Button>
-                      )
-                    })}
-                  </div>
-                  
-                  {/* Gradient fade effect for scroll indication */}
-                  <div className="absolute right-0 top-0 bottom-4 w-8 bg-gradient-to-l from-white/80 to-transparent pointer-events-none"></div>
+            <Button
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation()
+                onAddToCart(product)
+              }}
+              className="rounded-full h-8 w-8 p-0 bg-amber-600 hover:bg-amber-700 text-white shadow-sm"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Search Bar */}
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+          <div className="relative max-w-2xl mx-auto">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder={language === "en" ? "Search menu..." : "ស្វែងរកម្ហូប..."}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-12 pr-4 h-12 bg-card border-border/50 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary/20 rounded-xl"
+            />
+          </div>
+        </div>
+      </div>
+
+      {discountedProducts.length > 0 && (
+        <div className="bg-gradient-to-br from-red-50 to-orange-50 border-b border-red-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+            {/* Discount Header */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center">
+                  <Sparkles className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-red-700">
+                    {language === "en" ? "Special Offers" : "ការផ្តល់ជូនពិសេស"}
+                  </h2>
+                  <p className="text-sm text-red-600">
+                    {language === "en"
+                      ? `${eventFilteredDiscountedProducts.length} items on sale`
+                      : `${eventFilteredDiscountedProducts.length} ធាតុកំពុងបញ្ចុះតម្លៃ`}
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* REGULAR PRODUCTS GRID - Only show when no specific event is selected */}
-            {(!selectedEvent || selectedEvent === "all") && (
-              <div className="space-y-12">
-                {Object.entries(productsByCategory).map(([categoryId, categoryProducts]) => {
-                  if (categoryProducts.length === 0) return null
+            {/* Event Filters */}
+            {events.length > 0 && (
+              <div className="flex items-center gap-2 overflow-x-auto scrollbar-thin pb-2 mb-4">
+                <button
+                  onClick={() => onEventChange("all")}
+                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    !selectedEvent || selectedEvent === "all"
+                      ? "bg-red-600 text-white shadow-md"
+                      : "bg-white text-red-600 border border-red-200 hover:bg-red-50"
+                  }`}
+                >
+                  <Tag className="h-4 w-4" />
+                  <span>{language === "en" ? "All Offers" : "ទាំងអស់"}</span>
+                  <span className="ml-1 text-xs opacity-90">({getEventProductCount.all})</span>
+                </button>
 
-                  const categoryName = getCategoryDisplayName(categoryId)
-                  const displayProducts = selectedCategory === "all" ? categoryProducts.slice(0, 4) : categoryProducts
-                  const hasMoreProducts = selectedCategory === "all" && categoryProducts.length > 4
-
-                  return (
-                    <div key={categoryId} className="space-y-6">
-                      {/* Category Header */}
-                      <div className="flex items-center justify-between px-2">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <div className="w-3 h-8 bg-gradient-to-b from-amber-500 to-amber-600 rounded-full"></div>
-                            <h3
-                              className={`font-bold text-3xl text-gray-900 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                            >
-                              {categoryName}
-                            </h3>
-                          </div>
-                          <p className="text-gray-600 text-sm ml-6">
-                            {categoryProducts.length} {language === "en" ? "delicious items" : "មុខម្ហូបឆ្ងាញ់"}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Products Grid */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {displayProducts.map((product) => (
-                          <Card
-                            key={product.id}
-                            className="group cursor-pointer transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 border border-gray-200 bg-white rounded-2xl overflow-hidden"
-                            onClick={() => onProductClick(product)}
-                          >
-                            <CardContent className="p-0">
-                              <div className="relative aspect-[4/3] bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
-                                {/* Discount Badge */}
-                                {product.isDiscounted && product.discount && (
-                                  <div className="absolute top-4 left-4 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-bold px-4 py-2 rounded-xl shadow-xl z-10 flex items-center gap-2 border border-red-700">
-                                    <Tag className="h-4 w-4" />
-                                    {product.discount}% OFF
-                                  </div>
-                                )}
-
-                                {/* Product Image */}
-                                <div className="w-full h-full flex items-center justify-center overflow-hidden">
-                                  <img
-                                    src={product.image || "/placeholder.svg"}
-                                    alt={product.name}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                    onError={(e) => {
-                                      const target = e.target as HTMLImageElement
-                                      target.src = "/placeholder.svg"
-                                    }}
-                                  />
-                                </div>
-
-                                {/* Action Buttons */}
-                                <div className="absolute top-4 right-4 flex flex-col gap-2">
-                                  <button
-                                    onClick={(e) => toggleFavorite(product.id, e)}
-                                    className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-gray-200"
-                                  >
-                                    <Heart
-                                      className={`h-5 w-5 transition-colors ${
-                                        favorites.has(product.id) ? "fill-red-500 text-red-500" : "text-gray-400 hover:text-red-400"
-                                      }`}
-                                    />
-                                  </button>
-
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      onAddToCart(product)
-                                    }}
-                                    className="w-10 h-10 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 rounded-xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-amber-600"
-                                  >
-                                    <Plus className="h-5 w-5 text-white" />
-                                  </button>
-                                </div>
-                              </div>
-
-                              {/* Product Info */}
-                              <div className="p-5 space-y-3">
-                                <h4
-                                  className={`font-bold text-lg text-gray-900 line-clamp-2 leading-tight ${language === "kh" ? "font-mono" : "font-sans"}`}
-                                >
-                                  {language === "kh" ? product.name_kh : product.name}
-                                </h4>
-                                <p
-                                  className={`text-sm text-gray-600 line-clamp-2 leading-relaxed ${language === "kh" ? "font-mono" : "font-sans"}`}
-                                >
-                                  {language === "kh" ? product.description_kh : product.description}
-                                </p>
-
-                                {/* Price Display */}
-                                <div className="flex flex-col gap-2 pt-2">
-                                  {product.isDiscounted ? (
-                                    <>
-                                      <div className="flex items-baseline gap-3">
-                                        <span className="text-2xl font-bold text-red-600">
-                                          ${product.price.toFixed(2)}
-                                        </span>
-                                        <span className="text-sm text-red-500 font-semibold">
-                                          {(product.price * 4000).toLocaleString()} ៛
-                                        </span>
-                                      </div>
-                                      <div className="flex items-baseline gap-2">
-                                        <span className="text-base text-gray-500 line-through font-medium">
-                                          ${product.originalPrice?.toFixed(2)}
-                                        </span>
-                                        <span className="text-xs text-gray-400 line-through">
-                                          {((product.originalPrice || 0) * 4000).toLocaleString()} ៛
-                                        </span>
-                                      </div>
-                                    </>
-                                  ) : (
-                                    <div className="flex items-baseline gap-3">
-                                      <span className="text-2xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
-                                      <span className="text-sm text-gray-600 font-semibold">
-                                        {(product.price * 4000).toLocaleString()} ៛
-                                      </span>
-                                    </div>
-                                  )}
-                                </div>
-
-                                {/* Add to Cart Button */}
-                                <Button
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    onAddToCart(product)
-                                  }}
-                                  className={`w-full mt-4 font-semibold py-3.5 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl ${
-                                    product.isDiscounted
-                                      ? "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 border border-red-600"
-                                      : "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 border border-amber-600"
-                                  } text-white ${language === "kh" ? "font-mono" : "font-sans"}`}
-                                >
-                                  {product.isDiscounted
-                                    ? language === "en"
-                                      ? "Add Discounted Item"
-                                      : "បន្ថែមវត្ថុបញ្ចុះតម្លៃ"
-                                    : language === "en"
-                                      ? "Add to Cart"
-                                      : "បន្ថែមទៅកន្ត្រក"}
-                                </Button>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-
-                      {/* See More Button */}
-                      {hasMoreProducts && (
-                        <div className="text-center pt-6">
-                          <Button
-                            variant="outline"
-                            onClick={() => handleSeeMore(categoryId)}
-                            className="border-2 border-amber-400 text-amber-700 hover:bg-amber-50 hover:text-amber-800 hover:border-amber-500 rounded-xl px-8 py-3.5 font-semibold shadow-md hover:shadow-lg transition-all duration-300 group"
-                          >
-                            <span className="mr-2">{language === "en" ? "See More" : "មើលបន្ថែម"}</span>
-                            <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-
-            {/* No Results */}
-            {Object.keys(productsByCategory).length === 0 && (!selectedEvent || selectedEvent === "all") && (
-              <div className="text-center py-20">
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-12 border border-amber-200 max-w-md mx-auto shadow-lg">
-                  <div className="w-20 h-20 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <Search className="h-10 w-10 text-amber-600" />
-                  </div>
-                  <h3 className={`text-xl font-bold text-gray-900 mb-3 ${language === "kh" ? "font-mono" : "font-sans"}`}>
-                    {language === "en" ? "No items found" : "រកមិនឃើញធាតុ"}
-                  </h3>
-                  <p
-                    className={`text-gray-600 text-base leading-relaxed ${language === "kh" ? "font-mono" : "font-sans"}`}
+                {events.map((event) => (
+                  <button
+                    key={event}
+                    onClick={() => onEventChange(event)}
+                    className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                      selectedEvent === event
+                        ? "bg-red-600 text-white shadow-md"
+                        : "bg-white text-red-600 border border-red-200 hover:bg-red-50"
+                    }`}
                   >
-                    {language === "en" 
-                      ? "Try adjusting your search or filter to find what you're looking for." 
-                      : "សូមព្យាយាមកែសម្រួលការស្វែងរក ឬតម្រងរបស់អ្នកដើម្បីស្វែងរកអ្វីដែលអ្នកកំពុងស្វែងរក។"}
-                  </p>
-                </div>
+                    <span>{event}</span>
+                    <span className="ml-1 text-xs opacity-90">({getEventProductCount[event]})</span>
+                  </button>
+                ))}
               </div>
             )}
-          </main>
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              {eventFilteredDiscountedProducts.map((product, index) => (
+                <ProductCard key={product.id} product={product} index={index} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="sticky top-[73px] z-30 bg-background/95 backdrop-blur-lg border-b border-border/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            {visibleCategories.map((category) => {
+              const isActive = selectedCategory === category.id
+              return (
+                <button
+                  key={category.id}
+                  onClick={() => {
+                    setSelectedCategory(category.id)
+                  }}
+                  className={`flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                    isActive
+                      ? "bg-amber-600 text-white shadow-sm"
+                      : "bg-secondary/60 text-secondary-foreground hover:bg-secondary hover:shadow-sm"
+                  }`}
+                >
+                  {category.name[language]}
+                </button>
+              )
+            })}
+          </div>
         </div>
       </div>
-    </section>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        {Object.entries(productsByCategory).map(([categoryId, categoryProducts]) => {
+          if (categoryProducts.length === 0) return null
+
+          const category = dynamicCategories.find((cat) => cat.id === categoryId)
+          const categoryImage = getCategoryImage(categoryId)
+          const isExpanded = expandedCategories.has(categoryId)
+          const displayProducts = isExpanded ? categoryProducts : categoryProducts.slice(0, 4)
+          const hasMore = categoryProducts.length > 4
+
+          return (
+            <div key={categoryId} className="mb-12">
+              {/* Category Header */}
+              {selectedCategory === "all" && category && (
+                <div className="mb-6 flex items-center gap-4">
+                  {categoryImage && (
+                    <div className="w-12 h-12 rounded-xl overflow-hidden bg-secondary/50 flex-shrink-0">
+                      <img
+                        src={categoryImage || "/placeholder.svg"}
+                        alt={category.name[language]}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <h2 className="text-2xl font-semibold text-foreground tracking-tight">{category.name[language]}</h2>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                {displayProducts.map((product, index) => (
+                  <ProductCard key={product.id} product={product} index={index} />
+                ))}
+              </div>
+
+              {hasMore && (
+                <div className="mt-6 text-center">
+                  <Button
+                    onClick={() => toggleCategoryExpansion(categoryId)}
+                    variant="outline"
+                    className="px-6 py-2 rounded-full border-amber-600 text-amber-700 hover:bg-amber-50 hover:text-amber-800"
+                  >
+                    {isExpanded ? (
+                      <>
+                        <ChevronUp className="h-4 w-4 mr-2" />
+                        {language === "en" ? "Show Less" : "បង្ហាញតិច"}
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="h-4 w-4 mr-2" />
+                        {language === "en"
+                          ? `See More (${categoryProducts.length - 4})`
+                          : `មើលបន្ថែម (${categoryProducts.length - 4})`}
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
+            </div>
+          )
+        })}
+
+        {/* Empty State */}
+        {filteredProducts.length === 0 && (
+          <div className="text-center py-16">
+            <Coffee className="h-16 w-16 text-muted-foreground/40 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-foreground mb-2">
+              {language === "en" ? "No items found" : "រកមិនឃើញទេ"}
+            </h3>
+            <p className="text-muted-foreground">
+              {language === "en" ? "Try adjusting your filters or search query" : "សូមព្យាយាមកែប្រែការស្វែងរករបស់អ្នក"}
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
   )
 }

@@ -2,7 +2,7 @@ import dynamic from "next/dynamic"
 import { IoLogoInstagram, IoLogoFacebook, IoLogoTwitter } from "react-icons/io5"
 
 // Dynamically import Map with SSR disabled and use named export
-const Map = dynamic(() => import("./Map").then(mod => mod.Map), { ssr: false })
+const Map = dynamic(() => import("./Map").then((mod) => mod.Map), { ssr: false })
 
 interface FooterProps {
   language: "en" | "kh"
@@ -204,11 +204,10 @@ export function Footer({ language }: FooterProps) {
         </div>
 
         <div className="w-full lg:w-2/3">
-          <div className="bg-slate-700 rounded-lg p-2 h-[300px] md:h-[400px] relative z-10"> {/* Added z-10 */}
-            <Map 
-              center={[11.61616823412506, 104.90097788247442]} 
-              locationName="My Coffee Shop" 
-            />
+          <div className="bg-slate-700 rounded-lg p-2 h-[300px] md:h-[400px] relative z-10">
+            {" "}
+            {/* Added z-10 */}
+            <Map center={[11.61616823412506, 104.90097788247442]} locationName="My Coffee Shop" />
           </div>
         </div>
 
@@ -237,7 +236,9 @@ export function Footer({ language }: FooterProps) {
           <p
             className={`text-gray-400 text-sm text-center order-last md:order-none ${language === "kh" ? "font-mono" : "font-sans"}`}
           >
-            {language === "en" ? "© 2025 Fresthie's Coffee, All rights reserved" : "© ២០២៥ Fresthie's Coffee។ រក្សាសិទ្ធិគ្រប់យ៉ាង។"}
+            {language === "en"
+              ? "© 2025 Fresthie's Coffee, All rights reserved"
+              : "© ២០២៥ Fresthie's Coffee។ រក្សាសិទ្ធិគ្រប់យ៉ាង។"}
           </p>
 
           <div className="flex space-x-4 justify-center md:justify-end">

@@ -6,8 +6,6 @@ import { MenuSection } from "@/components/menu-section"
 import { ProductModal } from "@/components/product-modal"
 import { CartSidebar } from "@/components/cart-sidebar"
 import { Footer } from "@/components/footer"
-import { InstallPrompt } from "@/components/install-prompt"
-import { SafariDownloadPrompt } from "@/components/safari-download-prompt"
 import { Header } from "@/components/header"
 
 interface Product {
@@ -53,7 +51,7 @@ export default function HomePage() {
   const handleEventSelect = (eventName: string) => {
     console.log("Event selected in main page:", eventName)
     setSelectedEvent(eventName)
-    
+
     // Scroll to menu section when event is selected
     const menuSection = document.getElementById("menu-section")
     if (menuSection) {
@@ -185,12 +183,10 @@ export default function HomePage() {
     }
 
     setCartItems((prev) => [...prev, cartItem])
-    
+
     // Show success message for discounted items
     if (product.isDiscounted) {
-      const message = language === "en" 
-        ? "Discounted item added to cart!" 
-        : "ធាតុបញ្ចុះតម្លៃត្រូវបានបន្ថែមទៅកន្ត្រក!"
+      const message = language === "en" ? "Discounted item added to cart!" : "ធាតុបញ្ចុះតម្លៃត្រូវបានបន្ថែមទៅកន្ត្រក!"
       alert(message)
     }
   }
@@ -236,12 +232,9 @@ export default function HomePage() {
           onScrollToSection={handleScrollToSection}
           currentSection={currentSection}
         />
-        
+
         {/* Discount Banner with event selection */}
-        <DiscountBanner 
-          onEventClick={handleEventSelect}
-          selectedEvent={selectedEvent}
-        />
+        <DiscountBanner onEventClick={handleEventSelect} selectedEvent={selectedEvent} />
 
         {/* Menu Section with ID for scrolling */}
         <div id="menu-section">
