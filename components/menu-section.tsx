@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState, useMemo, useEffect } from "react"
-import { Search, Heart, Plus, ChevronRight, Tag } from "lucide-react"
+import { Search, Heart, Plus, ChevronRight, Tag, Filter, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
@@ -23,6 +23,7 @@ interface Product {
   discount?: number
   originalPrice?: number
   isDiscounted?: boolean
+  discountEvent?: string
 }
 
 interface Discount {
@@ -32,8 +33,9 @@ interface Discount {
   duplicateCheck: string
   discountPercent: number
   originalPrice: number
+  discountedPrice: number
   isActive: boolean
-  calculatedPrice: number | string
+  event: string
 }
 
 interface MenuSectionProps {
@@ -41,9 +43,10 @@ interface MenuSectionProps {
   onProductClick: (product: Product) => void
   onAddToCart: (product: Product) => void
   language: "en" | "kh"
+  selectedEvent?: string
+  onEventChange: (eventName: string) => void
 }
 
-// Define your categories with both English and Khmer names
 const categories = [
   { id: "all", name: { en: "All", kh: "ទាំងអស់" } },
   { id: "coffee", name: { en: "Coffee", kh: "កាហ្វេ" } },
@@ -54,61 +57,136 @@ const categories = [
   { id: "noodle", name: { en: "Noodle", kh: "មី" } },
 ]
 
-export function MenuSection({ products, onProductClick, onAddToCart, language }: MenuSectionProps) {
+export function MenuSection({ 
+  products, 
+  onProductClick, 
+  onAddToCart, 
+  language, 
+  selectedEvent,
+  onEventChange 
+}: MenuSectionProps) {
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
   const [favorites, setFavorites] = useState<Set<number>>(new Set())
   const [categoriesFromSheet, setCategoriesFromSheet] = useState<any[]>([])
   const [discounts, setDiscounts] = useState<Discount[]>([])
+  const [events, setEvents] = useState<string[]>([])
   const [discountsLoading, setDiscountsLoading] = useState(true)
 
-  // Load categories from Google Sheets
   useEffect(() => {
     async function loadCategories() {
       try {
         const SHEET_ID = "1IxeuobNv6Qk7-EbGn4qzTxT4xRwoMqH_1hT2-pRSpPU"
         const url = `https://opensheet.elk.sh/${SHEET_ID}/Categories`
-
         const response = await fetch(url)
-
         if (response.ok) {
           const data = await response.json()
           setCategoriesFromSheet(data)
-          console.log("Categories loaded from sheet:", data)
-        } else {
-          console.error("Failed to load categories sheet")
         }
       } catch (error) {
         console.error("Error loading categories from sheet:", error)
       }
     }
-
     loadCategories()
   }, [])
 
-  // Load discounts from Google Sheets
   useEffect(() => {
     async function loadDiscounts() {
       try {
-        // Import the discount function from our data file
-        const mod = await import("@/data/google-sheet.data")
-        const discountData = await mod.fetchDiscountsFromGoogleSheet()
-        setDiscounts(discountData)
-        console.log("Discounts loaded:", discountData)
+        console.log("🔄 Loading discounts from Google Sheet...")
+        setDiscountsLoading(true)
+        
+        // Direct fetch from Google Sheets
+        const SHEET_ID = "1IxeuobNv6Qk7-EbGn4qzTxT4xRwoMqH_1hT2-pRSpPU"
+        const url = `https://opensheet.elk.sh/${SHEET_ID}/Discount`
+        console.log("📡 Fetching from:", url)
+        
+        const response = await fetch(url)
+        if (!response.ok) {
+          console.error("❌ HTTP error! status:", response.status)
+          setDiscountsLoading(false)
+          return
+        }
+        
+        const rawData = await response.json()
+        console.log("📦 RAW DISCOUNT DATA:", rawData)
+        
+        // Process the discount data
+        const processedDiscounts = rawData
+          .map((item: any, index: number) => {
+            if (!item || Object.keys(item).length === 0) return null
+            
+            // Skip header rows
+            if (item['Event'] === 'Event' || item['Discount ID'] === 'Discount ID') {
+              return null
+            }
+
+            // Handle column names with or without trailing spaces
+            const discountId = item['Discount ID'] || index + 1
+            const discountName = (item['Discount Name '] || item['Discount Name'] || '').trim()
+            const duplicateCheck = (item['Duplicate Check'] || '').trim()
+            const discountPercent = parseFloat(item['Discount %'] || item['Discount Percent'] || '0')
+            const discountedPrice = parseFloat(item['Price'] || '0')
+            const event = (item['Event'] || '').trim()
+
+            const productName = discountName
+
+            console.log('🔍 Processing row:', {
+              discountId,
+              productName,
+              duplicateCheck,
+              discountPercent,
+              discountedPrice,
+              event,
+              rawItem: item
+            })
+
+            if (!productName || productName === '') {
+              console.warn('❌ Skipping - no product name:', item)
+              return null
+            }
+
+            const isValid = duplicateCheck.toUpperCase() === 'OK' && discountPercent > 0 && discountedPrice > 0
+
+            const originalPrice = discountedPrice / (1 - discountPercent / 100)
+
+            const discount: Discount = {
+              id: discountId,
+              discountName: productName,
+              productName: productName,
+              duplicateCheck: duplicateCheck,
+              discountPercent,
+              originalPrice: Math.round(originalPrice * 100) / 100,
+              discountedPrice: Math.round(discountedPrice * 100) / 100,
+              isActive: isValid,
+              event: event,
+            }
+
+            console.log(isValid ? '✅ Valid discount:' : '❌ Invalid discount:', discount)
+            return discount
+          })
+          .filter(Boolean)
+        
+        console.log("🎯 PROCESSED DISCOUNTS:", processedDiscounts)
+        setDiscounts(processedDiscounts)
+        
+        const uniqueEvents = Array.from(new Set(
+          processedDiscounts.filter((d: Discount) => d.isActive).map((d: Discount) => d.event.trim())
+        )).filter(event => event && event !== '')
+        
+        console.log("🎯 Available events:", uniqueEvents)
+        setEvents(uniqueEvents)
       } catch (error) {
-        console.error("Error loading discounts:", error)
+        console.error("❌ Error loading discounts:", error)
       } finally {
         setDiscountsLoading(false)
       }
     }
-
     loadDiscounts()
   }, [])
 
-  // Map Google Sheet categories to your predefined category IDs
   const mapCategoryToId = (categoryName: string): string => {
     const lowerCategory = categoryName.toLowerCase().trim()
-
     const categoryMap: Record<string, string> = {
       coffee: "coffee",
       tea: "tea",
@@ -117,77 +195,101 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
       rice: "rice",
       noodle: "noodle",
     }
-
     return categoryMap[lowerCategory] || lowerCategory
   }
 
-  // Get image URL for a category
   const getCategoryImage = (categoryId: string): string => {
     if (categoryId === "all") return ""
-
     const sheetCategory = categoriesFromSheet.find(
       (cat) => mapCategoryToId(cat.Category || cat.category) === categoryId,
     )
-
-    console.log("Looking for category:", categoryId, "Found:", sheetCategory)
-
     return sheetCategory?.["Image URL"] || sheetCategory?.["image url"] || ""
   }
 
-  // Enhance products with discount information
-  const productsWithDiscounts = useMemo(() => {
-    if (!discounts.length) return products
+  const getActiveDiscounts = useMemo(() => {
+    const activeDiscounts = discounts.filter(d => d.isActive)
+    if (selectedEvent && selectedEvent !== "all") {
+      return activeDiscounts.filter(d => d.event === selectedEvent)
+    }
+    return activeDiscounts
+  }, [discounts, selectedEvent])
 
-    return products.map(product => {
-      // Find active discounts for this product - IMPROVED MATCHING LOGIC
-      const productDiscounts = discounts.filter(discount => {
-        if (!discount.isActive) return false
-        
-        // Clean and compare product names (case insensitive, trim whitespace)
-        const discountProductName = discount.productName?.toLowerCase().trim() || ''
-        const productName = product.name.toLowerCase().trim()
-        
-        // Debug logging
-        console.log('Discount matching:', {
-          productName: product.name,
-          discountProductName: discount.productName,
-          matches: productName === discountProductName,
-          productNameLower: productName,
-          discountProductNameLower: discountProductName
-        })
-        
-        // Also check if product name contains discount product name or vice versa
-        return productName === discountProductName || 
-              productName.includes(discountProductName) ||
-              discountProductName.includes(productName)
+  const matchProductWithDiscount = (productName: string, discountProductName: string): boolean => {
+    if (!productName || !discountProductName) return false
+
+    const productClean = productName.toLowerCase().trim()
+    const discountClean = discountProductName.toLowerCase().trim()
+
+    if (productClean === discountClean) return true
+    if (productClean.includes(discountClean) || discountClean.includes(productClean)) return true
+
+    const variations: Record<string, string[]> = {
+      'iced': ['ice'],
+      'latte': ['late'],
+      'cappuccino': ['capuccino', 'cappucino'],
+      'americano': ['american'],
+      'matcha': ['maccha', 'green tea'],
+      'chocolate': ['choco'],
+      'cake': ['cakes'],
+      'tea': ['teas']
+    }
+
+    let productVar = productClean
+    let discountVar = discountClean
+
+    Object.entries(variations).forEach(([standard, alts]) => {
+      alts.forEach(alt => {
+        productVar = productVar.replace(alt, standard)
+        discountVar = discountVar.replace(alt, standard)
       })
+    })
 
-      if (productDiscounts.length > 0) {
-        console.log('FOUND DISCOUNT for product:', product.name, 'Discount:', productDiscounts[0])
-        // Take the first active discount
-        const discount = productDiscounts[0]
-        
-        // Calculate discounted price safely
-        const discountPercent = discount.discountPercent || 0
-        const originalPrice = discount.originalPrice > 0 ? discount.originalPrice : product.price
-        const discountedPrice = originalPrice - (originalPrice * (discountPercent / 100))
+    if (productVar === discountVar || 
+        productVar.includes(discountVar) || 
+        discountVar.includes(productVar)) {
+      return true
+    }
+
+    return false
+  }
+
+  const productsWithDiscounts = useMemo(() => {
+    if (getActiveDiscounts.length === 0) {
+      return products.map(product => ({
+        ...product,
+        isDiscounted: false
+      }))
+    }
+
+    const processedProducts = products.map(product => {
+      const matchingDiscounts = getActiveDiscounts.filter(discount => 
+        matchProductWithDiscount(product.name, discount.productName)
+      )
+
+      if (matchingDiscounts.length > 0) {
+        const discount = matchingDiscounts[0]
 
         return {
           ...product,
-          originalPrice: originalPrice,
-          price: discountedPrice,
-          discount: discountPercent,
-          isDiscounted: true
+          originalPrice: discount.originalPrice,
+          price: discount.discountedPrice,
+          discount: discount.discountPercent,
+          isDiscounted: true,
+          discountEvent: discount.event
         }
-      } else {
-        console.log('NO DISCOUNT for product:', product.name)
       }
 
-      return product
+      return {
+        ...product,
+        isDiscounted: false
+      }
     })
-  }, [products, discounts])
 
-
+    const discountedCount = processedProducts.filter(p => p.isDiscounted).length
+    console.log(`🎯 Final: ${discountedCount}/${processedProducts.length} products discounted`)
+    
+    return processedProducts
+  }, [products, getActiveDiscounts])
 
   const filteredProducts = useMemo(() => {
     let filtered = productsWithDiscounts
@@ -196,9 +298,9 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
       filtered = filtered.filter(
         (product) =>
           product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          product.name_kh.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (product.name_kh && product.name_kh.toLowerCase().includes(searchQuery.toLowerCase())) ||
           product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          product.description_kh.toLowerCase().includes(searchQuery.toLowerCase()),
+          (product.description_kh && product.description_kh.toLowerCase().includes(searchQuery.toLowerCase())),
       )
     }
 
@@ -229,7 +331,6 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
     return grouped
   }, [filteredProducts, selectedCategory])
 
-  // Get available categories from actual products
   const availableCategories = useMemo(() => {
     const uniqueCategories = new Set<string>()
     productsWithDiscounts.forEach((product) => {
@@ -239,7 +340,6 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
     return Array.from(uniqueCategories)
   }, [productsWithDiscounts])
 
-  // Create dynamic categories
   const dynamicCategories = useMemo(() => {
     const dynamicCats = [...categories]
 
@@ -270,7 +370,6 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
     return dynamicCats
   }, [availableCategories, categoriesFromSheet])
 
-  // Filter categories to only show those that have products
   const visibleCategories = dynamicCategories.filter((cat) => cat.id === "all" || availableCategories.includes(cat.id))
 
   const toggleFavorite = (productId: number, e: React.MouseEvent) => {
@@ -290,7 +389,10 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
     setSelectedCategory(categoryId)
   }
 
-  // Get display name for category
+  const clearEventFilter = () => {
+    onEventChange("all")
+  }
+
   const getCategoryDisplayName = (categoryId: string) => {
     const predefinedCategory = categories.find((cat) => cat.id === categoryId)
     if (predefinedCategory) {
@@ -310,12 +412,128 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
     return categoryId.charAt(0).toUpperCase() + categoryId.slice(1)
   }
 
+  const getEventDiscountCount = (eventName: string): number => {
+    if (eventName === "all") {
+      return getActiveDiscounts.length
+    }
+    return getActiveDiscounts.filter(d => d.event === eventName).length
+  }
 
   return (
     <section className="py-3 px-3 sm:py-4 sm:px-4 bg-gradient-to-br from-amber-50 to-orange-50 min-h-screen">
       <div className="container mx-auto max-w-7xl">
-        {/* Filter section with sticky positioning */}
-        <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-amber-100 py-3 sm:py-4 mb-4 sm:mb-6 -mx-3 sm:-mx-4 px-3 sm:px-4 shadow-sm">
+        {/* Debug Info - Enhanced */}
+        <div className="mb-4 p-4 bg-blue-50 border-2 border-blue-300 rounded-lg">
+          <div className="text-sm text-blue-900 space-y-2">
+            <div><strong>🔍 Debug Info:</strong></div>
+            <div>- Discounts Loaded: <strong className="text-blue-600">{discounts.length}</strong></div>
+            <div>- Active Discounts: <strong className="text-green-600">{getActiveDiscounts.length}</strong></div>
+            <div>- Events: <strong className="text-purple-600">{events.length > 0 ? events.join(', ') : 'None'}</strong></div>
+            <div>- Selected Event: <strong>{selectedEvent || 'all'}</strong></div>
+            <div>- Discounts Loading: <strong>{discountsLoading ? 'Yes' : 'No'}</strong></div>
+            {discounts.length > 0 && (
+              <div className="mt-2 p-2 bg-white rounded border border-blue-200">
+                <div className="font-semibold mb-1">Loaded Discounts:</div>
+                {discounts.slice(0, 5).map(d => (
+                  <div key={d.id} className="text-xs">
+                    • {d.productName} - {d.discountPercent}% off - Event: {d.event} - Active: {d.isActive ? '✅' : '❌'}
+                  </div>
+                ))}
+                {discounts.length > 5 && <div className="text-xs mt-1">...and {discounts.length - 5} more</div>}
+              </div>
+            )}
+          </div>
+        </div>
+        {/* Event Filter Section */}
+        {getActiveDiscounts.length > 0 && (
+          <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-blue-100 py-3 sm:py-4 mb-4 sm:mb-6 -mx-3 sm:-mx-4 px-3 sm:px-4 shadow-sm">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Filter className="h-4 w-4 text-blue-500" />
+                <span className={`text-sm font-semibold text-blue-700 ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                  {language === "en" ? "Discount Events" : "ព្រឹត្តិការណ៍បញ្ចុះតម្លៃ"}
+                </span>
+                <div className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">
+                  {getActiveDiscounts.length} {language === "en" ? "discounts" : "ការបញ្ចុះតម្លៃ"}
+                </div>
+              </div>
+              {selectedEvent && selectedEvent !== "all" && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearEventFilter}
+                  className="text-xs text-gray-500 hover:text-gray-700"
+                >
+                  <X className="h-3 w-3 mr-1" />
+                  {language === "en" ? "Clear" : "លុប"}
+                </Button>
+              )}
+            </div>
+            <div className="relative flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+              <Button
+                variant="ghost"
+                onClick={() => onEventChange("all")}
+                className={`flex-shrink-0 text-xs sm:text-sm font-medium whitespace-nowrap px-4 sm:px-5 py-2.5 sm:py-3 h-auto transition-all duration-300 border rounded-xl ${
+                  selectedEvent === "all" || !selectedEvent
+                    ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg scale-105"
+                    : "bg-white/80 text-gray-700 border-gray-200 hover:bg-gray-50 hover:scale-102"
+                } ${language === "kh" ? "font-mono" : "font-sans"}`}
+              >
+                <div className="flex items-center gap-2">
+                  {language === "en" ? "All Discounts" : "បញ្ចុះតម្លៃទាំងអស់"}
+                  <span className="bg-white/20 px-1.5 py-0.5 rounded-full text-xs font-bold min-w-6">
+                    {getEventDiscountCount("all")}
+                  </span>
+                </div>
+              </Button>
+              
+              {events.map((eventName) => (
+                <Button
+                  key={eventName}
+                  variant="ghost"
+                  onClick={() => onEventChange(eventName)}
+                  className={`flex-shrink-0 text-xs sm:text-sm font-medium whitespace-nowrap px-4 sm:px-5 py-2.5 sm:py-3 h-auto transition-all duration-300 border rounded-xl ${
+                    selectedEvent === eventName
+                      ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg scale-105"
+                      : "bg-white/80 text-blue-700 border-blue-200 hover:bg-blue-50 hover:scale-102"
+                  } ${language === "kh" ? "font-mono" : "font-sans"}`}
+                >
+                  <div className="flex items-center gap-2">
+                    {eventName}
+                    <span className="bg-white/20 px-1.5 py-0.5 rounded-full text-xs font-bold min-w-6">
+                      {getEventDiscountCount(eventName)}
+                    </span>
+                  </div>
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Active Event Banner */}
+        {selectedEvent && selectedEvent !== "all" && (
+          <div className="mb-6 p-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl text-white shadow-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-bold text-lg sm:text-xl">
+                  {language === "en" ? "Active Event" : "ព្រឹត្តិការណ៍សកម្ម"}: {selectedEvent}
+                </h3>
+                <p className="text-blue-100 text-sm mt-1">
+                  {language === "en" 
+                    ? `Enjoy ${getEventDiscountCount(selectedEvent)} exclusive discounts during this event!` 
+                    : `សូមរីករាយជាមួយនឹងការបញ្ចុះតម្លៃ ${getEventDiscountCount(selectedEvent)} ពិសេសក្នុងអំឡុងព្រឹត្តិការណ៍នេះ!`
+                  }
+                </p>
+              </div>
+              <div className="bg-white/20 px-3 py-1 rounded-full text-xs font-semibold">
+                {getEventDiscountCount(selectedEvent)} {language === "en" ? "items" : "ធាតុ"}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Category Filter */}
+        <div className="sticky top-20 z-40 bg-white/95 backdrop-blur-md border-b border-amber-100 py-3 sm:py-4 mb-4 sm:mb-6 -mx-3 sm:-mx-4 px-3 sm:px-4 shadow-sm">
           <div className="mb-3 sm:mb-4">
             <div className="relative flex gap-0 overflow-x-auto scrollbar-hide pb-2 sm:pb-3 px-1">
               {visibleCategories.map((category, index) => {
@@ -366,6 +584,7 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
             </div>
           </div>
 
+          {/* Search Bar */}
           <div className="w-full">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-amber-400" />
@@ -379,6 +598,7 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
           </div>
         </div>
 
+        {/* Products Grid */}
         <div className="space-y-6 sm:space-y-8">
           {Object.entries(productsByCategory).map(([categoryId, categoryProducts]) => {
             if (categoryProducts.length === 0) return null
@@ -420,7 +640,7 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
                     >
                       <CardContent className="p-0">
                         <div className="relative aspect-square bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
-                          {/* DISCOUNT BADGE - Updated with better styling */}
+                          {/* DISCOUNT BADGE */}
                           {product.isDiscounted && product.discount && (
                             <div className="absolute top-2 left-2 bg-gradient-to-r from-red-600 to-red-500 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-lg z-10 flex items-center gap-1">
                               <Tag className="h-3 w-3" />
@@ -472,25 +692,39 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
                             {language === "kh" ? product.description_kh : product.description}
                           </p>
 
-                          <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-1">
-                            {/* Updated price display with discount styling */}
+                          {/* PRICE DISPLAY WITH STRIKETHROUGH */}
+                          <div className="flex flex-col gap-1">
                             {product.isDiscounted ? (
-                              <div className="flex items-center gap-2">
-                                <span className="text-base sm:text-lg font-bold text-red-600">
+                              <>
+                                {/* Discounted Price - Large and Red */}
+                                <div className="flex items-baseline gap-2">
+                                  <span className="text-lg sm:text-xl font-bold text-red-600">
+                                    ${product.price.toFixed(2)}
+                                  </span>
+                                  <span className="text-xs sm:text-sm text-red-500 font-medium">
+                                    KHR {(product.price * 4000).toLocaleString()}
+                                  </span>
+                                </div>
+                                {/* Original Price - Strikethrough */}
+                                <div className="flex items-baseline gap-2">
+                                  <span className="text-sm sm:text-base text-gray-500 line-through font-medium">
+                                    ${product.originalPrice?.toFixed(2)}
+                                  </span>
+                                  <span className="text-xs text-gray-400 line-through">
+                                    KHR {((product.originalPrice || 0) * 4000).toLocaleString()}
+                                  </span>
+                                </div>
+                              </>
+                            ) : (
+                              <div className="flex flex-col sm:flex-row sm:items-baseline gap-0.5 sm:gap-1">
+                                <span className="text-base sm:text-lg font-bold text-amber-700">
                                   ${product.price.toFixed(2)}
                                 </span>
-                                <span className="text-xs sm:text-sm text-gray-500 line-through">
-                                  ${product.originalPrice?.toFixed(2)}
+                                <span className="text-xs sm:text-sm text-amber-600 font-medium">
+                                  KHR {(product.price * 4000).toLocaleString()}
                                 </span>
                               </div>
-                            ) : (
-                              <span className="text-base sm:text-lg font-bold text-amber-700">
-                                ${product.price.toFixed(2)}
-                              </span>
                             )}
-                            <span className={`text-xs sm:text-sm ${product.isDiscounted ? 'text-red-500' : 'text-amber-600'} font-medium`}>
-                              KHR {(product.price * 4000).toLocaleString()}
-                            </span>
                           </div>
 
                           <Button
@@ -534,6 +768,7 @@ export function MenuSection({ products, onProductClick, onAddToCart, language }:
           })}
         </div>
 
+        {/* No Results */}
         {Object.keys(productsByCategory).length === 0 && (
           <div className="text-center py-8 sm:py-12">
             <div className="bg-white rounded-2xl p-4 sm:p-6 border border-amber-100 max-w-sm mx-auto shadow-sm">

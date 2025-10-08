@@ -21,6 +21,9 @@ interface Product {
   description: string
   description_kh: string
   options?: Record<string, Array<{ name: string; price: number }>>
+  discount?: number
+  originalPrice?: number
+  isDiscounted?: boolean
 }
 
 interface CartItem {
@@ -44,6 +47,25 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [currentSection, setCurrentSection] = useState("top")
   const [showInstallPrompt, setShowInstallPrompt] = useState(false)
+  const [selectedEvent, setSelectedEvent] = useState<string>("all")
+
+  // Handle event selection from banner
+  const handleEventSelect = (eventName: string) => {
+    console.log("Event selected in main page:", eventName)
+    setSelectedEvent(eventName)
+    
+    // Scroll to menu section when event is selected
+    const menuSection = document.getElementById("menu-section")
+    if (menuSection) {
+      menuSection.scrollIntoView({ behavior: "smooth" })
+    }
+  }
+
+  // Handle event change from menu section
+  const handleEventChange = (eventName: string) => {
+    console.log("Event changed in main page:", eventName)
+    setSelectedEvent(eventName)
+  }
 
   const handleScrollToSection = (section: string) => {
     setCurrentSection(section)
@@ -80,6 +102,7 @@ export default function HomePage() {
   const handleInstallPrompt = () => {
     setShowInstallPrompt(true)
   }
+
   // Track scroll position to update current section
   useEffect(() => {
     const handleScroll = () => {
@@ -162,6 +185,14 @@ export default function HomePage() {
     }
 
     setCartItems((prev) => [...prev, cartItem])
+    
+    // Show success message for discounted items
+    if (product.isDiscounted) {
+      const message = language === "en" 
+        ? "Discounted item added to cart!" 
+        : "ធាតុបញ្ចុះតម្លៃត្រូវបានបន្ថែមទៅកន្ត្រក!"
+      alert(message)
+    }
   }
 
   const handleAddToCart = (item: CartItem) => {
@@ -205,7 +236,12 @@ export default function HomePage() {
           onScrollToSection={handleScrollToSection}
           currentSection={currentSection}
         />
-        <DiscountBanner />
+        
+        {/* Discount Banner with event selection */}
+        <DiscountBanner 
+          onEventClick={handleEventSelect}
+          selectedEvent={selectedEvent}
+        />
 
         {/* Menu Section with ID for scrolling */}
         <div id="menu-section">
@@ -225,6 +261,8 @@ export default function HomePage() {
               onProductClick={handleProductClick}
               onAddToCart={handleAddToCartFromMenu}
               language={language}
+              selectedEvent={selectedEvent}
+              onEventChange={handleEventChange}
             />
           ) : (
             <div className="text-center py-20">
@@ -264,8 +302,6 @@ export default function HomePage() {
         onCheckout={handleCheckout}
         language={language}
       />
-
-      
 
       {/* Add Install Prompt */}
       {/* <InstallPrompt language={language} isOpen={showInstallPrompt} onClose={() => setShowInstallPrompt(false)} /> */}

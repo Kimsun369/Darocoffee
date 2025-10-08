@@ -12,7 +12,12 @@ interface Event {
   poster: string
 }
 
-export function DiscountBanner() {
+interface DiscountBannerProps {
+  onEventClick: (eventName: string) => void
+  selectedEvent?: string
+}
+
+export function DiscountBanner({ onEventClick, selectedEvent }: DiscountBannerProps) {
   const [events, setEvents] = useState<Event[]>([])
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
@@ -63,6 +68,10 @@ export function DiscountBanner() {
     setCurrentSlide((prev) => (prev - 1 + events.length) % events.length)
   }
 
+  const handleBannerClick = (eventName: string) => {
+    onEventClick(eventName)
+  }
+
   // Show loading state
   if (isLoading) {
     return (
@@ -106,9 +115,10 @@ export function DiscountBanner() {
         {events.map((event, index) => (
           <div
             key={event.id}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out cursor-pointer ${
               index === currentSlide ? "opacity-100" : "opacity-0 pointer-events-none"
             }`}
+            onClick={() => handleBannerClick(event.name)}
           >
             <div className="relative h-full">
               <img 
@@ -120,14 +130,22 @@ export function DiscountBanner() {
                   target.src = "/placeholder.svg"
                 }}
               />
-              <div className="absolute inset-0 bg-black/50" />
+              <div className={`absolute inset-0 transition-all duration-300 ${
+                selectedEvent === event.name ? "bg-blue-600/40" : "bg-black/50"
+              }`} />
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center text-white max-w-2xl px-4">
                   <h2 className="font-serif text-2xl md:text-4xl font-bold mb-4 drop-shadow-lg">
                     {event.name}
+                    {selectedEvent === event.name && (
+                      <span className="ml-3 text-sm bg-white/20 px-2 py-1 rounded-full">Active</span>
+                    )}
                   </h2>
                   <p className="text-lg md:text-xl drop-shadow-md">
                     {event.abbreviation}
+                  </p>
+                  <p className="text-sm mt-2 opacity-90">
+                    Click to view discounts
                   </p>
                 </div>
               </div>
