@@ -25,6 +25,8 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const fontClass = language === "kh" ? "font-mono" : "font-sans";
+
 
   // Fetch events from Google Sheets
   useEffect(() => {
@@ -120,7 +122,7 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
       <section className="relative h-[33vh] min-h-[250px] overflow-hidden bg-gray-200 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">
+          <p className={`text-gray-600 ${language === "kh" ? "font-mono" : "font-sans"}`}>
             {language === "en" ? "Loading events from Google Sheets..." : "កំពុងផ្ទុកព្រឹត្តិការណ៍ពី Google Sheets..."}
           </p>
         </div>
@@ -132,7 +134,7 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
   if (error) {
     return (
       <section className="relative h-[33vh] min-h-[250px] overflow-hidden bg-gray-200 flex items-center justify-center">
-        <div className="text-center text-gray-600">
+        <div className={`text-center text-gray-600 ${language === "kh" ? "font-mono" : "font-sans"}`}>
           <p>{language === "en" ? "Unable to load events" : "មិនអាចផ្ទុកព្រឹត្តិការណ៍បានទេ"}</p>
           <p className="text-sm mt-2">{error}</p>
         </div>
@@ -144,7 +146,7 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
   if (events.length === 0) {
     return (
       <section className="relative h-[33vh] min-h-[250px] overflow-hidden bg-gray-200 flex items-center justify-center">
-        <div className="text-center text-gray-600">
+        <div className={`text-center text-gray-600 ${language === "kh" ? "font-mono" : "font-sans"}`}>
           <p>{language === "en" ? "No events available" : "មិនមានព្រឹត្តិការណ៍ដែលអាចប្រើបានទេ"}</p>
           <p className="text-sm mt-2">
             {language === "en" 
@@ -185,18 +187,16 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
                 selectedEvent === event.name ? "bg-blue-600/40" : "bg-black/50"
               }`} />
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center text-white max-w-2xl px-4">
-                  {/* FIXED: Single line display for both languages */}
-                  <h2 className="font-serif text-2xl md:text-4xl font-bold mb-4 drop-shadow-lg">
-                    {event.displayName}
-                    {selectedEvent === event.name && (
-                      <span className="ml-3 text-sm bg-white/20 px-2 py-1 rounded-full">
-                        {language === "en" ? "Active" : "សកម្ម"}
-                      </span>
-                    )}
-                  </h2>
-                  {/* REMOVED: The abbreviation line for cleaner display */}
-                  <p className="text-sm mt-2 opacity-90">
+                <div className={`text-center text-white max-w-2xl px-4 ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                  <h2 className={`text-2xl md:text-4xl font-bold mb-4 drop-shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}>
+  {event.displayName}
+  {selectedEvent === event.name && (
+    <span className={`ml-3 text-sm bg-white/20 px-2 py-1 rounded-full ${fontClass}`}>
+      {language === "en" ? "Active" : "សកម្ម"}
+    </span>
+  )}
+</h2>
+                  <p className={`text-sm mt-2 opacity-90 ${language === "kh" ? "font-mono" : "font-sans"}`}>
                     {language === "en" ? "Click to view discounts" : "ចុចដើម្បីមើលការបញ្ចុះតម្លៃ"}
                   </p>
                 </div>
@@ -212,7 +212,7 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
             variant="ghost"
             size="icon"
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 hover:text-gray-900 transition-all duration-300 hover:scale-110"
+            className={`absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 hover:text-gray-900 transition-all duration-300 hover:scale-110 ${language === "kh" ? "font-mono" : "font-sans"}`}
             aria-label={language === "en" ? "Previous event" : "ព្រឹត្តិការណ៍មុន"}
           >
             <ChevronLeft className="h-6 w-6" />
@@ -221,7 +221,7 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
             variant="ghost"
             size="icon"
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 hover:text-gray-900 transition-all duration-300 hover:scale-110"
+            className={`absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 hover:text-gray-900 transition-all duration-300 hover:scale-110 ${language === "kh" ? "font-mono" : "font-sans"}`}
             aria-label={language === "en" ? "Next event" : "ព្រឹត្តិការណ៍បន្ទាប់"}
           >
             <ChevronRight className="h-6 w-6" />
@@ -235,9 +235,7 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`h-3 w-3 rounded-full border-2 border-white transition-all duration-300 hover:scale-125 ${
-                index === currentSlide ? "bg-white" : "bg-transparent"
-              }`}
+              className={`h-3 w-3 rounded-full border-2 border-white transition-all duration-300 hover:scale-125 ${index === currentSlide ? "bg-white" : "bg-transparent"} ${language === "kh" ? "font-mono" : "font-sans"}`}
               aria-label={language === "en" ? `Go to event ${index + 1}` : `ទៅកាន់ព្រឹត្តិការណ៍ ${index + 1}`}
             />
           ))}

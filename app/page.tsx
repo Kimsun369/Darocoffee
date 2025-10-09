@@ -1,3 +1,4 @@
+// HomePage.tsx
 "use client"
 
 import { useState, useEffect } from "react"
@@ -245,7 +246,12 @@ export default function HomePage() {
           {isLoading ? (
             <div className="text-center py-20">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mb-4"></div>
-              <p className="text-amber-800">{language === "en" ? "Loading menu..." : "កំពុងដំណើរការ menu..."}</p>
+              <p 
+                className={`text-amber-800 ${language === "kh" ? "font-mono" : "font-sans"}`}
+                style={{ fontFamily: language === "kh" ? "'Khmer OS', sans-serif" : undefined }}
+              >
+                {language === "en" ? "Loading menu..." : "កំពុងដំណើរការ menu..."}
+              </p>
             </div>
           ) : productsData.length > 0 ? (
             <MenuSection
@@ -264,10 +270,16 @@ export default function HomePage() {
           ) : (
             <div className="text-center py-20">
               <div className="text-amber-600 text-6xl mb-4">☕</div>
-              <h3 className="text-amber-800 text-xl font-semibold mb-2">
+              <h3 
+                className={`text-amber-800 text-xl font-semibold mb-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
+                style={{ fontFamily: language === "kh" ? "'Khmer OS', sans-serif" : undefined }}
+              >
                 {language === "en" ? "Menu Not Available" : "Menu មិនអាចប្រើបាន"}
               </h3>
-              <p className="text-amber-700">
+              <p 
+                className={`text-amber-700 ${language === "kh" ? "font-mono" : "font-sans"}`}
+                style={{ fontFamily: language === "kh" ? "'Khmer OS', sans-serif" : undefined }}
+              >
                 {language === "en"
                   ? "Could not load menu from Google Sheet. Please check your Sheet ID, tab name, and publish settings. Try renaming your tab to 'Sheet1' and ensure it is published to the web."
                   : "មិនអាចទាញយកម៉ឺនុយពី Google Sheet។ សូមពិនិត្យ Sheet ID, ឈ្មោះ tab, និង publish settings។ សូមសាកល្បងប្ដូរឈ្មោះ tab ទៅជា 'Sheet1' និងបង្ហោះទៅ web។"}

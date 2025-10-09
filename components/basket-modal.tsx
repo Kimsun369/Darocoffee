@@ -98,9 +98,13 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent 
+        className="max-w-2xl max-h-[90vh] overflow-y-auto"
+      >
         <DialogHeader>
-          <DialogTitle className="font-serif text-2xl text-[var(--coffee-primary)]">{product.name}</DialogTitle>
+          <DialogTitle className="font-serif text-2xl text-[#8B4513] dark:text-amber-200">
+            {product.name}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -109,24 +113,25 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
             <img
               src={product.image || "/placeholder.svg"}
               alt={product.name}
-              className="w-full h-64 object-cover rounded-lg"
+              className="w-full h-64 object-cover rounded-lg border-2 border-gray-200 dark:border-gray-600"
             />
             <Badge
-              variant="secondary"
-              className="absolute top-4 right-4 bg-white/90 text-[var(--coffee-primary)] text-lg px-3 py-1"
+              className="absolute top-4 right-4 bg-white dark:bg-gray-800 text-[#8B4513] dark:text-amber-200 border-2 border-[#D2B48C] dark:border-amber-400 text-lg px-3 py-1 shadow-lg"
             >
               ${product.price.toFixed(2)}
             </Badge>
           </div>
 
           {/* Description */}
-          <p className="text-muted-foreground leading-relaxed">{product.description}</p>
+          <p className="text-gray-700 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border-2 border-gray-200 dark:border-gray-600">
+            {product.description}
+          </p>
 
           {/* Options */}
           {product.options &&
             Object.entries(product.options).map(([optionType, options]) => (
-              <div key={optionType} className="space-y-3">
-                <h4 className="font-semibold capitalize text-lg">
+              <div key={optionType} className="space-y-3 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border-2 border-gray-200 dark:border-gray-600">
+                <h4 className="font-semibold capitalize text-lg text-[#8B4513] dark:text-amber-200">
                   {optionType === "size" && language === "en" && "Size"}
                   {optionType === "size" && language === "kh" && "ទំហំ"}
                   {optionType === "sugar" && language === "en" && "Sugar Level"}
@@ -154,15 +159,21 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
                   }}
                 >
                   {options.map((option) => (
-                    <div key={option.name} className="flex items-center space-x-2">
-                      <RadioGroupItem value={option.name} id={`${optionType}-${option.name}`} />
+                    <div key={option.name} className="flex items-center space-x-2 bg-white dark:bg-gray-700 p-3 rounded border-2 border-gray-200 dark:border-gray-500">
+                      <RadioGroupItem 
+                        value={option.name} 
+                        id={`${optionType}-${option.name}`} 
+                        className="text-[#8B4513] dark:text-amber-200 border-2 border-gray-400 dark:border-gray-300"
+                      />
                       <Label
                         htmlFor={`${optionType}-${option.name}`}
-                        className="flex-1 cursor-pointer flex justify-between"
+                        className="flex-1 cursor-pointer flex justify-between text-gray-800 dark:text-gray-200"
                       >
                         <span>{option.name}</span>
                         {option.price > 0 && (
-                          <span className="text-[var(--coffee-primary)] font-medium">+${option.price.toFixed(2)}</span>
+                          <span className="text-[#8B4513] dark:text-amber-200 font-medium">
+                            +${option.price.toFixed(2)}
+                          </span>
                         )}
                       </Label>
                     </div>
@@ -172,19 +183,29 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
             ))}
 
           {/* Quantity */}
-          <div className="space-y-3">
-            <h4 className="font-semibold text-lg">{language === "en" ? "Quantity" : "បរិមាណ"}</h4>
+          <div className="space-y-3 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border-2 border-gray-200 dark:border-gray-600">
+            <h4 className="font-semibold text-lg text-[#8B4513] dark:text-amber-200">
+              {language === "en" ? "Quantity" : "បរិមាណ"}
+            </h4>
             <div className="flex items-center space-x-4">
               <Button
                 variant="outline"
                 size="icon"
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 disabled={quantity <= 1}
+                className="border-2 border-gray-400 dark:border-gray-300 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-[#8B4513] dark:hover:text-amber-200 hover:border-[#8B4513] dark:hover:border-amber-200"
               >
                 <Minus className="h-4 w-4" />
               </Button>
-              <span className="text-xl font-semibold w-8 text-center">{quantity}</span>
-              <Button variant="outline" size="icon" onClick={() => setQuantity(quantity + 1)}>
+              <span className="text-xl font-semibold w-8 text-center text-[#8B4513] dark:text-amber-200 bg-white dark:bg-gray-700 py-2 rounded border-2 border-gray-400 dark:border-gray-300">
+                {quantity}
+              </span>
+              <Button 
+                variant="outline" 
+                size="icon" 
+                onClick={() => setQuantity(quantity + 1)}
+                className="border-2 border-gray-400 dark:border-gray-300 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-[#8B4513] dark:hover:text-amber-200 hover:border-[#8B4513] dark:hover:border-amber-200"
+              >
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
@@ -194,7 +215,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
           <div className="space-y-3">
             <Button
               variant="outline"
-              className="w-full bg-transparent"
+              className="w-full bg-white dark:bg-gray-700 border-2 border-gray-400 dark:border-gray-300 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-[#8B4513] dark:hover:text-amber-200 hover:border-[#8B4513] dark:hover:border-amber-200"
               onClick={() => {
                 // Open add more item modal
               }}
@@ -204,14 +225,18 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
           </div>
 
           {/* Total Price & Add to Cart */}
-          <div className="border-t pt-6 space-y-4">
+          <div className="border-t-2 border-gray-400 dark:border-gray-300 pt-6 space-y-4">
             <div className="flex justify-between items-center text-xl font-bold">
-              <span>{language === "en" ? "Total:" : "សរុប:"}</span>
-              <span className="text-[var(--coffee-primary)]">${calculateTotalPrice().toFixed(2)}</span>
+              <span className="text-[#8B4513] dark:text-amber-200">
+                {language === "en" ? "Total:" : "សរុប:"}
+              </span>
+              <span className="text-[#8B4513] dark:text-amber-200 bg-amber-50 dark:bg-amber-900/30 px-4 py-2 rounded border-2 border-amber-200 dark:border-amber-600">
+                ${calculateTotalPrice().toFixed(2)}
+              </span>
             </div>
             <Button
               onClick={handleAddToCart}
-              className="w-full coffee-gradient text-white hover:opacity-90 text-lg py-6"
+              className="w-full bg-[#8B4513] hover:bg-[#654321] dark:bg-amber-700 dark:hover:bg-amber-800 text-white text-lg py-6 border-2 border-[#654321] dark:border-amber-800 shadow-lg"
             >
               {language === "en" ? "Add to Cart" : "បន្ថែមទៅកន្ត្រក"}
             </Button>

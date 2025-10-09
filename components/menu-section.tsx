@@ -48,23 +48,6 @@ interface MenuSectionProps {
   onEventChange: (eventName: string) => void
 }
 
-const categories = [
-  { id: "all", name: { en: "All", kh: "ទាំងអស់" } },
-  { id: "coffee", name: { en: "Coffee", kh: "កាហ្វេ" } },
-  { id: "tea", name: { en: "Tea", kh: "តែ" } },
-  { id: "dessert", name: { en: "Dessert", kh: "បង្អែម" } },
-  { id: "bakery", name: { en: "Bakery", kh: "នំប៉័ង" } },
-  { id: "rice", name: { en: "Rice", kh: "បាយ" } },
-  { id: "noodle", name: { en: "Noodle", kh: "មី" } },
-]
-
-// Event translations mapping
-const eventTranslations: Record<string, { en: string; kh: string }> = {
-  "20% off All Latte": { en: "20% off All Latte", kh: "បញ្ចុះ២០%" },
-  "Breakfast Special": { en: "Breakfast Special", kh: "ការបញ្ចុះតម្លៃពិសេស" },
-  "Happy Hour": { en: "Happy Hour", kh: "ម៉ោងបញ្ចុះតម្លៃ" },
-}
-
 export function MenuSection({
   products,
   onProductClick,
@@ -82,6 +65,7 @@ export function MenuSection({
   const [discountsLoading, setDiscountsLoading] = useState(true)
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
 
+  // Fetch categories from Google Sheets
   useEffect(() => {
     async function loadCategories() {
       try {
@@ -99,6 +83,7 @@ export function MenuSection({
     loadCategories()
   }, [])
 
+  // Fetch discounts from Google Sheets
   useEffect(() => {
     async function loadDiscounts() {
       try {
@@ -190,26 +175,25 @@ export function MenuSection({
     loadDiscounts()
   }, [])
 
-  // Get translated event name
+  // Get translated event name from Google Sheets data
   const getEventDisplayName = (eventName: string) => {
-    const translation = eventTranslations[eventName];
-    if (translation) {
-      return language === "kh" ? translation.kh : translation.en;
+    // Try to find event in categories from sheet
+    const eventFromSheet = categoriesFromSheet.find(
+      (cat) => cat.Category === eventName || cat.category === eventName
+    )
+    
+    if (eventFromSheet) {
+      return language === "kh" 
+        ? (eventFromSheet.category_kh || eventFromSheet.Category_KH || eventName)
+        : (eventFromSheet.Category || eventFromSheet.category || eventName)
     }
-    return eventName; // Fallback to original name if no translation found
+    
+    return eventName // Fallback to original name if no translation found
   }
 
   const mapCategoryToId = (categoryName: string): string => {
     const lowerCategory = categoryName.toLowerCase().trim()
-    const categoryMap: Record<string, string> = {
-      coffee: "coffee",
-      tea: "tea",
-      dessert: "dessert",
-      bakery: "bakery",
-      rice: "rice",
-      noodle: "noodle",
-    }
-    return categoryMap[lowerCategory] || lowerCategory
+    return lowerCategory
   }
 
   const getCategoryImage = (categoryId: string): string => {
@@ -380,37 +364,30 @@ export function MenuSection({
     return Array.from(uniqueCategories)
   }, [productsWithDiscounts])
 
+  // Generate dynamic categories from Google Sheets data
   const dynamicCategories = useMemo(() => {
-    const dynamicCats = [...categories]
+    const dynamicCats = [{ id: "all", name: { en: "All", kh: "ទាំងអស់" } }]
 
-    availableCategories.forEach((categoryId) => {
-      if (!dynamicCats.find((cat) => cat.id === categoryId) && categoryId !== "all") {
-        const sheetCategory = categoriesFromSheet.find(
-          (cat) => mapCategoryToId(cat.Category || cat.category) === categoryId,
-        )
-
+    // Add categories from Google Sheets
+    categoriesFromSheet.forEach((sheetCategory) => {
+      const categoryId = mapCategoryToId(sheetCategory.Category || sheetCategory.category)
+      if (categoryId && categoryId !== "all") {
         dynamicCats.push({
           id: categoryId,
           name: {
-            en:
-              sheetCategory?.Category ||
-              sheetCategory?.category ||
-              categoryId.charAt(0).toUpperCase() + categoryId.slice(1),
-            kh:
-              sheetCategory?.category_kh ||
-              sheetCategory?.["Category_KH"] ||
-              sheetCategory?.Category ||
-              sheetCategory?.category ||
-              categoryId,
+            en: sheetCategory.Category || sheetCategory.category || categoryId,
+            kh: sheetCategory.category_kh || sheetCategory.Category_KH || sheetCategory.Category || sheetCategory.category || categoryId,
           },
         })
       }
     })
 
     return dynamicCats
-  }, [availableCategories, categoriesFromSheet])
+  }, [categoriesFromSheet])
 
-  const visibleCategories = dynamicCategories.filter((cat) => cat.id === "all" || availableCategories.includes(cat.id))
+  const visibleCategories = dynamicCategories.filter((cat) => 
+    cat.id === "all" || availableCategories.includes(cat.id)
+  )
 
   const toggleFavorite = (productId: number, e: React.MouseEvent) => {
     e.stopPropagation()
@@ -474,7 +451,7 @@ export function MenuSection({
 
           {product.isDiscounted && product.discount && (
             <div
-              className="absolute top-2 left-2 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1"
+              className={`absolute top-2 left-2 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 ${language === "kh" ? "font-mono" : "font-sans"}`}
               style={{
                 background: "linear-gradient(135deg, #dc2626 0%, #ea580c 100%)",
                 animation: "glowPulse 2s ease-in-out infinite",
@@ -486,7 +463,7 @@ export function MenuSection({
                   animation: "spin 3s linear infinite",
                 }}
               />
-              <span style={{ animation: "pulse 1.5s ease-in-out infinite" }}>-{product.discount}%</span>
+              <span style={{ animation: "pulse 1.5s ease-in-out infinite" }}>{`-${product.discount}%`}</span>
             </div>
           )}
 
@@ -517,10 +494,16 @@ export function MenuSection({
         </div>
 
         <div className="p-4" style={{ backgroundColor: "#ffffff" }}>
-          <h3 className="font-semibold text-base mb-1 line-clamp-1" style={{ color: "#111827" }}>
+          <h3
+            className={`font-semibold text-base mb-1 line-clamp-1 ${language === "kh" ? "font-mono" : "font-sans"}`}
+            style={{ color: "#111827" }}
+          >
             {language === "en" ? product.name : (product.name_kh || product.name)}
           </h3>
-          <p className="text-xs mb-3 line-clamp-2" style={{ color: "#4b5563" }}>
+          <p
+            className={`text-xs mb-3 line-clamp-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
+            style={{ color: "#4b5563" }}
+          >
             {language === "en" ? product.description : (product.description_kh || product.description)}
           </p>
 
@@ -529,7 +512,7 @@ export function MenuSection({
               {product.isDiscounted && product.originalPrice ? (
                 <>
                   <span
-                    className="text-lg font-bold"
+                    className={`text-lg font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
                     style={{
                       color: "#dc2626",
                       animation: "priceBounce 1s ease-in-out infinite",
@@ -537,12 +520,18 @@ export function MenuSection({
                   >
                     ${product.price.toFixed(2)}
                   </span>
-                  <span className="text-sm font-medium line-through" style={{ color: "#78350f" }}>
+                  <span
+                    className={`text-sm font-medium line-through ${language === "kh" ? "font-mono" : "font-sans"}`}
+                    style={{ color: "#78350f" }}
+                  >
                     ${product.originalPrice.toFixed(2)}
                   </span>
                 </>
               ) : (
-                <span className="text-lg font-bold" style={{ color: "#78350f" }}>
+                <span
+                  className={`text-lg font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
+                  style={{ color: "#78350f" }}
+                >
                   ${product.price.toFixed(2)}
                 </span>
               )}
@@ -554,7 +543,7 @@ export function MenuSection({
                 e.stopPropagation()
                 onAddToCart(product)
               }}
-              className="rounded-full h-8 w-8 p-0 text-white shadow-md transition-all"
+              className={`rounded-full h-8 w-8 p-0 text-white shadow-md transition-all ${language === "kh" ? "font-mono" : "font-sans"}`}
               style={{
                 backgroundColor: "#d97706",
               }}
@@ -594,7 +583,7 @@ export function MenuSection({
               placeholder={language === "en" ? "Search menu..." : "ស្វែងរកម្ហូប..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 pr-4 h-12 border-2 rounded-xl shadow-sm focus-visible:ring-2"
+              className={`pl-12 pr-4 h-12 border-2 rounded-xl shadow-sm focus-visible:ring-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
               style={{
                 backgroundColor: "#ffffff",
                 color: "#111827",
@@ -638,7 +627,7 @@ export function MenuSection({
                 </div>
                 <div>
                   <h2
-                    className="text-3xl font-bold flex items-center gap-2"
+                    className={`text-3xl font-bold flex items-center gap-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
                     style={{
                       color: "#ffffff",
                       textShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
@@ -648,7 +637,7 @@ export function MenuSection({
                     {language === "en" ? "🔥 Hot Deals" : "🔥 ការផ្តល់ជូនពិសេស"}
                   </h2>
                   <p
-                    className="text-base font-medium mt-1"
+                    className={`text-base font-medium mt-1 ${language === "kh" ? "font-mono" : "font-sans"}`}
                     style={{
                       color: "rgba(255, 255, 255, 0.9)",
                       animation: "fadeIn 0.8s ease-out",
@@ -666,7 +655,7 @@ export function MenuSection({
               <div className="flex items-center gap-3 overflow-x-auto pb-3 mb-6" style={{ scrollbarWidth: "thin" }}>
                 <button
                   onClick={() => onEventChange("all")}
-                  className="flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-lg"
+                  className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}
                   style={{
                     backgroundColor: !selectedEvent || selectedEvent === "all" ? "#ffffff" : "rgba(255, 255, 255, 0.2)",
                     color: !selectedEvent || selectedEvent === "all" ? "#dc2626" : "#ffffff",
@@ -683,9 +672,11 @@ export function MenuSection({
                   }}
                 >
                   <Tag className="h-4 w-4" />
-                  <span>{language === "en" ? "All Offers" : "ទាំងអស់"}</span>
+                  <span className={language === "kh" ? "font-mono" : "font-sans"}>
+                    {language === "en" ? "All Offers" : "ទាំងអស់"}
+                  </span>
                   <span
-                    className="ml-1 px-2 py-0.5 rounded-full text-xs font-bold"
+                    className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
                     style={{ backgroundColor: "#dc2626", color: "#ffffff" }}
                   >
                     {getEventProductCount.all}
@@ -696,7 +687,7 @@ export function MenuSection({
                   <button
                     key={event}
                     onClick={() => onEventChange(event)}
-                    className="flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-lg"
+                    className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}
                     style={{
                       backgroundColor: selectedEvent === event ? "#ffffff" : "rgba(255, 255, 255, 0.2)",
                       color: selectedEvent === event ? "#dc2626" : "#ffffff",
@@ -711,10 +702,9 @@ export function MenuSection({
                       e.currentTarget.style.transform = selectedEvent === event ? "scale(1.05)" : "scale(1)"
                     }}
                   >
-                    {/* FIXED: Use translated event names */}
-                    <span>{getEventDisplayName(event)}</span>
+                    <span className={language === "kh" ? "font-mono" : "font-sans"}>{getEventDisplayName(event)}</span>
                     <span
-                      className="ml-1 px-2 py-0.5 rounded-full text-xs font-bold"
+                      className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
                       style={{ backgroundColor: "#dc2626", color: "#ffffff" }}
                     >
                       {getEventProductCount[event]}
@@ -864,7 +854,10 @@ export function MenuSection({
                       />
                     </div>
                   )}
-                  <h2 className="text-2xl font-bold tracking-tight" style={{ color: "#111827" }}>
+                  <h2
+                    className={`text-2xl font-bold tracking-tight ${language === "kh" ? "font-mono" : "font-sans"}`}
+                    style={{ color: "#111827" }}
+                  >
                     {category.name[language]}
                   </h2>
                 </div>
@@ -903,14 +896,18 @@ export function MenuSection({
                     {isExpanded ? (
                       <>
                         <ChevronUp className="h-4 w-4 mr-2" />
-                        {language === "en" ? "Show Less" : "បង្ហាញតិច"}
+                        <span className={language === "kh" ? "font-mono" : "font-sans"}>
+                          {language === "en" ? "Show Less" : "បង្ហាញតិច"}
+                        </span>
                       </>
                     ) : (
                       <>
                         <ChevronDown className="h-4 w-4 mr-2" />
-                        {language === "en"
-                          ? `See More (${categoryProducts.length - 4})`
-                          : `មើលបន្ថែម (${categoryProducts.length - 4})`}
+                        <span className={language === "kh" ? "font-mono" : "font-sans"}>
+                          {language === "en"
+                            ? `See More (${categoryProducts.length - 4})`
+                            : `មើលបន្ថែម (${categoryProducts.length - 4})`}
+                        </span>
                       </>
                     )}
                   </Button>
@@ -935,10 +932,16 @@ export function MenuSection({
                 animation: "bounce 2s ease-in-out infinite",
               }}
             />
-            <h3 className="text-xl font-semibold mb-2" style={{ color: "#111827" }}>
+            <h3
+              className={`text-xl font-semibold mb-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
+              style={{ color: "#111827" }}
+            >
               {language === "en" ? "No items found" : "រកមិនឃើញទេ"}
             </h3>
-            <p style={{ color: "#4b5563" }}>
+            <p
+              className={language === "kh" ? "font-mono" : "font-sans"}
+              style={{ color: "#4b5563" }}
+            >
               {language === "en" ? "Try adjusting your filters or search query" : "សូមព្យាយាមកែប្រែការស្វែងរករបស់អ្នក"}
             </p>
           </div>

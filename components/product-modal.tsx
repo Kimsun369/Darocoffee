@@ -1,9 +1,13 @@
+// ProductModal.tsx
 "use client"
 
-import { useState } from "react"
-import { Plus, Minus, X } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Minus, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Badge } from "@/components/ui/badge"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label"
 
 interface Product {
   id: number
@@ -12,13 +16,9 @@ interface Product {
   image: string
   price: number
   category: string
-  category_kh: string
   description: string
   description_kh: string
   options?: Record<string, Array<{ name: string; price: number }>>
-  discount?: number
-  originalPrice?: number
-  isDiscounted?: boolean
 }
 
 interface CartItem {
@@ -43,7 +43,28 @@ interface ProductModalProps {
 export function ProductModal({ product, isOpen, onClose, onAddToCart, language }: ProductModalProps) {
   const [quantity, setQuantity] = useState(1)
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({})
-  const [optionsPricing, setOptionsPricing] = useState<Record<string, number>>({})
+  const [selectedOptionsPricing, setSelectedOptionsPricing] = useState<Record<string, number>>({})
+
+  useEffect(() => {
+    if (product && isOpen) {
+      // Reset state when modal opens with new product
+      setQuantity(1)
+      const defaultOptions: Record<string, string> = {}
+      const defaultPricing: Record<string, number> = {}
+
+      if (product.options) {
+        Object.entries(product.options).forEach(([key, options]) => {
+          if (options.length > 0) {
+            defaultOptions[key] = options[0].name
+            defaultPricing[key] = options[0].price
+          }
+        })
+      }
+
+      setSelectedOptions(defaultOptions)
+      setSelectedOptionsPricing(defaultPricing)
+    }
+  }, [product, isOpen])
 
   if (!product) return null
 
@@ -52,7 +73,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
       ...prev,
       [optionType]: optionName,
     }))
-    setOptionsPricing((prev) => ({
+    setSelectedOptionsPricing((prev) => ({
       ...prev,
       [optionType]: optionPrice,
     }))
@@ -60,277 +81,146 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
 
   const calculateTotalPrice = () => {
     const basePrice = product.price
-    const optionsTotal = Object.values(optionsPricing).reduce((sum, price) => sum + price, 0)
-    return (basePrice + optionsTotal) * quantity
+    const optionsPrice = Object.values(selectedOptionsPricing).reduce((sum, price) => sum + price, 0)
+    return (basePrice + optionsPrice) * quantity
   }
 
   const handleAddToCart = () => {
     const cartItem: CartItem = {
-      id: `${product.id}-${Date.now()}`,
+      id: `${product.id}-${Date.now()}-${Math.random()}`,
       productId: product.id,
       name: product.name,
       name_kh: product.name_kh,
       price: calculateTotalPrice(),
       quantity,
       options: selectedOptions,
-      optionsPricing,
+      optionsPricing: selectedOptionsPricing,
     }
 
     onAddToCart(cartItem)
     onClose()
-    setQuantity(1)
-    setSelectedOptions({})
-    setOptionsPricing({})
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent
-        className="max-w-2xl max-h-[90vh] overflow-y-auto"
-        style={{
-          backgroundColor: "white",
-          color: "#1f2937",
-          border: "none",
-          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-        }}
-      >
-        <DialogHeader className="relative pb-4 border-b border-gray-200">
-          <DialogTitle className="text-2xl font-bold pr-8" style={{ color: "#1f2937" }}>
-            {language === "en" ? product.name : product.name_kh}
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className={`font-serif text-2xl ${language === "kh" ? "font-mono" : "font-sans"}`} style={{ color: "#d97706" }}>
+            {language === "en" ? product.name : (product.name_kh || product.name)}
           </DialogTitle>
-         
         </DialogHeader>
 
-        <div className="space-y-6 pt-4">
-          <div
-            className="relative aspect-video w-full overflow-hidden rounded-xl"
-            style={{
-              backgroundColor: "#f9fafb",
-              animation: "scaleIn 0.4s ease-out",
-            }}
-          >
+        <div className="space-y-6">
+          {/* Product Image */}
+          <div className="relative">
             <img
               src={product.image || "/placeholder.svg"}
-              alt={product.name}
-              className="w-full h-full object-cover"
-              style={{
-                transition: "transform 0.3s ease-out",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.05)"
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)"
-              }}
+              alt={language === "en" ? product.name : product.name_kh}
+              className="w-full h-64 object-cover rounded-lg"
             />
-            {product.isDiscounted && product.discount && (
-              <div
-                className="absolute top-4 left-4 px-4 py-2 rounded-full text-sm font-bold shadow-lg"
-                style={{
-                  background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-                  color: "white",
-                  animation: "pulse-glow 2s ease-in-out infinite",
-                }}
-              >
-                -{product.discount}% OFF
-              </div>
-            )}
+            <Badge
+              variant="secondary"
+              className={`absolute top-4 right-4 bg-white/90 text-lg px-3 py-1 ${language === "kh" ? "font-mono" : "font-sans"}`}
+              style={{ color: "#d97706" }}
+            >
+              ${product.price.toFixed(2)}
+            </Badge>
           </div>
 
-          <div
-            style={{
-              animation: "slideUp 0.5s ease-out 0.1s both",
-            }}
-          >
-            <h3 className="text-lg font-semibold mb-2" style={{ color: "#1f2937" }}>
-              {language === "en" ? "Description" : "ការពិពណ៌នា"}
-            </h3>
-            <p className="leading-relaxed" style={{ color: "#6b7280" }}>
-              {language === "en" ? product.description : product.description_kh}
-            </p>
-          </div>
+          {/* Description */}
+          <p className={`leading-relaxed ${language === "kh" ? "font-mono" : "font-sans"}`} style={{ color: "#6b7280" }}>
+            {language === "en" ? product.description : (product.description_kh || product.description)}
+          </p>
 
-          <div
-            className="flex items-baseline gap-3"
-            style={{
-              animation: "slideUp 0.5s ease-out 0.2s both",
-            }}
-          >
-            {product.isDiscounted && product.originalPrice ? (
-              <>
-                <span
-                  className="text-3xl font-bold"
-                  style={{
-                    color: "#ef4444",
-                    animation: "price-bounce 1s ease-in-out infinite",
+          {/* Options */}
+          {product.options &&
+            Object.entries(product.options).map(([optionType, options]) => (
+              <div key={optionType} className="space-y-3">
+                <h4 className={`font-semibold capitalize text-lg ${language === "kh" ? "font-mono" : "font-sans"}`} style={{ color: "#1f2937" }}>
+                  {optionType === "size" && language === "en" && "Size"}
+                  {optionType === "size" && language === "kh" && "ទំហំ"}
+                  {optionType === "sugar" && language === "en" && "Sugar Level"}
+                  {optionType === "sugar" && language === "kh" && "កម្រិតស្ករ"}
+                  {optionType === "milk" && language === "en" && "Milk Type"}
+                  {optionType === "milk" && language === "kh" && "ប្រភេទទឹកដោះគោ"}
+                  {optionType === "shots" && language === "en" && "Espresso Shots"}
+                  {optionType === "shots" && language === "kh" && "ការបាញ់កាហ្វេ"}
+                  {optionType === "whipped" && language === "en" && "Whipped Cream"}
+                  {optionType === "whipped" && language === "kh" && "ក្រែមវីប"}
+                  {optionType === "bread" && language === "en" && "Bread Type"}
+                  {optionType === "bread" && language === "kh" && "ប្រភេទនំបុ័ង"}
+                  {optionType === "toppings" && language === "en" && "Toppings"}
+                  {optionType === "toppings" && language === "kh" && "គ្រឿងលាប"}
+                  {!["size", "sugar", "milk", "shots", "whipped", "bread", "toppings"].includes(optionType) &&
+                    optionType}
+                </h4>
+                <RadioGroup
+                  value={selectedOptions[optionType]}
+                  onValueChange={(value) => {
+                    const option = options.find((opt) => opt.name === value)
+                    if (option) {
+                      handleOptionChange(optionType, option.name, option.price)
+                    }
                   }}
                 >
-                  ${product.price.toFixed(2)}
-                </span>
-                <span className="text-xl line-through" style={{ color: "#d97706" }}>
-                  ${product.originalPrice.toFixed(2)}
-                </span>
-              </>
-            ) : (
-              <span className="text-3xl font-bold" style={{ color: "#d97706" }}>
-                ${product.price.toFixed(2)}
-              </span>
-            )}
-          </div>
-
-          {product.options && Object.keys(product.options).length > 0 && (
-            <div
-              className="space-y-4"
-              style={{
-                animation: "slideUp 0.5s ease-out 0.3s both",
-              }}
-            >
-              {Object.entries(product.options).map(([optionType, optionValues]) => (
-                <div key={optionType}>
-                  <h4 className="text-sm font-semibold mb-3 capitalize" style={{ color: "#1f2937" }}>
-                    {optionType}
-                  </h4>
-                  <div className="grid grid-cols-2 gap-2">
-                    {optionValues.map((option) => (
-                      <button
-                        key={option.name}
-                        onClick={() => handleOptionChange(optionType, option.name, option.price)}
-                        className="px-4 py-3 rounded-lg border text-sm font-medium transition-all duration-300"
-                        style={{
-                          backgroundColor: selectedOptions[optionType] === option.name ? "#d97706" : "white",
-                          color: selectedOptions[optionType] === option.name ? "white" : "#1f2937",
-                          borderColor: selectedOptions[optionType] === option.name ? "#d97706" : "#e5e7eb",
-                          transform: selectedOptions[optionType] === option.name ? "scale(1.02)" : "scale(1)",
-                          boxShadow:
-                            selectedOptions[optionType] === option.name ? "0 4px 12px rgba(217, 119, 6, 0.3)" : "none",
-                        }}
-                        onMouseEnter={(e) => {
-                          if (selectedOptions[optionType] !== option.name) {
-                            e.currentTarget.style.borderColor = "#d97706"
-                            e.currentTarget.style.transform = "scale(1.02)"
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (selectedOptions[optionType] !== option.name) {
-                            e.currentTarget.style.borderColor = "#e5e7eb"
-                            e.currentTarget.style.transform = "scale(1)"
-                          }
-                        }}
+                  {options.map((option) => (
+                    <div key={option.name} className="flex items-center space-x-2">
+                      <RadioGroupItem value={option.name} id={`${optionType}-${option.name}`} />
+                      <Label
+                        htmlFor={`${optionType}-${option.name}`}
+                        className={`flex-1 cursor-pointer flex justify-between ${language === "kh" ? "font-mono" : "font-sans"}`}
                       >
-                        {option.name} {option.price > 0 && `(+$${option.price.toFixed(2)})`}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                        <span>{option.name}</span>
+                        {option.price > 0 && (
+                          <span className="font-medium" style={{ color: "#d97706" }}>+${option.price.toFixed(2)}</span>
+                        )}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+            ))}
 
-          <div
-            className="flex items-center gap-4"
-            style={{
-              animation: "slideUp 0.5s ease-out 0.4s both",
-            }}
-          >
-            <span className="text-sm font-semibold" style={{ color: "#1f2937" }}>
-              {language === "en" ? "Quantity" : "បរិមាណ"}:
-            </span>
-            <div
-              className="flex items-center gap-3 px-4 py-2 rounded-full"
-              style={{
-                backgroundColor: "#fef3c7",
-                border: "2px solid #fbbf24",
-              }}
-            >
+          {/* Quantity */}
+          <div className="space-y-3">
+            <h4 className={`font-semibold text-lg ${language === "kh" ? "font-mono" : "font-sans"}`} style={{ color: "#1f2937" }}>
+              {language === "en" ? "Quantity" : "បរិមាណ"}
+            </h4>
+            <div className="flex items-center space-x-4">
               <Button
-                variant="ghost"
+                variant="outline"
                 size="icon"
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="h-8 w-8 rounded-full hover:bg-amber-200 transition-all duration-300"
-                style={{
-                  backgroundColor: "white",
-                  color: "#d97706",
-                }}
+                disabled={quantity <= 1}
               >
                 <Minus className="h-4 w-4" />
               </Button>
-              <span className="text-lg font-bold w-12 text-center" style={{ color: "#92400e" }}>
+              <span className={`text-xl font-semibold w-8 text-center ${language === "kh" ? "font-mono" : "font-sans"}`}>
                 {quantity}
               </span>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setQuantity(quantity + 1)}
-                className="h-8 w-8 rounded-full hover:bg-amber-200 transition-all duration-300"
-                style={{
-                  backgroundColor: "white",
-                  color: "#d97706",
-                }}
-              >
+              <Button variant="outline" size="icon" onClick={() => setQuantity(quantity + 1)}>
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
           </div>
 
-          <div
-            className="flex items-center justify-between pt-4 border-t"
-            style={{
-              borderColor: "#e5e7eb",
-              animation: "slideUp 0.5s ease-out 0.5s both",
-            }}
-          >
-            <span className="text-lg font-semibold" style={{ color: "#1f2937" }}>
-              {language === "en" ? "Total" : "សរុប"}:
-            </span>
-            <span className="text-2xl font-bold" style={{ color: "#d97706" }}>
-              ${calculateTotalPrice().toFixed(2)}
-            </span>
+          {/* Total Price & Add to Cart */}
+          <div className="border-t pt-6 space-y-4">
+            <div className={`flex justify-between items-center text-xl font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}>
+              <span>{language === "en" ? "Total:" : "សរុប:"}</span>
+              <span style={{ color: "#d97706" }}>${calculateTotalPrice().toFixed(2)}</span>
+            </div>
+            <Button
+              onClick={handleAddToCart}
+              className={`w-full text-white hover:opacity-90 text-lg py-6 ${language === "kh" ? "font-mono" : "font-sans"}`}
+              style={{
+                background: "linear-gradient(135deg, #d97706 0%, #b45309 100%)",
+              }}
+            >
+              {language === "en" ? "Add to Cart" : "បន្ថែមទៅកន្ត្រក"}
+            </Button>
           </div>
-
-          <Button
-            onClick={handleAddToCart}
-            className="w-full py-6 text-lg font-semibold rounded-xl transition-all duration-300"
-            style={{
-              background: "linear-gradient(135deg, #d97706 0%, #b45309 100%)",
-              color: "white",
-              boxShadow: "0 10px 25px rgba(217, 119, 6, 0.3)",
-              animation: "slideUp 0.5s ease-out 0.6s both",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-2px)"
-              e.currentTarget.style.boxShadow = "0 15px 35px rgba(217, 119, 6, 0.4)"
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)"
-              e.currentTarget.style.boxShadow = "0 10px 25px rgba(217, 119, 6, 0.3)"
-            }}
-          >
-            {language === "en" ? "Add to Cart" : "បន្ថែមទៅកន្ត្រក"}
-          </Button>
         </div>
-
-        <style jsx>{`
-          @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-          @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-          }
-          @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-          @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
-            50% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.8); }
-          }
-          @keyframes price-bounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-          }
-        `}</style>
       </DialogContent>
     </Dialog>
   )

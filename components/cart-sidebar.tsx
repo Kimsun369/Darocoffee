@@ -58,36 +58,37 @@ export function CartSidebar({
     })
   }
 
-  const generateTelegramMessage = () => {
-    const now = new Date()
-    const dateStr = now.toLocaleDateString("en-GB")
-    const timeStr = now.toLocaleTimeString("en-GB", { hour12: false, hour: "2-digit", minute: "2-digit" })
-    const pickupTimeStr = getPickupTimeString()
+ const generateTelegramMessage = () => {
+  const now = new Date()
+  const dateStr = now.toLocaleDateString("en-GB")
+  const timeStr = now.toLocaleTimeString("en-GB", { hour12: false, hour: "2-digit", minute: "2-digit" })
+  const pickupTimeStr = getPickupTimeString()
 
-    let message = "FRESTHIES COFFEE ORDER\n\n"
-    message += "Date: " + dateStr + " Time: " + timeStr + "\n"
-    message += "Pickup: " + pickupTimeStr + "\n\n"
-    message += "----------------------------\n\n"
+  let message = "FRESTHIES COFFEE ORDER\n\n"
+  message += "Date: " + dateStr + "\n"
+  message += "Order Time: " + timeStr + "\n"
+  message += "Pickup Time: " + pickupTimeStr + "\n\n"
+  message += "ORDER ITEMS:\n"
+  message += "--------------------\n\n"
 
-    cartItems.forEach((item) => {
-      message += item.quantity + "x " + (language === "kh" && item.name_kh ? item.name_kh : item.name) + "\n"
-      message += "$" + item.price.toFixed(2) + " | R" + (item.price * 4000).toLocaleString() + "\n"
+  cartItems.forEach((item) => {
+    message += item.quantity + "x " + (language === "kh" && item.name_kh ? item.name_kh : item.name) + "\n"
+    message += "$" + item.price.toFixed(2) + " or " + (item.price * 4000).toLocaleString() + " KHR\n"
 
-      if (Object.keys(item.options).length > 0) {
-        const optionsText = Object.entries(item.options)
-          .map(([key, value]) => key + ": " + value)
-          .join(", ")
-        message += optionsText + "\n"
-      }
-      message += "\n"
-    })
+    if (Object.keys(item.options).length > 0) {
+      const optionsText = Object.entries(item.options)
+        .map(([key, value]) => "  - " + key + ": " + value)
+        .join("\n")
+      message += optionsText + "\n"
+    }
+    message += "\n"
+  })
 
-    message += "----------------------------\n"
-    message += "TOTAL: $" + totalPrice.toFixed(2) + " | R" + totalPriceKHR.toLocaleString() + "\n\n"
-    message += "Thank you!"
+  message += "--------------------\n"
+  message += "TOTAL: $" + totalPrice.toFixed(2) + " or " + totalPriceKHR.toLocaleString() + " KHR\n\n"
 
-    return message
-  }
+  return message
+}
 
   const handleTelegramOrder = () => {
     const message = generateTelegramMessage()
