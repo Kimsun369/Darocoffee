@@ -80,7 +80,7 @@ export function Header({
     <>
       {/* Top promotional banner */}
       <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white py-2 text-xs overflow-hidden">
-        <div className="container mx-auto px-4">
+        <div className="">
           <div className="flex whitespace-nowrap">
             {/* First set */}
             <div className="flex animate-marquee space-x-6">

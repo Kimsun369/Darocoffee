@@ -223,7 +223,7 @@ export default function HomePage() {
   const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-yellow-50 pb-20">
+    <div className="min-h-screen bg-gradient">
       <main>
         <Header
           cartItemCount={cartItemCount}

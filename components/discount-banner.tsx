@@ -1,7 +1,7 @@
 // DiscountBanner.tsx
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { fetchEventsFromGoogleSheet } from "@/data/google-sheet.data"
@@ -20,13 +20,18 @@ interface DiscountBannerProps {
   language?: "en" | "kh" // Language prop for bilingual support
 }
 
+type TransitionStyle = "slide" | "fade" | "zoom" | "flip" | "cube";
+
 export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }: DiscountBannerProps) {
   const [events, setEvents] = useState<Event[]>([])
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const fontClass = language === "kh" ? "font-mono" : "font-sans";
-
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [direction, setDirection] = useState<"next" | "prev">("next")
+  const [transitionStyle, setTransitionStyle] = useState<TransitionStyle>("slide")
+  
+  const fontClass = language === "kh" ? "font-mono" : "font-sans"
 
   // Fetch events from Google Sheets
   useEffect(() => {
@@ -38,7 +43,6 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
         const eventsData = await fetchEventsFromGoogleSheet()
         console.log("Fetched events data:", eventsData)
         
-        // Debug: Check if events have name_kh
         eventsData.forEach((event: Event, index: number) => {
           console.log(`Event ${index}:`, {
             name: event.name,
@@ -64,24 +68,47 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
     loadEvents()
   }, [])
 
-  // Auto-slide effect
+  const handleTransition = useCallback((newSlide: number, dir: "next" | "prev") => {
+    if (isTransitioning) return;
+    
+    setIsTransitioning(true)
+    setDirection(dir)
+    setCurrentSlide(newSlide)
+    
+    // Reset transitioning state after animation completes
+    setTimeout(() => {
+      setIsTransitioning(false)
+    }, 600)
+  }, [isTransitioning])
+
+  const handleNextSlide = useCallback(() => {
+    if (isTransitioning || events.length <= 1) return
+    const next = (currentSlide + 1) % events.length
+    handleTransition(next, "next")
+  }, [currentSlide, events.length, isTransitioning, handleTransition])
+
+  const handlePrevSlide = useCallback(() => {
+    if (isTransitioning || events.length <= 1) return
+    const prev = (currentSlide - 1 + events.length) % events.length
+    handleTransition(prev, "prev")
+  }, [currentSlide, events.length, isTransitioning, handleTransition])
+
+  const goToSlide = (index: number) => {
+    if (isTransitioning || index === currentSlide || events.length <= 1) return
+    const dir = index > currentSlide ? "next" : "prev"
+    handleTransition(index, dir)
+  }
+
+  // Auto-slide effect - FIXED: Now 2500ms (2.5 seconds)
   useEffect(() => {
     if (events.length <= 1) return
 
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % events.length)
-    }, 5000)
+      handleNextSlide()
+    }, 2500) // Changed from 5000 to 2500 for 2.5 seconds
 
     return () => clearInterval(timer)
-  }, [events.length])
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % events.length)
-  }
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + events.length) % events.length)
-  }
+  }, [events.length, handleNextSlide]) // Added handleNextSlide to dependencies
 
   const handleBannerClick = (eventName: string) => {
     onEventClick(eventName)
@@ -90,7 +117,6 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
   // Use useMemo to memoize ALL events display data based on language
   const eventsWithDisplayData = useMemo(() => {
     return events.map(event => {
-      // For Khmer language, only show the Khmer name (no abbreviation)
       const displayName = language === "kh" && event.name_kh ? event.name_kh : event.name;
       
       return {
@@ -114,7 +140,79 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
         language
       });
     }
-  }, [language, currentEventDisplay]);
+  }, [language, currentEventDisplay, events.length]);
+
+  // Get transition classes based on selected style
+  const getTransitionClasses = (index: number) => {
+    const baseClasses = "absolute inset-0 transition-all duration-600 ease-in-out cursor-pointer"
+    
+    if (index === currentSlide) {
+      // Active slide
+      switch (transitionStyle) {
+        case "slide":
+          return `${baseClasses} transform ${
+            direction === "next" 
+              ? "translate-x-0 opacity-100" 
+              : "translate-x-0 opacity-100"
+          }`
+        case "fade":
+          return `${baseClasses} opacity-100`
+        case "zoom":
+          return `${baseClasses} transform scale-100 opacity-100`
+        case "flip":
+          return `${baseClasses} transform rotate-0 opacity-100`
+        case "cube":
+          return `${baseClasses} transform translate-x-0 opacity-100`
+        default:
+          return `${baseClasses} opacity-100`
+      }
+    } else {
+      // Inactive slides
+      switch (transitionStyle) {
+        case "slide":
+          if (index === (currentSlide - 1 + events.length) % events.length && direction === "next") {
+            return `${baseClasses} transform -translate-x-full opacity-0 pointer-events-none`
+          } else if (index === (currentSlide + 1) % events.length && direction === "prev") {
+            return `${baseClasses} transform translate-x-full opacity-0 pointer-events-none`
+          } else {
+            return `${baseClasses} transform ${
+              index < currentSlide ? "-translate-x-full" : "translate-x-full"
+            } opacity-0 pointer-events-none`
+          }
+        
+        case "fade":
+          return `${baseClasses} opacity-0 pointer-events-none`
+        
+        case "zoom":
+          if (index === (currentSlide - 1 + events.length) % events.length && direction === "next") {
+            return `${baseClasses} transform scale-110 opacity-0 pointer-events-none`
+          } else {
+            return `${baseClasses} transform scale-90 opacity-0 pointer-events-none`
+          }
+        
+        case "flip":
+          if (index === (currentSlide - 1 + events.length) % events.length && direction === "next") {
+            return `${baseClasses} transform rotate-y-90 opacity-0 pointer-events-none`
+          } else {
+            return `${baseClasses} transform -rotate-y-90 opacity-0 pointer-events-none`
+          }
+        
+        case "cube":
+          if (index === (currentSlide - 1 + events.length) % events.length && direction === "next") {
+            return `${baseClasses} transform -translate-x-full rotate-y-90 opacity-0 pointer-events-none`
+          } else if (index === (currentSlide + 1) % events.length && direction === "prev") {
+            return `${baseClasses} transform translate-x-full -rotate-y-90 opacity-0 pointer-events-none`
+          } else {
+            return `${baseClasses} transform ${
+              index < currentSlide ? "-translate-x-full" : "translate-x-full"
+            } opacity-0 pointer-events-none`
+          }
+        
+        default:
+          return `${baseClasses} opacity-0 pointer-events-none`
+      }
+    }
+  }
 
   // Show loading state
   if (isLoading) {
@@ -164,13 +262,26 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
 
   return (
     <section className="relative h-[33vh] min-h-[250px] overflow-hidden bg-gray-100">
-      <div className="relative h-full">
+      {/* Transition Style Selector (for testing) */}
+      <div className="absolute top-4 left-4 z-20 bg-black/50 rounded-lg p-2 hidden">
+        <select 
+          value={transitionStyle}
+          onChange={(e) => setTransitionStyle(e.target.value as TransitionStyle)}
+          className="text-xs bg-white/90 px-2 py-1 rounded"
+        >
+          <option value="slide">Slide</option>
+          <option value="fade">Fade</option>
+          <option value="zoom">Zoom</option>
+          <option value="flip">3D Flip</option>
+          <option value="cube">Cube</option>
+        </select>
+      </div>
+
+      <div className="relative h-full overflow-hidden">
         {eventsWithDisplayData.map((event, index) => (
           <div
             key={event.id}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out cursor-pointer ${
-              index === currentSlide ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
+            className={getTransitionClasses(index)}
             onClick={() => handleBannerClick(event.name)}
           >
             <div className="relative h-full">
@@ -189,13 +300,13 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className={`text-center text-white max-w-2xl px-4 ${language === "kh" ? "font-mono" : "font-sans"}`}>
                   <h2 className={`text-2xl md:text-4xl font-bold mb-4 drop-shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}>
-  {event.displayName}
-  {selectedEvent === event.name && (
-    <span className={`ml-3 text-sm bg-white/20 px-2 py-1 rounded-full ${fontClass}`}>
-      {language === "en" ? "Active" : "សកម្ម"}
-    </span>
-  )}
-</h2>
+                    {event.displayName}
+                    {selectedEvent === event.name && (
+                      <span className={`ml-3 text-sm bg-white/20 px-2 py-1 rounded-full ${fontClass}`}>
+                        {language === "en" ? "Active" : "សកម្ម"}
+                      </span>
+                    )}
+                  </h2>
                   <p className={`text-sm mt-2 opacity-90 ${language === "kh" ? "font-mono" : "font-sans"}`}>
                     {language === "en" ? "Click to view discounts" : "ចុចដើម្បីមើលការបញ្ចុះតម្លៃ"}
                   </p>
@@ -211,8 +322,9 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
           <Button
             variant="ghost"
             size="icon"
-            onClick={prevSlide}
-            className={`absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 hover:text-gray-900 transition-all duration-300 hover:scale-110 ${language === "kh" ? "font-mono" : "font-sans"}`}
+            onClick={handlePrevSlide}
+            disabled={isTransitioning}
+            className={`absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 hover:text-gray-900 transition-all duration-300 hover:scale-110 disabled:opacity-50 ${language === "kh" ? "font-mono" : "font-sans"}`}
             aria-label={language === "en" ? "Previous event" : "ព្រឹត្តិការណ៍មុន"}
           >
             <ChevronLeft className="h-6 w-6" />
@@ -220,8 +332,9 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
           <Button
             variant="ghost"
             size="icon"
-            onClick={nextSlide}
-            className={`absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 hover:text-gray-900 transition-all duration-300 hover:scale-110 ${language === "kh" ? "font-mono" : "font-sans"}`}
+            onClick={handleNextSlide}
+            disabled={isTransitioning}
+            className={`absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 hover:text-gray-900 transition-all duration-300 hover:scale-110 disabled:opacity-50 ${language === "kh" ? "font-mono" : "font-sans"}`}
             aria-label={language === "en" ? "Next event" : "ព្រឹត្តិការណ៍បន្ទាប់"}
           >
             <ChevronRight className="h-6 w-6" />
@@ -234,8 +347,11 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
           {events.map((_, index) => (
             <button
               key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`h-3 w-3 rounded-full border-2 border-white transition-all duration-300 hover:scale-125 ${index === currentSlide ? "bg-white" : "bg-transparent"} ${language === "kh" ? "font-mono" : "font-sans"}`}
+              onClick={() => goToSlide(index)}
+              disabled={isTransitioning}
+              className={`h-3 w-3 rounded-full border-2 border-white transition-all duration-300 hover:scale-125 disabled:opacity-50 ${
+                index === currentSlide ? "bg-white scale-125" : "bg-transparent"
+              } ${language === "kh" ? "font-mono" : "font-sans"}`}
               aria-label={language === "en" ? `Go to event ${index + 1}` : `ទៅកាន់ព្រឹត្តិការណ៍ ${index + 1}`}
             />
           ))}
