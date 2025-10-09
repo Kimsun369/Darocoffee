@@ -37,6 +37,7 @@ export function CartSidebar({
 }: CartSidebarProps) {
   const [pickupOption, setPickupOption] = useState<"now" | "15" | "30" | "45" | "60" | "other">("now")
   const [customMinutes, setCustomMinutes] = useState<number>(5)
+  const [isOrderProcessing, setIsOrderProcessing] = useState(false)
 
   const totalPrice = cartItems.reduce((sum, item) => sum + item.price, 0)
   const totalPriceKHR = totalPrice * 4000
@@ -58,44 +59,82 @@ export function CartSidebar({
     })
   }
 
- const generateTelegramMessage = () => {
-  const now = new Date()
-  const dateStr = now.toLocaleDateString("en-GB")
-  const timeStr = now.toLocaleTimeString("en-GB", { hour12: false, hour: "2-digit", minute: "2-digit" })
-  const pickupTimeStr = getPickupTimeString()
+  const generateTelegramMessage = () => {
+    const now = new Date()
+    const dateStr = now.toLocaleDateString("en-GB")
+    const timeStr = now.toLocaleTimeString("en-GB", { hour12: false, hour: "2-digit", minute: "2-digit" })
+    const pickupTimeStr = getPickupTimeString()
 
-  let message = "FRESTHIES COFFEE ORDER\n\n"
-  message += "Date: " + dateStr + "\n"
-  message += "Order Time: " + timeStr + "\n"
-  message += "Pickup Time: " + pickupTimeStr + "\n\n"
-  message += "ORDER ITEMS:\n"
-  message += "--------------------\n\n"
+    let message = "FRESTHIES COFFEE ORDER\n\n"
+    message += "Date: " + dateStr + "\n"
+    message += "Order Time: " + timeStr + "\n"
+    message += "Pickup Time: " + pickupTimeStr + "\n\n"
+    message += "ORDER ITEMS:\n"
+    message += "--------------------\n\n"
 
-  cartItems.forEach((item) => {
-    message += item.quantity + "x " + (language === "kh" && item.name_kh ? item.name_kh : item.name) + "\n"
-    message += "$" + item.price.toFixed(2) + " or " + (item.price * 4000).toLocaleString() + " KHR\n"
+    cartItems.forEach((item) => {
+      message += item.quantity + "x " + (language === "kh" && item.name_kh ? item.name_kh : item.name) + "\n"
+      message += "$" + item.price.toFixed(2) + " or " + (item.price * 4000).toLocaleString() + " KHR\n"
 
-    if (Object.keys(item.options).length > 0) {
-      const optionsText = Object.entries(item.options)
-        .map(([key, value]) => "  - " + key + ": " + value)
-        .join("\n")
-      message += optionsText + "\n"
-    }
-    message += "\n"
-  })
+      if (Object.keys(item.options).length > 0) {
+        const optionsText = Object.entries(item.options)
+          .map(([key, value]) => "  - " + key + ": " + value)
+          .join("\n")
+        message += optionsText + "\n"
+      }
+      message += "\n"
+    })
 
-  message += "--------------------\n"
-  message += "TOTAL: $" + totalPrice.toFixed(2) + " or " + totalPriceKHR.toLocaleString() + " KHR\n\n"
+    message += "--------------------\n"
+    message += "TOTAL: $" + totalPrice.toFixed(2) + " or " + totalPriceKHR.toLocaleString() + " KHR\n\n"
 
-  return message
-}
+    return message
+  }
 
   const handleTelegramOrder = () => {
-    const message = generateTelegramMessage()
-    const encodedMessage = encodeURIComponent(message)
-    const telegramUrl = `https://t.me/Hen_Chandaro?text=${encodedMessage}`
-    window.open(telegramUrl, "_blank")
-    onCheckout()
+    if (isOrderProcessing) return
+    
+    setIsOrderProcessing(true)
+    
+    try {
+      const message = generateTelegramMessage()
+      const encodedMessage = encodeURIComponent(message)
+      const telegramUrl = `https://t.me/Hen_Chandaro?text=${encodedMessage}`
+      
+      // Safari-compatible method to open Telegram
+      const link = document.createElement('a')
+      link.href = telegramUrl
+      link.target = '_blank'
+      link.rel = 'noopener noreferrer'
+      
+      // Add to DOM, click, and remove
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      
+      // Small delay to ensure the click is processed
+      setTimeout(() => {
+        onCheckout()
+        setIsOrderProcessing(false)
+      }, 100)
+      
+    } catch (error) {
+      console.error('Error processing Telegram order:', error)
+      setIsOrderProcessing(false)
+      
+      // Fallback: try window.location for older Safari versions
+      try {
+        const message = generateTelegramMessage()
+        const encodedMessage = encodeURIComponent(message)
+        const telegramUrl = `https://t.me/Hen_Chandaro?text=${encodedMessage}`
+        window.location.href = telegramUrl
+        setTimeout(() => {
+          onCheckout()
+        }, 500)
+      } catch (fallbackError) {
+        console.error('Fallback also failed:', fallbackError)
+      }
+    }
   }
 
   return (
@@ -389,23 +428,36 @@ export function CartSidebar({
 
               <Button
                 onClick={handleTelegramOrder}
+                disabled={isOrderProcessing}
                 className="w-full py-4 rounded-xl font-bold text-base transition-all duration-300 flex items-center justify-center gap-2"
                 style={{
-                  background: "linear-gradient(135deg, #0088cc 0%, #006699 100%)",
+                  background: isOrderProcessing 
+                    ? "linear-gradient(135deg, #6b7280 0%, #4b5563 100%)"
+                    : "linear-gradient(135deg, #0088cc 0%, #006699 100%)",
                   color: "white",
-                  boxShadow: "0 8px 20px rgba(0, 136, 204, 0.3)",
+                  boxShadow: isOrderProcessing 
+                    ? "0 4px 12px rgba(107, 114, 128, 0.3)"
+                    : "0 8px 20px rgba(0, 136, 204, 0.3)",
+                  cursor: isOrderProcessing ? "not-allowed" : "pointer",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-2px)"
-                  e.currentTarget.style.boxShadow = "0 12px 28px rgba(0, 136, 204, 0.4)"
+                  if (!isOrderProcessing) {
+                    e.currentTarget.style.transform = "translateY(-2px)"
+                    e.currentTarget.style.boxShadow = "0 12px 28px rgba(0, 136, 204, 0.4)"
+                  }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)"
-                  e.currentTarget.style.boxShadow = "0 8px 20px rgba(0, 136, 204, 0.3)"
+                  if (!isOrderProcessing) {
+                    e.currentTarget.style.transform = "translateY(0)"
+                    e.currentTarget.style.boxShadow = "0 8px 20px rgba(0, 136, 204, 0.3)"
+                  }
                 }}
               >
                 <Send className="h-5 w-5" />
-                {language === "en" ? "Order via Telegram" : "បញ្ជាទិញតាម Telegram"}
+                {isOrderProcessing 
+                  ? (language === "en" ? "Processing..." : "កំពុងដំណើរការ...")
+                  : (language === "en" ? "Order via Telegram" : "បញ្ជាទិញតាម Telegram")
+                }
               </Button>
               <p className="text-xs text-center mt-3" style={{ color: "#6b7280" }}>
                 {language === "en"
