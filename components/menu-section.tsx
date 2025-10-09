@@ -58,6 +58,13 @@ const categories = [
   { id: "noodle", name: { en: "Noodle", kh: "មី" } },
 ]
 
+// Event translations mapping
+const eventTranslations: Record<string, { en: string; kh: string }> = {
+  "20% off All Latte": { en: "20% off All Latte", kh: "បញ្ចុះ២០%" },
+  "Breakfast Special": { en: "Breakfast Special", kh: "ការបញ្ចុះតម្លៃពិសេស" },
+  "Happy Hour": { en: "Happy Hour", kh: "ម៉ោងបញ្ចុះតម្លៃ" },
+}
+
 export function MenuSection({
   products,
   onProductClick,
@@ -182,6 +189,15 @@ export function MenuSection({
     }
     loadDiscounts()
   }, [])
+
+  // Get translated event name
+  const getEventDisplayName = (eventName: string) => {
+    const translation = eventTranslations[eventName];
+    if (translation) {
+      return language === "kh" ? translation.kh : translation.en;
+    }
+    return eventName; // Fallback to original name if no translation found
+  }
 
   const mapCategoryToId = (categoryName: string): string => {
     const lowerCategory = categoryName.toLowerCase().trim()
@@ -695,7 +711,8 @@ export function MenuSection({
                       e.currentTarget.style.transform = selectedEvent === event ? "scale(1.05)" : "scale(1)"
                     }}
                   >
-                    <span>{event}</span>
+                    {/* FIXED: Use translated event names */}
+                    <span>{getEventDisplayName(event)}</span>
                     <span
                       className="ml-1 px-2 py-0.5 rounded-full text-xs font-bold"
                       style={{ backgroundColor: "#dc2626", color: "#ffffff" }}

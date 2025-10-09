@@ -41,7 +41,7 @@ export async function fetchAllDataFromGoogleSheet() {
 }
 
 // =======================
-// Fetch Events
+// Fetch Events - UPDATED WITH Event_kh SUPPORT
 // =======================
 export async function fetchEventsFromGoogleSheet() {
   try {
@@ -86,7 +86,7 @@ async function fetchSheetData(sheetId, sheetName) {
 }
 
 // =======================
-// Process Events
+// Process Events - FIXED WITH CORRECT COLUMN NAMES
 // =======================
 function processEventsData(eventsData) {
   if (!eventsData || eventsData.length === 0) {
@@ -98,13 +98,32 @@ function processEventsData(eventsData) {
 
   const processedEvents = eventsData
     .map((row, index) => {
+      // Skip header rows
       if (row['Event ID'] === 'Event ID' || row['Event Name'] === 'Event Name') {
         console.log('Skipping header row');
         return null;
       }
 
+      // Log all available keys to debug
+      if (index === 0) {
+        console.log('🔍 Available keys in events data:', Object.keys(row));
+      }
+
+      // Extract data using the actual column names from your Google Sheets
       const eventName = row['Event Name']?.trim();
       const eventAbbreviation = row['Event Abbreviation']?.trim();
+      
+      // The Khmer event name column might be named differently
+      // Try multiple possible column names
+      const eventKh = row['Event_kh']?.trim() || 
+                     row['Event_KH']?.trim() || 
+                     row['Event Kh']?.trim() ||
+                     row['event_kh']?.trim() ||
+                     row['Event_kh ']?.trim() || // Handle trailing space
+                     row['Event Khmer']?.trim() ||
+                     row['Khmer Name']?.trim() ||
+                     eventName; // Fallback to English name
+
       const posterUrl = row['Poster Image URL']?.trim();
 
       if (!eventName) {
@@ -112,19 +131,29 @@ function processEventsData(eventsData) {
         return null;
       }
 
+      console.log(`📝 Event processing - Name: "${eventName}", Khmer: "${eventKh}", Abbreviation: "${eventAbbreviation}"`);
+
       const event = {
         id: row['Event ID'] || (index + 1),
         name: eventName,
         abbreviation: eventAbbreviation || eventName,
+        name_kh: eventKh,
         poster: posterUrl || '/placeholder.svg',
       };
 
-      console.log('Processed event from Google Sheets:', event);
+      console.log('✅ Processed event:', event);
       return event;
     })
     .filter(Boolean);
 
-  console.log('Final processed events from Google Sheets:', processedEvents);
+  console.log('🎯 Final processed events:', processedEvents);
+  
+  // Debug: Check if any events have Khmer names
+  processedEvents.forEach(event => {
+    const hasKhmer = event.name_kh && event.name_kh !== event.name;
+    console.log(`🔍 Event "${event.name}" - Has Khmer: ${hasKhmer}, Khmer: "${event.name_kh}"`);
+  });
+
   return processedEvents;
 }
 

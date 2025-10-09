@@ -233,8 +233,12 @@ export default function HomePage() {
           currentSection={currentSection}
         />
 
-        {/* Discount Banner with event selection */}
-        <DiscountBanner onEventClick={handleEventSelect} selectedEvent={selectedEvent} />
+        {/* Discount Banner with event selection - FIXED: Added language prop */}
+        <DiscountBanner 
+          onEventClick={handleEventSelect} 
+          selectedEvent={selectedEvent} 
+          language={language} // This line was added
+        />
 
         {/* Menu Section with ID for scrolling */}
         <div id="menu-section">
