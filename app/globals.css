@@ -127,6 +127,34 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-color: white !important;
+  }
+  
+  /* Force white background for all dialogs and modals */
+  [role="dialog"],
+  [data-radix-dialog-content],
+  .dialog-content,
+  .modal,
+  .popover-content {
+    background-color: white !important;
+    color: black !important;
+  }
+  
+  /* Force white background for cards and containers */
+  .card,
+  [class*="card"],
+  .container,
+  .bg-background,
+  .bg-card,
+  .bg-popover {
+    background-color: white !important;
+  }
+  
+  /* Ensure text remains readable */
+  .text-foreground,
+  .text-card-foreground,
+  .text-popover-foreground {
+    color: black !important;
   }
 }
 
@@ -139,3 +167,37 @@
   animation: marquee 20s linear infinite;
 }
 
+/* Override any dark mode preferences */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: oklch(1 0 0) !important;
+    --foreground: oklch(0.145 0 0) !important;
+    --card: oklch(1 0 0) !important;
+    --card-foreground: oklch(0.145 0 0) !important;
+    --popover: oklch(1 0 0) !important;
+    --popover-foreground: oklch(0.145 0 0) !important;
+  }
+  
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+  
+  [role="dialog"],
+  [data-radix-dialog-content],
+  .dialog-content,
+  .modal {
+    background-color: white !important;
+    color: black !important;
+  }
+}
+
+/* Additional force for dialog components */
+[data-state="open"] {
+  background-color: white !important;
+}
+
+/* Ensure the dialog overlay doesn't interfere */
+[data-radix-dialog-overlay] {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}

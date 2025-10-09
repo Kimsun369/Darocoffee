@@ -98,7 +98,10 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent 
+        className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white"
+        style={{ backgroundColor: 'white' }}
+      >
         <DialogHeader>
           <DialogTitle className="font-serif text-2xl text-foreground">
             {product.name}
@@ -113,20 +116,20 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
               alt={product.name}
               className="w-full h-64 object-cover rounded-lg border border-border"
             />
-            <Badge className="absolute top-4 right-4 bg-background text-foreground border border-border text-lg px-3 py-1 shadow-lg">
+            <Badge className="absolute top-4 right-4 bg-white text-foreground border border-border text-lg px-3 py-1 shadow-lg">
               ${product.price.toFixed(2)}
             </Badge>
           </div>
 
           {/* Description */}
-          <p className="text-muted-foreground leading-relaxed bg-muted p-4 rounded-lg border border-border">
+          <p className="text-muted-foreground leading-relaxed bg-gray-50 p-4 rounded-lg border border-border">
             {product.description}
           </p>
 
           {/* Options */}
           {product.options &&
             Object.entries(product.options).map(([optionType, options]) => (
-              <div key={optionType} className="space-y-3 bg-muted p-4 rounded-lg border border-border">
+              <div key={optionType} className="space-y-3 bg-gray-50 p-4 rounded-lg border border-border">
                 <h4 className="font-semibold capitalize text-lg text-primary">
                   {optionType === "size" && language === "en" && "Size"}
                   {optionType === "size" && language === "kh" && "ទំហំ"}
@@ -155,7 +158,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
                   }}
                 >
                   {options.map((option) => (
-                    <div key={option.name} className="flex items-center space-x-2 bg-background p-3 rounded border border-border">
+                    <div key={option.name} className="flex items-center space-x-2 bg-white p-3 rounded border border-border">
                       <RadioGroupItem 
                         value={option.name} 
                         id={`${optionType}-${option.name}`}
@@ -176,7 +179,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
             ))}
 
           {/* Quantity */}
-          <div className="space-y-3 bg-muted p-4 rounded-lg border border-border">
+          <div className="space-y-3 bg-gray-50 p-4 rounded-lg border border-border">
             <h4 className="font-semibold text-lg text-primary">
               {language === "en" ? "Quantity" : "បរិមាណ"}
             </h4>
@@ -189,7 +192,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
               >
                 <Minus className="h-4 w-4" />
               </Button>
-              <span className="text-xl font-semibold w-8 text-center text-primary bg-background py-2 rounded border border-border">
+              <span className="text-xl font-semibold w-8 text-center text-primary bg-white py-2 rounded border border-border">
                 {quantity}
               </span>
               <Button 
@@ -206,7 +209,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
           <div className="space-y-3">
             <Button
               variant="outline"
-              className="w-full"
+              className="w-full bg-white"
               onClick={() => {
                 // Open add more item modal
               }}
@@ -219,7 +222,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
           <div className="border-t border-border pt-6 space-y-4">
             <div className="flex justify-between items-center text-xl font-bold">
               <span className="text-primary">{language === "en" ? "Total:" : "សរុប:"}</span>
-              <span className="text-primary bg-muted px-4 py-2 rounded border border-border">
+              <span className="text-primary bg-gray-50 px-4 py-2 rounded border border-border">
                 ${calculateTotalPrice().toFixed(2)}
               </span>
             </div>
