@@ -1,3 +1,4 @@
+// MenuSection.tsx
 "use client"
 
 import type React from "react"
@@ -208,50 +209,50 @@ export function MenuSection({
     return activeDiscounts
   }, [discounts])
 
- const matchProductWithDiscount = (productName: string, discountProductName: string): boolean => {
-  if (!productName || !discountProductName) return false
+  const matchProductWithDiscount = (productName: string, discountProductName: string): boolean => {
+    if (!productName || !discountProductName) return false
 
-  const productClean = productName.toLowerCase().trim()
-  const discountClean = discountProductName.toLowerCase().trim()
+    const productClean = productName.toLowerCase().trim()
+    const discountClean = discountProductName.toLowerCase().trim()
 
-  // 1. Exact match (highest priority)
-  if (productClean === discountClean) return true
+    // 1. Exact match (highest priority)
+    if (productClean === discountClean) return true
 
-  // 2. Word boundary matching - more strict than includes()
-  const productWords = productClean.split(/\s+/)
-  const discountWords = discountClean.split(/\s+/)
-  
-  // Check if all discount words appear in product name as whole words
-  const allDiscountWordsMatch = discountWords.every(discountWord => 
-    productWords.some(productWord => productWord === discountWord)
-  )
-  
-  if (allDiscountWordsMatch) return true
+    // 2. Word boundary matching - more strict than includes()
+    const productWords = productClean.split(/\s+/)
+    const discountWords = discountClean.split(/\s+/)
+    
+    // Check if all discount words appear in product name as whole words
+    const allDiscountWordsMatch = discountWords.every(discountWord => 
+      productWords.some(productWord => productWord === discountWord)
+    )
+    
+    if (allDiscountWordsMatch) return true
 
-  // 3. Handle common variations but be more specific
-  const variations: Record<string, string[]> = {
-    iced: ["ice"],
-    latte: ["late"],
-    cappuccino: ["capuccino", "cappucino"],
-    americano: ["american"],
-    matcha: ["maccha", "green tea"],
-    chocolate: ["choco"],
-  }
+    // 3. Handle common variations but be more specific
+    const variations: Record<string, string[]> = {
+      iced: ["ice"],
+      latte: ["late"],
+      cappuccino: ["capuccino", "cappucino"],
+      americano: ["american"],
+      matcha: ["maccha", "green tea"],
+      chocolate: ["choco"],
+    }
 
-  let productVar = productClean
-  let discountVar = discountClean
+    let productVar = productClean
+    let discountVar = discountClean
 
-  Object.entries(variations).forEach(([standard, alts]) => {
-    alts.forEach((alt) => {
-      // Use word boundaries to avoid partial matches
-      productVar = productVar.replace(new RegExp(`\\b${alt}\\b`, 'g'), standard)
-      discountVar = discountVar.replace(new RegExp(`\\b${alt}\\b`, 'g'), standard)
+    Object.entries(variations).forEach(([standard, alts]) => {
+      alts.forEach((alt) => {
+        // Use word boundaries to avoid partial matches
+        productVar = productVar.replace(new RegExp(`\\b${alt}\\b`, 'g'), standard)
+        discountVar = discountVar.replace(new RegExp(`\\b${alt}\\b`, 'g'), standard)
+      })
     })
-  })
 
-  // Only return true if we have exact match after variations
-  return productVar === discountVar
-}
+    // Only return true if we have exact match after variations
+    return productVar === discountVar
+  }
 
   const productsWithDiscounts = useMemo(() => {
     if (getActiveDiscounts.length === 0) {
@@ -442,7 +443,7 @@ export function MenuSection({
         >
           <img
             src={product.image || "/placeholder.svg"}
-            alt={product.name}
+            alt={language === "en" ? product.name : product.name_kh}
             className="w-full h-full object-cover transition-transform duration-500"
             style={{
               transform: "scale(1)",
@@ -501,10 +502,10 @@ export function MenuSection({
 
         <div className="p-4" style={{ backgroundColor: "#ffffff" }}>
           <h3 className="font-semibold text-base mb-1 line-clamp-1" style={{ color: "#111827" }}>
-            {language === "en" ? product.name : product.name_kh}
+            {language === "en" ? product.name : (product.name_kh || product.name)}
           </h3>
           <p className="text-xs mb-3 line-clamp-2" style={{ color: "#4b5563" }}>
-            {language === "en" ? product.description : product.description_kh}
+            {language === "en" ? product.description : (product.description_kh || product.description)}
           </p>
 
           <div className="flex items-center justify-between">

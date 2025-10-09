@@ -1,3 +1,4 @@
+// googleSheetData.js
 // Free Google Sheets integration using JSON API
 
 // =======================
@@ -128,7 +129,7 @@ function processEventsData(eventsData) {
 }
 
 // =======================
-// Fetch Products
+// Fetch Products - FIXED VERSION
 // =======================
 export async function fetchProductsFromGoogleSheet() {
   try {
@@ -280,32 +281,67 @@ function processCategoriesData(categoriesData) {
 }
 
 // =======================
-// Process Products
+// Process Products - FIXED VERSION WITH KHMER LANGUAGE SUPPORT
 // =======================
 function processProductsData(data, categoriesMap) {
+  console.log("🔍 PROCESSING PRODUCTS DATA - TOTAL ROWS:", data.length);
+  
   const productsMap = {};
 
   data.forEach((item, index) => {
-    const name = item.Name || item['Product Name'];
-    if (!name) return;
+    // Log the first item to see the actual field names
+    if (index === 0) {
+      console.log("📋 SAMPLE PRODUCT ROW FIELDS:", Object.keys(item));
+      console.log("📋 SAMPLE PRODUCT ROW DATA:", item);
+    }
+
+    const name = item.Name || item['Product Name'] || item.name;
+    if (!name) {
+      console.warn(`❌ Skipping row ${index} - missing product name:`, item);
+      return;
+    }
 
     if (!productsMap[name]) {
-      const category = item.Category || 'Uncategorized';
+      const category = item.Category || item.category || 'Uncategorized';
       const catInfo = categoriesMap[category.toLowerCase()] || {};
-      productsMap[name] = {
+      
+      // Extract Khmer language fields with multiple possible column names
+      const name_kh = item.name_kh || item['Name_KH'] || item['Product Name_KH'] || item['name_kh'] || name;
+      const description_kh = item.description_kh || item['Description_KH'] || item['description_kh'] || '';
+      
+      // Extract English description with multiple possible column names
+      const description = item.Description || item.description || '';
+      
+      // Extract image with multiple possible column names
+      const image = item.Image || item.image || item['Image URL'] || item['image_url'] || '/via.placeholder.com/400x300';
+      
+      // Extract price with multiple possible column names
+      const price = parseFloat(item.Price || item.price || '0');
+
+      const product = {
         id: index + 1,
-        name,
-        image: item.Image || '/via.placeholder.com/400x300',
-        price: parseFloat(item.Price || '0'),
-        category,
+        name: name,
+        name_kh: name_kh,
+        image: image,
+        price: price,
+        category: category,
         category_kh: catInfo.category_kh || category,
-        description: item.Description || '',
-        description_kh: catInfo.description_kh || item.Description || '',
+        description: description,
+        description_kh: description_kh,
         displayOrder: catInfo.displayOrder || 999,
         options: {},
       };
+
+      console.log(`✅ Processed product: ${name}`, {
+        name_kh: product.name_kh,
+        description_kh: product.description_kh,
+        category: product.category
+      });
+
+      productsMap[name] = product;
     }
 
+    // Process options
     for (let i = 1; i <= 10; i++) {
       const optionName = item[`Option ${i} - Name`] || '';
       const choicesStr = item[`Option ${i} - Choices`] || '';
@@ -326,7 +362,15 @@ function processProductsData(data, categoriesMap) {
     }
   });
 
-  return Object.values(productsMap).sort((a, b) => a.displayOrder - b.displayOrder);
+  const finalProducts = Object.values(productsMap).sort((a, b) => a.displayOrder - b.displayOrder);
+  console.log(`🎯 FINAL PROCESSED PRODUCTS: ${finalProducts.length} products`);
+  
+  // Log a few products to verify Khmer data
+  finalProducts.slice(0, 3).forEach(product => {
+    console.log(`📝 Sample product - EN: ${product.name}, KH: ${product.name_kh}, Desc KH: ${product.description_kh}`);
+  });
+
+  return finalProducts;
 }
 
 // =======================
