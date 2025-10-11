@@ -217,7 +217,7 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
   // Show loading state
   if (isLoading) {
     return (
-      <section className="relative h-[33vh] min-h-[250px] overflow-hidden bg-gray-200 flex items-center justify-center">
+      <section className="relative h-[20vh] min-h-[250px] overflow-hidden bg-gray-200 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600 mx-auto mb-4"></div>
           <p className={`text-gray-600 ${language === "kh" ? "font-mono" : "font-sans"}`}>
@@ -231,7 +231,7 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
   // Show error state
   if (error) {
     return (
-      <section className="relative h-[33vh] min-h-[250px] overflow-hidden bg-gray-200 flex items-center justify-center">
+      <section className="relative h-[20vh] min-h-[250px] overflow-hidden bg-gray-200 flex items-center justify-center">
         <div className={`text-center text-gray-600 ${language === "kh" ? "font-mono" : "font-sans"}`}>
           <p>{language === "en" ? "Unable to load events" : "មិនអាចផ្ទុកព្រឹត្តិការណ៍បានទេ"}</p>
           <p className="text-sm mt-2">{error}</p>
@@ -243,7 +243,7 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
   // Show empty state
   if (events.length === 0) {
     return (
-      <section className="relative h-[33vh] min-h-[250px] overflow-hidden bg-gray-200 flex items-center justify-center">
+      <section className="relative h-[20vh] min-h-[250px] overflow-hidden bg-gray-200 flex items-center justify-center">
         <div className={`text-center text-gray-600 ${language === "kh" ? "font-mono" : "font-sans"}`}>
           <p>{language === "en" ? "No events available" : "មិនមានព្រឹត្តិការណ៍ដែលអាចប្រើបានទេ"}</p>
           <p className="text-sm mt-2">
@@ -261,7 +261,7 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
   }
 
   return (
-    <section className="relative h-[33vh] min-h-[250px] overflow-hidden bg-gray-100">
+    <section className="relative h-[20vh] min-h-[250px] overflow-hidden bg-gray-100">
       {/* Transition Style Selector (for testing) */}
       <div className="absolute top-4 left-4 z-20 bg-black/50 rounded-lg p-2 hidden">
         <select 
