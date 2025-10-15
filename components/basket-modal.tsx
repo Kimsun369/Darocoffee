@@ -11,10 +11,14 @@ import { Label } from "@/components/ui/label"
 interface Product {
   id: number
   name: string
+  name_kh: string
   image: string
   price: number
   category: string
+  category_kh: string
   description: string
+  description_kh: string
+  displayOrder: number
   options?: Record<string, Array<{ name: string; price: number }>>
 }
 
@@ -85,7 +89,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
     const cartItem: CartItem = {
       id: `${product.id}-${Date.now()}-${Math.random()}`,
       productId: product.id,
-      name: product.name,
+      name: language === "en" ? product.name : product.name_kh,
       price: calculateTotalPrice(),
       quantity,
       options: selectedOptions,
@@ -96,15 +100,35 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
     onClose()
   }
 
+  // Helper function to get option display name
+  const getOptionDisplayName = (optionType: string) => {
+    const optionMap: Record<string, { en: string; kh: string }> = {
+      'size': { en: 'Size', kh: 'ទំហំ' },
+      'sugar': { en: 'Sugar Level', kh: 'កម្រិតស្ករ' },
+      'sugar_level': { en: 'Sugar Level', kh: 'កម្រិតស្ករ' },
+      'milk': { en: 'Milk Type', kh: 'ប្រភេទទឹកដោះគោ' },
+      'milk_type': { en: 'Milk Type', kh: 'ប្រភេទទឹកដោះគោ' },
+      'shots': { en: 'Espresso Shots', kh: 'ការបាញ់កាហ្វេ' },
+      'espresso_shots': { en: 'Espresso Shots', kh: 'ការបាញ់កាហ្វេ' },
+      'whipped': { en: 'Whipped Cream', kh: 'ក្រែមវីប' },
+      'whipped_cream': { en: 'Whipped Cream', kh: 'ក្រែមវីប' },
+      'bread': { en: 'Bread Type', kh: 'ប្រភេទនំបុ័ង' },
+      'bread_type': { en: 'Bread Type', kh: 'ប្រភេទនំបុ័ង' },
+      'toppings': { en: 'Toppings', kh: 'គ្រឿងលាប' },
+      'ice': { en: 'Ice Level', kh: 'កម្រិតទឹកកក' },
+      'ice_level': { en: 'Ice Level', kh: 'កម្រិតទឹកកក' },
+      'temperature': { en: 'Temperature', kh: 'សីតុណ្ហភាព' },
+    }
+
+    return optionMap[optionType]?.[language] || optionType
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent 
-        className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white"
-        style={{ backgroundColor: 'white' }}
-      >
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-serif text-2xl text-foreground">
-            {product.name}
+          <DialogTitle className="font-serif text-2xl text-[var(--coffee-primary)]">
+            {language === "en" ? product.name : product.name_kh}
           </DialogTitle>
         </DialogHeader>
 
@@ -113,76 +137,67 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
           <div className="relative">
             <img
               src={product.image || "/placeholder.svg"}
-              alt={product.name}
-              className="w-full h-64 object-cover rounded-lg border border-border"
+              alt={language === "en" ? product.name : product.name_kh}
+              className="w-full h-64 object-cover rounded-lg"
             />
-            <Badge className="absolute top-4 right-4 bg-white text-foreground border border-border text-lg px-3 py-1 shadow-lg">
+            <Badge
+              variant="secondary"
+              className="absolute top-4 right-4 bg-white/90 text-[var(--coffee-primary)] text-lg px-3 py-1"
+            >
               ${product.price.toFixed(2)}
             </Badge>
           </div>
 
           {/* Description */}
-          <p className="text-muted-foreground leading-relaxed bg-gray-50 p-4 rounded-lg border border-border">
-            {product.description}
+          <p className="text-muted-foreground leading-relaxed">
+            {language === "en" ? product.description : product.description_kh || product.description}
           </p>
 
           {/* Options */}
-          {product.options &&
-            Object.entries(product.options).map(([optionType, options]) => (
-              <div key={optionType} className="space-y-3 bg-gray-50 p-4 rounded-lg border border-border">
-                <h4 className="font-semibold capitalize text-lg text-primary">
-                  {optionType === "size" && language === "en" && "Size"}
-                  {optionType === "size" && language === "kh" && "ទំហំ"}
-                  {optionType === "sugar" && language === "en" && "Sugar Level"}
-                  {optionType === "sugar" && language === "kh" && "កម្រិតស្ករ"}
-                  {optionType === "milk" && language === "en" && "Milk Type"}
-                  {optionType === "milk" && language === "kh" && "ប្រភេទទឹកដោះគោ"}
-                  {optionType === "shots" && language === "en" && "Espresso Shots"}
-                  {optionType === "shots" && language === "kh" && "ការបាញ់កាហ្វេ"}
-                  {optionType === "whipped" && language === "en" && "Whipped Cream"}
-                  {optionType === "whipped" && language === "kh" && "ក្រែមវីប"}
-                  {optionType === "bread" && language === "en" && "Bread Type"}
-                  {optionType === "bread" && language === "kh" && "ប្រភេទនំបុ័ង"}
-                  {optionType === "toppings" && language === "en" && "Toppings"}
-                  {optionType === "toppings" && language === "kh" && "គ្រឿងលាប"}
-                  {!["size", "sugar", "milk", "shots", "whipped", "bread", "toppings"].includes(optionType) &&
-                    optionType}
-                </h4>
-                <RadioGroup
-                  value={selectedOptions[optionType]}
-                  onValueChange={(value) => {
-                    const option = options.find((opt) => opt.name === value)
-                    if (option) {
-                      handleOptionChange(optionType, option.name, option.price)
-                    }
-                  }}
-                >
-                  {options.map((option) => (
-                    <div key={option.name} className="flex items-center space-x-2 bg-white p-3 rounded border border-border">
-                      <RadioGroupItem 
-                        value={option.name} 
-                        id={`${optionType}-${option.name}`}
-                      />
-                      <Label
-                        htmlFor={`${optionType}-${option.name}`}
-                        className="flex-1 cursor-pointer flex justify-between"
-                      >
-                        <span>{option.name}</span>
-                        {option.price > 0 && (
-                          <span className="text-primary font-medium">+${option.price.toFixed(2)}</span>
-                        )}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </div>
-            ))}
+          {product.options && Object.keys(product.options).length > 0 && (
+            <div className="space-y-4">
+              <h3 className="font-semibold text-lg">
+                {language === "en" ? "Customize Your Order" : "ប្ដូរតាមតម្រូវការ"}
+              </h3>
+              {Object.entries(product.options).map(([optionType, options]) => (
+                <div key={optionType} className="space-y-3">
+                  <h4 className="font-semibold capitalize text-lg">
+                    {getOptionDisplayName(optionType)}
+                  </h4>
+                  <RadioGroup
+                    value={selectedOptions[optionType]}
+                    onValueChange={(value) => {
+                      const option = options.find((opt) => opt.name === value)
+                      if (option) {
+                        handleOptionChange(optionType, option.name, option.price)
+                      }
+                    }}
+                  >
+                    {options.map((option) => (
+                      <div key={option.name} className="flex items-center space-x-2">
+                        <RadioGroupItem value={option.name} id={`${optionType}-${option.name}`} />
+                        <Label
+                          htmlFor={`${optionType}-${option.name}`}
+                          className="flex-1 cursor-pointer flex justify-between"
+                        >
+                          <span>{option.name}</span>
+                          {option.price > 0 && (
+                            <span className="text-[var(--coffee-primary)] font-medium">
+                              +${option.price.toFixed(2)}
+                            </span>
+                          )}
+                        </Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Quantity */}
-          <div className="space-y-3 bg-gray-50 p-4 rounded-lg border border-border">
-            <h4 className="font-semibold text-lg text-primary">
-              {language === "en" ? "Quantity" : "បរិមាណ"}
-            </h4>
+          <div className="space-y-3">
+            <h4 className="font-semibold text-lg">{language === "en" ? "Quantity" : "បរិមាណ"}</h4>
             <div className="flex items-center space-x-4">
               <Button
                 variant="outline"
@@ -192,43 +207,22 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
               >
                 <Minus className="h-4 w-4" />
               </Button>
-              <span className="text-xl font-semibold w-8 text-center text-primary bg-white py-2 rounded border border-border">
-                {quantity}
-              </span>
-              <Button 
-                variant="outline" 
-                size="icon" 
-                onClick={() => setQuantity(quantity + 1)}
-              >
+              <span className="text-xl font-semibold w-8 text-center">{quantity}</span>
+              <Button variant="outline" size="icon" onClick={() => setQuantity(quantity + 1)}>
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
           </div>
 
-          {/* Add More Item */}
-          <div className="space-y-3">
-            <Button
-              variant="outline"
-              className="w-full bg-white"
-              onClick={() => {
-                // Open add more item modal
-              }}
-            >
-              Add More Item
-            </Button>
-          </div>
-
           {/* Total Price & Add to Cart */}
-          <div className="border-t border-border pt-6 space-y-4">
+          <div className="border-t pt-6 space-y-4">
             <div className="flex justify-between items-center text-xl font-bold">
-              <span className="text-primary">{language === "en" ? "Total:" : "សរុប:"}</span>
-              <span className="text-primary bg-gray-50 px-4 py-2 rounded border border-border">
-                ${calculateTotalPrice().toFixed(2)}
-              </span>
+              <span>{language === "en" ? "Total:" : "សរុប:"}</span>
+              <span className="text-[var(--coffee-primary)]">${calculateTotalPrice().toFixed(2)}</span>
             </div>
             <Button
               onClick={handleAddToCart}
-              className="w-full text-lg py-6"
+              className="w-full coffee-gradient text-white hover:opacity-90 text-lg py-6"
             >
               {language === "en" ? "Add to Cart" : "បន្ថែមទៅកន្ត្រក"}
             </Button>

@@ -41,7 +41,7 @@ export async function fetchAllDataFromGoogleSheet() {
 }
 
 // =======================
-// Fetch Events - UPDATED WITH Event_kh SUPPORT
+// Fetch Events
 // =======================
 export async function fetchEventsFromGoogleSheet() {
   try {
@@ -86,7 +86,7 @@ async function fetchSheetData(sheetId, sheetName) {
 }
 
 // =======================
-// Process Events - FIXED WITH CORRECT COLUMN NAMES
+// Process Events
 // =======================
 function processEventsData(eventsData) {
   if (!eventsData || eventsData.length === 0) {
@@ -98,32 +98,13 @@ function processEventsData(eventsData) {
 
   const processedEvents = eventsData
     .map((row, index) => {
-      // Skip header rows
       if (row['Event ID'] === 'Event ID' || row['Event Name'] === 'Event Name') {
         console.log('Skipping header row');
         return null;
       }
 
-      // Log all available keys to debug
-      if (index === 0) {
-        console.log('🔍 Available keys in events data:', Object.keys(row));
-      }
-
-      // Extract data using the actual column names from your Google Sheets
       const eventName = row['Event Name']?.trim();
       const eventAbbreviation = row['Event Abbreviation']?.trim();
-      
-      // The Khmer event name column might be named differently
-      // Try multiple possible column names
-      const eventKh = row['Event_kh']?.trim() || 
-                     row['Event_KH']?.trim() || 
-                     row['Event Kh']?.trim() ||
-                     row['event_kh']?.trim() ||
-                     row['Event_kh ']?.trim() || // Handle trailing space
-                     row['Event Khmer']?.trim() ||
-                     row['Khmer Name']?.trim() ||
-                     eventName; // Fallback to English name
-
       const posterUrl = row['Poster Image URL']?.trim();
 
       if (!eventName) {
@@ -131,29 +112,19 @@ function processEventsData(eventsData) {
         return null;
       }
 
-      console.log(`📝 Event processing - Name: "${eventName}", Khmer: "${eventKh}", Abbreviation: "${eventAbbreviation}"`);
-
       const event = {
         id: row['Event ID'] || (index + 1),
         name: eventName,
         abbreviation: eventAbbreviation || eventName,
-        name_kh: eventKh,
         poster: posterUrl || '/placeholder.svg',
       };
 
-      console.log('✅ Processed event:', event);
+      console.log('Processed event from Google Sheets:', event);
       return event;
     })
     .filter(Boolean);
 
-  console.log('🎯 Final processed events:', processedEvents);
-  
-  // Debug: Check if any events have Khmer names
-  processedEvents.forEach(event => {
-    const hasKhmer = event.name_kh && event.name_kh !== event.name;
-    console.log(`🔍 Event "${event.name}" - Has Khmer: ${hasKhmer}, Khmer: "${event.name_kh}"`);
-  });
-
+  console.log('Final processed events from Google Sheets:', processedEvents);
   return processedEvents;
 }
 
@@ -310,7 +281,7 @@ function processCategoriesData(categoriesData) {
 }
 
 // =======================
-// Process Products - FIXED VERSION WITH KHMER LANGUAGE SUPPORT
+// Process Products - FIXED VERSION WITH IMPROVED OPTIONS HANDLING
 // =======================
 function processProductsData(data, categoriesMap) {
   console.log("🔍 PROCESSING PRODUCTS DATA - TOTAL ROWS:", data.length);
@@ -324,7 +295,7 @@ function processProductsData(data, categoriesMap) {
       console.log("📋 SAMPLE PRODUCT ROW DATA:", item);
     }
 
-    const name = item.Name || item['Product Name'] || item.name;
+    const name = item.Name || item['Product Name'] || item.name || item['Product Name '];
     if (!name) {
       console.warn(`❌ Skipping row ${index} - missing product name:`, item);
       return;
@@ -345,12 +316,12 @@ function processProductsData(data, categoriesMap) {
       const image = item.Image || item.image || item['Image URL'] || item['image_url'] || '/via.placeholder.com/400x300';
       
       // Extract price with multiple possible column names
-      const price = parseFloat(item.Price || item.price || '0');
+      const price = parseFloat(item.Price || item.price || item['Price '] || '0');
 
       const product = {
         id: index + 1,
-        name: name,
-        name_kh: name_kh,
+        name: name.trim(),
+        name_kh: name_kh.trim(),
         image: image,
         price: price,
         category: category,
@@ -364,39 +335,88 @@ function processProductsData(data, categoriesMap) {
       console.log(`✅ Processed product: ${name}`, {
         name_kh: product.name_kh,
         description_kh: product.description_kh,
-        category: product.category
+        category: product.category,
+        price: product.price
       });
 
       productsMap[name] = product;
     }
 
-    // Process options
+    // Process options - IMPROVED VERSION
+    // Try multiple column naming patterns
+    const optionPatterns = [
+      // Pattern 1: "Option 1 - Name", "Option 1 - Choices", "Option 1 - Prices"
+      { 
+        name: i => `Option ${i} - Name`,
+        choices: i => `Option ${i} - Choices`, 
+        prices: i => `Option ${i} - Prices`
+      },
+      // Pattern 2: "Option1 Name", "Option1 Choices", "Option1 Prices"
+      { 
+        name: i => `Option${i} Name`,
+        choices: i => `Option${i} Choices`, 
+        prices: i => `Option${i} Prices`
+      },
+      // Pattern 3: "Option1_Name", "Option1_Choices", "Option1_Prices"
+      { 
+        name: i => `Option${i}_Name`,
+        choices: i => `Option${i}_Choices`, 
+        prices: i => `Option${i}_Prices`
+      }
+    ];
+
     for (let i = 1; i <= 10; i++) {
-      const optionName = item[`Option ${i} - Name`] || '';
-      const choicesStr = item[`Option ${i} - Choices`] || '';
-      const pricesStr = item[`Option ${i} - Prices`] || '';
+      let optionName = '';
+      let choicesStr = '';
+      let pricesStr = '';
+
+      // Try each pattern until we find one that works
+      for (const pattern of optionPatterns) {
+        optionName = item[pattern.name(i)] || '';
+        choicesStr = item[pattern.choices(i)] || '';
+        pricesStr = item[pattern.prices(i)] || '';
+
+        if (optionName && choicesStr) {
+          console.log(`✅ Found options using pattern for option ${i}:`, { optionName, choicesStr, pricesStr });
+          break;
+        }
+      }
 
       if (!optionName || !choicesStr) continue;
 
-      const choices = choicesStr.split(',').map(v => v.trim());
+      const choices = choicesStr.split(',').map(v => v.trim()).filter(v => v);
       const prices = pricesStr
         .split(',')
         .map(p => parseFloat(p.trim()) || 0)
         .slice(0, choices.length);
 
-      productsMap[name].options[optionName.toLowerCase()] = choices.map((c, idx) => ({
+      // Ensure we have the same number of prices as choices
+      while (prices.length < choices.length) {
+        prices.push(0);
+      }
+
+      const optionKey = optionName.toLowerCase().replace(/\s+/g, '_');
+      
+      productsMap[name].options[optionKey] = choices.map((c, idx) => ({
         name: c,
         price: prices[idx] || 0,
       }));
+
+      console.log(`✅ Added options for ${name}:`, {
+        optionType: optionKey,
+        options: productsMap[name].options[optionKey]
+      });
     }
   });
 
   const finalProducts = Object.values(productsMap).sort((a, b) => a.displayOrder - b.displayOrder);
   console.log(`🎯 FINAL PROCESSED PRODUCTS: ${finalProducts.length} products`);
   
-  // Log a few products to verify Khmer data
-  finalProducts.slice(0, 3).forEach(product => {
-    console.log(`📝 Sample product - EN: ${product.name}, KH: ${product.name_kh}, Desc KH: ${product.description_kh}`);
+  // Log products with options to verify
+  finalProducts.forEach(product => {
+    if (Object.keys(product.options).length > 0) {
+      console.log(`📝 Product with options - ${product.name}:`, product.options);
+    }
   });
 
   return finalProducts;
