@@ -129,7 +129,7 @@ function processEventsData(eventsData) {
 }
 
 // =======================
-// Fetch Products - FIXED VERSION
+// Fetch Products - FIXED VERSION WITH COLUMN I SUPPORT
 // =======================
 export async function fetchProductsFromGoogleSheet() {
   try {
@@ -281,41 +281,57 @@ function processCategoriesData(categoriesData) {
 }
 
 // =======================
-// Process Products - FIXED VERSION WITH IMPROVED OPTIONS HANDLING
+// Process Products - ENHANCED WITH COLUMN I SUPPORT
 // =======================
 function processProductsData(data, categoriesMap) {
   console.log("🔍 PROCESSING PRODUCTS DATA - TOTAL ROWS:", data.length);
   
   const productsMap = {};
 
+  // First, let's examine the headers to understand the structure
+  if (data.length > 0) {
+    const firstRow = data[0];
+    console.log("📋 ALL AVAILABLE COLUMNS:", Object.keys(firstRow));
+    
+    // Find all option-related columns
+    const optionColumns = Object.keys(firstRow).filter(key => 
+      key.toLowerCase().includes('option') || 
+      key.toLowerCase().includes('choice') || 
+      key.toLowerCase().includes('size') ||
+      key.toLowerCase().includes('sugar') ||
+      key.toLowerCase().includes('milk') ||
+      key.toLowerCase().includes('topping')
+    );
+    console.log("🎯 OPTION-RELATED COLUMNS FOUND:", optionColumns);
+  }
+
   data.forEach((item, index) => {
-    // Log the first item to see the actual field names
-    if (index === 0) {
-      console.log("📋 SAMPLE PRODUCT ROW FIELDS:", Object.keys(item));
-      console.log("📋 SAMPLE PRODUCT ROW DATA:", item);
+    // Log the first few items to see the actual data
+    if (index < 3) {
+      console.log(`📋 SAMPLE ROW ${index}:`, item);
     }
 
-    const name = item.Name || item['Product Name'] || item.name || item['Product Name '];
-    if (!name) {
+    const name = item.Name || item['Product Name'] || item.name || item['Product Name '] || item['Name '];
+    if (!name || name.trim() === '') {
       console.warn(`❌ Skipping row ${index} - missing product name:`, item);
       return;
     }
 
     if (!productsMap[name]) {
-      const category = item.Category || item.category || 'Uncategorized';
+      const category = item.Category || item.category || item['Category '] || 'Uncategorized';
       const catInfo = categoriesMap[category.toLowerCase()] || {};
       
-      // Extract Khmer language fields with multiple possible column names
-      const name_kh = item.name_kh || item['Name_KH'] || item['Product Name_KH'] || item['name_kh'] || name;
-      const description_kh = item.description_kh || item['Description_KH'] || item['description_kh'] || '';
+      // Extract Khmer language fields
+      const name_kh = item.name_kh || item['Name_KH'] || item['Product Name_KH'] || item['name_kh'] || item['Name KH'] || name;
+      const description_kh = item.description_kh || item['Description_KH'] || item['description_kh'] || item['Description KH'] || '';
       
-      // Extract English description with multiple possible column names
-      const description = item.Description || item.description || '';
+      // Extract English description
+      const description = item.Description || item.description || item['Description '] || '';
       
-      // Extract image with multiple possible column names
-      const image = item.Image || item.image || item['Image URL'] || item['image_url'] || '/via.placeholder.com/400x300';
+      // Extract image
+      const image = item.Image || item.image || item['Image URL'] || item['image_url'] || item['Image '] || '/via.placeholder.com/400x300';
       
-      // Extract price with multiple possible column names
+      // Extract price
       const price = parseFloat(item.Price || item.price || item['Price '] || '0');
 
       const product = {
@@ -329,97 +345,254 @@ function processProductsData(data, categoriesMap) {
         description: description,
         description_kh: description_kh,
         displayOrder: catInfo.displayOrder || 999,
-        options: {},
+        options: {}, // This will be in the format: Record<string, Array<{ name: string; price: number }>>
       };
 
-      console.log(`✅ Processed product: ${name}`, {
-        name_kh: product.name_kh,
-        description_kh: product.description_kh,
-        category: product.category,
-        price: product.price
+      console.log(`✅ Created product: ${product.name}`, {
+        price: product.price,
+        category: product.category
       });
 
       productsMap[name] = product;
     }
 
-    // Process options - IMPROVED VERSION
-    // Try multiple column naming patterns
-    const optionPatterns = [
-      // Pattern 1: "Option 1 - Name", "Option 1 - Choices", "Option 1 - Prices"
-      { 
-        name: i => `Option ${i} - Name`,
-        choices: i => `Option ${i} - Choices`, 
-        prices: i => `Option ${i} - Prices`
-      },
-      // Pattern 2: "Option1 Name", "Option1 Choices", "Option1 Prices"
-      { 
-        name: i => `Option${i} Name`,
-        choices: i => `Option${i} Choices`, 
-        prices: i => `Option${i} Prices`
-      },
-      // Pattern 3: "Option1_Name", "Option1_Choices", "Option1_Prices"
-      { 
-        name: i => `Option${i}_Name`,
-        choices: i => `Option${i}_Choices`, 
-        prices: i => `Option${i}_Prices`
+    // PROCESS OPTIONS - CHECK COLUMN I FIRST
+    console.log(`🔍 Processing options for: ${name}`);
+    
+    // Method 1: Check for JSON options in Column I (index 8 in 0-based array)
+    // Google Sheets columns: A=0, B=1, C=2, D=3, E=4, F=5, G=6, H=7, I=8
+    const columnI = Object.values(item)[8]; // Column I data
+    console.log(`📋 Column I data for ${name}:`, columnI);
+    
+    if (columnI && typeof columnI === 'string' && columnI.trim().startsWith('{')) {
+      try {
+        const parsedOptions = JSON.parse(columnI.trim());
+        if (parsedOptions && typeof parsedOptions === 'object') {
+          // Transform the format to be compatible with basket-modal.tsx
+          const transformedOptions = transformOptionsToBasketFormat(parsedOptions);
+          productsMap[name].options = transformedOptions;
+          console.log(`✅ Added JSON options from Column I for ${name}:`, transformedOptions);
+        }
+      } catch (error) {
+        console.warn(`❌ Failed to parse JSON options from Column I for ${name}:`, error, 'Raw data:', columnI);
       }
-    ];
+    }
 
-    for (let i = 1; i <= 10; i++) {
-      let optionName = '';
-      let choicesStr = '';
-      let pricesStr = '';
+    // Method 2: Check for JSON options column by name (backup method)
+    const jsonOptions = item.Options || item.options || item['Options '];
+    if (Object.keys(productsMap[name].options).length === 0 && jsonOptions && typeof jsonOptions === 'string' && jsonOptions.trim().startsWith('{')) {
+      try {
+        const parsedOptions = JSON.parse(jsonOptions.trim());
+        if (parsedOptions && typeof parsedOptions === 'object') {
+          const transformedOptions = transformOptionsToBasketFormat(parsedOptions);
+          productsMap[name].options = transformedOptions;
+          console.log(`✅ Added JSON options from Options column for ${name}:`, transformedOptions);
+        }
+      } catch (error) {
+        console.warn(`❌ Failed to parse JSON options from Options column for ${name}:`, error);
+      }
+    }
 
-      // Try each pattern until we find one that works
-      for (const pattern of optionPatterns) {
-        optionName = item[pattern.name(i)] || '';
-        choicesStr = item[pattern.choices(i)] || '';
-        pricesStr = item[pattern.prices(i)] || '';
+    // Method 3: Process individual option columns with compatible format (only if no JSON options found)
+    if (Object.keys(productsMap[name].options).length === 0) {
+      // Common option patterns
+      const optionPatterns = [
+        // Size options
+        { 
+          name: 'size', 
+          nameColumns: ['Size', 'size', 'Option 1 - Name', 'Option1 Name'],
+          choicesColumns: ['Size Choices', 'size_choices', 'Option 1 - Choices', 'Option1 Choices'],
+          pricesColumns: ['Size Prices', 'size_prices', 'Option 1 - Prices', 'Option1 Prices']
+        },
+        // Sugar level options
+        { 
+          name: 'sugar_level', 
+          nameColumns: ['Sugar Level', 'sugar_level', 'sugar', 'Option 2 - Name', 'Option2 Name'],
+          choicesColumns: ['Sugar Choices', 'sugar_choices', 'Option 2 - Choices', 'Option2 Choices'],
+          pricesColumns: ['Sugar Prices', 'sugar_prices', 'Option 2 - Prices', 'Option2 Prices']
+        },
+        // Milk options
+        { 
+          name: 'milk', 
+          nameColumns: ['Milk', 'milk', 'Milk Type', 'Option 3 - Name', 'Option3 Name'],
+          choicesColumns: ['Milk Choices', 'milk_choices', 'Option 3 - Choices', 'Option3 Choices'],
+          pricesColumns: ['Milk Prices', 'milk_prices', 'Option 3 - Prices', 'Option3 Prices']
+        },
+        // Toppings options
+        { 
+          name: 'toppings', 
+          nameColumns: ['Toppings', 'toppings', 'Topping', 'Option 4 - Name', 'Option4 Name'],
+          choicesColumns: ['Toppings Choices', 'toppings_choices', 'Option 4 - Choices', 'Option4 Choices'],
+          pricesColumns: ['Toppings Prices', 'toppings_prices', 'Option 4 - Prices', 'Option4 Prices']
+        },
+        // Ice level options
+        { 
+          name: 'ice_level', 
+          nameColumns: ['Ice Level', 'ice_level', 'ice', 'Option 5 - Name', 'Option5 Name'],
+          choicesColumns: ['Ice Choices', 'ice_choices', 'Option 5 - Choices', 'Option5 Choices'],
+          pricesColumns: ['Ice Prices', 'ice_prices', 'Option 5 - Prices', 'Option5 Prices']
+        }
+      ];
+
+      optionPatterns.forEach(pattern => {
+        let optionName = '';
+        let choicesStr = '';
+        let pricesStr = '';
+
+        // Find option name
+        for (const col of pattern.nameColumns) {
+          if (item[col] && item[col].toString().trim()) {
+            optionName = item[col].toString().trim();
+            break;
+          }
+        }
+
+        // Find choices
+        for (const col of pattern.choicesColumns) {
+          if (item[col] && item[col].toString().trim()) {
+            choicesStr = item[col].toString().trim();
+            break;
+          }
+        }
+
+        // Find prices
+        for (const col of pattern.pricesColumns) {
+          if (item[col] && item[col].toString().trim()) {
+            pricesStr = item[col].toString().trim();
+            break;
+          }
+        }
 
         if (optionName && choicesStr) {
-          console.log(`✅ Found options using pattern for option ${i}:`, { optionName, choicesStr, pricesStr });
-          break;
+          const choices = choicesStr.split(',').map(v => v.trim()).filter(v => v);
+          const prices = pricesStr
+            .split(',')
+            .map(p => parseFloat(p.trim()) || 0)
+            .slice(0, choices.length);
+
+          // Ensure we have the same number of prices as choices
+          while (prices.length < choices.length) {
+            prices.push(0);
+          }
+
+          const optionKey = pattern.name;
+          
+          // Format options for basket-modal compatibility
+          productsMap[name].options[optionKey] = choices.map((c, idx) => ({
+            name: c,
+            price: prices[idx] || 0,
+          }));
+
+          console.log(`✅ Added option "${optionKey}" for ${name}:`, {
+            choices: choices,
+            prices: prices
+          });
         }
-      }
-
-      if (!optionName || !choicesStr) continue;
-
-      const choices = choicesStr.split(',').map(v => v.trim()).filter(v => v);
-      const prices = pricesStr
-        .split(',')
-        .map(p => parseFloat(p.trim()) || 0)
-        .slice(0, choices.length);
-
-      // Ensure we have the same number of prices as choices
-      while (prices.length < choices.length) {
-        prices.push(0);
-      }
-
-      const optionKey = optionName.toLowerCase().replace(/\s+/g, '_');
-      
-      productsMap[name].options[optionKey] = choices.map((c, idx) => ({
-        name: c,
-        price: prices[idx] || 0,
-      }));
-
-      console.log(`✅ Added options for ${name}:`, {
-        optionType: optionKey,
-        options: productsMap[name].options[optionKey]
       });
+
+      // Method 4: Dynamic option detection for any remaining columns
+      Object.keys(item).forEach(key => {
+        if (key.toLowerCase().includes('option') && key.toLowerCase().includes('name')) {
+          const optionName = item[key];
+          if (optionName && typeof optionName === 'string') {
+            // Try to find corresponding choices and prices
+            const baseKey = key.replace('name', '').replace('Name', '');
+            const choicesKey = key.replace('Name', 'Choices').replace('name', 'choices');
+            const pricesKey = key.replace('Name', 'Prices').replace('name', 'prices');
+            
+            const choicesStr = item[choicesKey] || '';
+            const pricesStr = item[pricesKey] || '';
+
+            if (choicesStr) {
+              const choices = choicesStr.split(',').map(v => v.trim()).filter(v => v);
+              const prices = pricesStr
+                .split(',')
+                .map(p => parseFloat(p.trim()) || 0)
+                .slice(0, choices.length);
+
+              while (prices.length < choices.length) {
+                prices.push(0);
+              }
+
+              const optionKey = optionName.toLowerCase().replace(/\s+/g, '_');
+              
+              // Format options for basket-modal compatibility
+              productsMap[name].options[optionKey] = choices.map((c, idx) => ({
+                name: c,
+                price: prices[idx] || 0,
+              }));
+
+              console.log(`✅ Added dynamic option "${optionKey}" for ${name}`);
+            }
+          }
+        }
+      });
+    }
+
+    // Log final options for this product
+    if (Object.keys(productsMap[name].options).length > 0) {
+      console.log(`🎯 FINAL OPTIONS for ${name}:`, productsMap[name].options);
+    } else {
+      console.log(`❌ NO OPTIONS found for ${name}`);
     }
   });
 
   const finalProducts = Object.values(productsMap).sort((a, b) => a.displayOrder - b.displayOrder);
-  console.log(`🎯 FINAL PROCESSED PRODUCTS: ${finalProducts.length} products`);
   
-  // Log products with options to verify
-  finalProducts.forEach(product => {
-    if (Object.keys(product.options).length > 0) {
-      console.log(`📝 Product with options - ${product.name}:`, product.options);
-    }
+  // Summary
+  const productsWithOptions = finalProducts.filter(p => Object.keys(p.options).length > 0);
+  console.log(`🎯 FINAL PROCESSED PRODUCTS: ${finalProducts.length} total, ${productsWithOptions.length} with options`);
+  
+  // Log products with options
+  productsWithOptions.forEach(product => {
+    console.log(`📝 ${product.name} has options:`, Object.keys(product.options));
   });
 
   return finalProducts;
+}
+
+// =======================
+// Helper function to transform options format for basket-modal compatibility
+// =======================
+function transformOptionsToBasketFormat(options) {
+  const transformed = {};
+  
+  Object.entries(options).forEach(([key, value]) => {
+    if (value && typeof value === 'object') {
+      // Handle the format from google-sheets.ts: { values: string[], prices: number[] }
+      if (Array.isArray(value.values) && Array.isArray(value.prices)) {
+        transformed[key] = value.values.map((val, index) => ({
+          name: val,
+          price: value.prices[index] || 0
+        }));
+      } 
+      // Handle the format that basket-modal expects: Array<{ name: string; price: number }>
+      else if (Array.isArray(value)) {
+        transformed[key] = value.map(item => ({
+          name: item.name || item.value || '',
+          price: item.price || 0
+        }));
+      }
+      // Handle nested object format
+      else if (typeof value === 'object') {
+        // Try to extract options from nested object structure
+        const optionArray = [];
+        Object.entries(value).forEach(([optionKey, optionValue]) => {
+          if (optionValue && typeof optionValue === 'object' && 'name' in optionValue) {
+            optionArray.push({
+              name: optionValue.name || optionKey,
+              price: optionValue.price || 0
+            });
+          }
+        });
+        if (optionArray.length > 0) {
+          transformed[key] = optionArray;
+        }
+      }
+    }
+  });
+  
+  return transformed;
 }
 
 // =======================
@@ -429,5 +602,6 @@ export {
   fetchSheetData,
   processEventsData,
   processCategoriesData,
-  processProductsData
+  processProductsData,
+  transformOptionsToBasketFormat
 };
