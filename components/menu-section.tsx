@@ -178,16 +178,14 @@ export function MenuSection({
   // Get translated event name from Google Sheets data
   const getEventDisplayName = (eventName: string) => {
     // Try to find event in categories from sheet
-    const eventFromSheet = categoriesFromSheet.find(
-      (cat) => cat.Category === eventName || cat.category === eventName
-    )
-    
+    const eventFromSheet = categoriesFromSheet.find((cat) => cat.Category === eventName || cat.category === eventName)
+
     if (eventFromSheet) {
-      return language === "kh" 
-        ? (eventFromSheet.category_kh || eventFromSheet.Category_KH || eventName)
-        : (eventFromSheet.Category || eventFromSheet.category || eventName)
+      return language === "kh"
+        ? eventFromSheet.category_kh || eventFromSheet.Category_KH || eventName
+        : eventFromSheet.Category || eventFromSheet.category || eventName
     }
-    
+
     return eventName // Fallback to original name if no translation found
   }
 
@@ -221,12 +219,12 @@ export function MenuSection({
     // 2. Word boundary matching - more strict than includes()
     const productWords = productClean.split(/\s+/)
     const discountWords = discountClean.split(/\s+/)
-    
+
     // Check if all discount words appear in product name as whole words
-    const allDiscountWordsMatch = discountWords.every(discountWord => 
-      productWords.some(productWord => productWord === discountWord)
+    const allDiscountWordsMatch = discountWords.every((discountWord) =>
+      productWords.some((productWord) => productWord === discountWord),
     )
-    
+
     if (allDiscountWordsMatch) return true
 
     // 3. Handle common variations but be more specific
@@ -245,8 +243,8 @@ export function MenuSection({
     Object.entries(variations).forEach(([standard, alts]) => {
       alts.forEach((alt) => {
         // Use word boundaries to avoid partial matches
-        productVar = productVar.replace(new RegExp(`\\b${alt}\\b`, 'g'), standard)
-        discountVar = discountVar.replace(new RegExp(`\\b${alt}\\b`, 'g'), standard)
+        productVar = productVar.replace(new RegExp(`\\b${alt}\\b`, "g"), standard)
+        discountVar = discountVar.replace(new RegExp(`\\b${alt}\\b`, "g"), standard)
       })
     })
 
@@ -376,7 +374,12 @@ export function MenuSection({
           id: categoryId,
           name: {
             en: sheetCategory.Category || sheetCategory.category || categoryId,
-            kh: sheetCategory.category_kh || sheetCategory.Category_KH || sheetCategory.Category || sheetCategory.category || categoryId,
+            kh:
+              sheetCategory.category_kh ||
+              sheetCategory.Category_KH ||
+              sheetCategory.Category ||
+              sheetCategory.category ||
+              categoryId,
           },
         })
       }
@@ -385,9 +388,7 @@ export function MenuSection({
     return dynamicCats
   }, [categoriesFromSheet])
 
-  const visibleCategories = dynamicCategories.filter((cat) => 
-    cat.id === "all" || availableCategories.includes(cat.id)
-  )
+  const visibleCategories = dynamicCategories.filter((cat) => cat.id === "all" || availableCategories.includes(cat.id))
 
   const toggleFavorite = (productId: number, e: React.MouseEvent) => {
     e.stopPropagation()
@@ -498,13 +499,13 @@ export function MenuSection({
             className={`font-semibold text-base mb-1 line-clamp-1 ${language === "kh" ? "font-mono" : "font-sans"}`}
             style={{ color: "#111827" }}
           >
-            {language === "en" ? product.name : (product.name_kh || product.name)}
+            {language === "en" ? product.name : product.name_kh || product.name}
           </h3>
           <p
             className={`text-xs mb-3 line-clamp-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
             style={{ color: "#4b5563" }}
           >
-            {language === "en" ? product.description : (product.description_kh || product.description)}
+            {language === "en" ? product.description : product.description_kh || product.description}
           </p>
 
           <div className="flex items-center justify-between">
@@ -938,10 +939,7 @@ export function MenuSection({
             >
               {language === "en" ? "No items found" : "រកមិនឃើញទេ"}
             </h3>
-            <p
-              className={language === "kh" ? "font-mono" : "font-sans"}
-              style={{ color: "#4b5563" }}
-            >
+            <p className={language === "kh" ? "font-mono" : "font-sans"} style={{ color: "#4b5563" }}>
               {language === "en" ? "Try adjusting your filters or search query" : "សូមព្យាយាមកែប្រែការស្វែងរករបស់អ្នក"}
             </p>
           </div>

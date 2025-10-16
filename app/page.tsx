@@ -1,4 +1,3 @@
-// HomePage.tsx
 "use client"
 
 import { useState, useEffect } from "react"
@@ -8,6 +7,7 @@ import { ProductModal } from "@/components/product-modal"
 import { CartSidebar } from "@/components/cart-sidebar"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
+import { InstallPrompt } from "@/components/install-prompt"
 
 interface Product {
   id: number
@@ -77,9 +77,9 @@ export default function HomePage() {
         menuSection.scrollIntoView({ behavior: "smooth" })
       }
     } else if (section === "contact") {
-      const footer = document.querySelector("footer")
-      if (footer) {
-        footer.scrollIntoView({ behavior: "smooth" })
+      const contactSection = document.getElementById("contact-section")
+      if (contactSection) {
+        contactSection.scrollIntoView({ behavior: "smooth" })
       }
     } else if (section === "favorites") {
       // For now, just scroll to menu section as favorites isn't implemented
@@ -107,9 +107,12 @@ export default function HomePage() {
     const handleScroll = () => {
       const scrollPosition = window.scrollY
       const menuSection = document.getElementById("menu-section")
+      const contactSection = document.getElementById("contact-section")
       const footer = document.querySelector("footer")
 
       if (footer && scrollPosition + window.innerHeight >= document.body.scrollHeight - 100) {
+        setCurrentSection("contact")
+      } else if (contactSection && scrollPosition >= contactSection.offsetTop - 100) {
         setCurrentSection("contact")
       } else if (menuSection && scrollPosition >= menuSection.offsetTop - 100) {
         setCurrentSection("menu")
@@ -223,7 +226,7 @@ export default function HomePage() {
   const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
-    <div className="min-h-screen bg-gradient">
+    <div className="min-h-screen bg-gradient pb-20">
       <main>
         <Header
           cartItemCount={cartItemCount}
@@ -234,19 +237,14 @@ export default function HomePage() {
           currentSection={currentSection}
         />
 
-        {/* Discount Banner with event selection - FIXED: Added language prop */}
-        <DiscountBanner 
-          onEventClick={handleEventSelect} 
-          selectedEvent={selectedEvent} 
-          language={language} // This line was added
-        />
+        <DiscountBanner onEventClick={handleEventSelect} selectedEvent={selectedEvent} language={language} />
 
         {/* Menu Section with ID for scrolling */}
         <div id="menu-section">
           {isLoading ? (
             <div className="text-center py-20">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mb-4"></div>
-              <p 
+              <p
                 className={`text-amber-800 ${language === "kh" ? "font-mono" : "font-sans"}`}
                 style={{ fontFamily: language === "kh" ? "'Khmer OS', sans-serif" : undefined }}
               >
@@ -270,13 +268,13 @@ export default function HomePage() {
           ) : (
             <div className="text-center py-20">
               <div className="text-amber-600 text-6xl mb-4">☕</div>
-              <h3 
+              <h3
                 className={`text-amber-800 text-xl font-semibold mb-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
                 style={{ fontFamily: language === "kh" ? "'Khmer OS', sans-serif" : undefined }}
               >
                 {language === "en" ? "Menu Not Available" : "Menu មិនអាចប្រើបាន"}
               </h3>
-              <p 
+              <p
                 className={`text-amber-700 ${language === "kh" ? "font-mono" : "font-sans"}`}
                 style={{ fontFamily: language === "kh" ? "'Khmer OS', sans-serif" : undefined }}
               >
@@ -287,6 +285,8 @@ export default function HomePage() {
             </div>
           )}
         </div>
+
+
       </main>
 
       <Footer language={language} />
@@ -311,12 +311,6 @@ export default function HomePage() {
         onCheckout={handleCheckout}
         language={language}
       />
-
-      {/* Add Install Prompt */}
-      {/* <InstallPrompt language={language} isOpen={showInstallPrompt} onClose={() => setShowInstallPrompt(false)} /> */}
-
-      {/* Add Safari Download Prompt */}
-      {/* <SafariDownloadPrompt language={language} /> */}
     </div>
   )
 }

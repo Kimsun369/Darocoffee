@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Minus, Plus, Check, ChevronDown, ChevronUp } from "lucide-react"
+import { Minus, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
@@ -43,29 +43,24 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
   const [quantity, setQuantity] = useState(1)
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({})
   const [selectedOptionsPricing, setSelectedOptionsPricing] = useState<Record<string, number>>({})
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
     if (product && isOpen) {
-      // Reset state when modal opens with new product
       setQuantity(1)
       const defaultOptions: Record<string, string> = {}
       const defaultPricing: Record<string, number> = {}
-      const defaultExpanded: Record<string, boolean> = {}
 
       if (product.options) {
         Object.entries(product.options).forEach(([key, options]) => {
           if (options.length > 0) {
             defaultOptions[key] = options[0].name
             defaultPricing[key] = options[0].price
-            defaultExpanded[key] = true // Expand first section by default
           }
         })
       }
 
       setSelectedOptions(defaultOptions)
       setSelectedOptionsPricing(defaultPricing)
-      setExpandedSections(defaultExpanded)
     }
   }, [product, isOpen])
 
@@ -79,13 +74,6 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
     setSelectedOptionsPricing((prev) => ({
       ...prev,
       [optionType]: optionPrice,
-    }))
-  }
-
-  const toggleSection = (optionType: string) => {
-    setExpandedSections((prev) => ({
-      ...prev,
-      [optionType]: !prev[optionType]
     }))
   }
 
@@ -116,253 +104,167 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
     onClose()
   }
 
-  // Helper function to get option display name
   const getOptionDisplayName = (optionType: string) => {
     const optionMap: Record<string, { en: string; kh: string }> = {
-      'size': { en: 'Size', kh: 'ទំហំ' },
-      'sugar': { en: 'Sugar Level', kh: 'កម្រិតស្ករ' },
-      'sugar_level': { en: 'Sugar Level', kh: 'កម្រិតស្ករ' },
-      'milk': { en: 'Milk Type', kh: 'ប្រភេទទឹកដោះគោ' },
-      'milk_type': { en: 'Milk Type', kh: 'ប្រភេទទឹកដោះគោ' },
-      'shots': { en: 'Espresso Shots', kh: 'ការបាញ់កាហ្វេ' },
-      'espresso_shots': { en: 'Espresso Shots', kh: 'ការបាញ់កាហ្វេ' },
-      'whipped': { en: 'Whipped Cream', kh: 'ក្រែមវីប' },
-      'whipped_cream': { en: 'Whipped Cream', kh: 'ក្រែមវីប' },
-      'bread': { en: 'Bread Type', kh: 'ប្រភេទនំបុ័ង' },
-      'bread_type': { en: 'Bread Type', kh: 'ប្រភេទនំបុ័ង' },
-      'toppings': { en: 'Toppings', kh: 'គ្រឿងលាប' },
-      'ice': { en: 'Ice Level', kh: 'កម្រិតទឹកកក' },
-      'ice_level': { en: 'Ice Level', kh: 'កម្រិតទឹកកក' },
-      'temperature': { en: 'Temperature', kh: 'សីតុណ្ហភាព' },
+      size: { en: "Size", kh: "ទំហំ" },
+      sugar: { en: "Sugar Level", kh: "កម្រិតស្ករ" },
+      sugar_level: { en: "Sugar Level", kh: "កម្រិតស្ករ" },
+      milk: { en: "Milk Type", kh: "ប្រភេទទឹកដោះគោ" },
+      milk_type: { en: "Milk Type", kh: "ប្រភេទទឹកដោះគោ" },
+      shots: { en: "Espresso Shots", kh: "ការបាញ់កាហ្វេ" },
+      espresso_shots: { en: "Espresso Shots", kh: "ការបាញ់កាហ្វេ" },
+      whipped: { en: "Whipped Cream", kh: "ក្រែមវីប" },
+      whipped_cream: { en: "Whipped Cream", kh: "ក្រែមវីប" },
+      bread: { en: "Bread Type", kh: "ប្រភេទនំបុ័ង" },
+      bread_type: { en: "Bread Type", kh: "ប្រភេទនំបុ័ង" },
+      toppings: { en: "Toppings", kh: "គ្រឿងលាប" },
+      ice: { en: "Ice Level", kh: "កម្រិតទឹកកក" },
+      ice_level: { en: "Ice Level", kh: "កម្រិតទឹកកក" },
+      temperature: { en: "Temperature", kh: "សីតុណ្ហភាព" },
     }
 
     return optionMap[optionType]?.[language] || optionType
   }
 
-  const getOptionIcon = (optionType: string) => {
-    const iconMap: Record<string, string> = {
-      'size': '📏',
-      'sugar': '🍬',
-      'sugar_level': '🍬',
-      'milk': '🥛',
-      'milk_type': '🥛',
-      'shots': '☕',
-      'espresso_shots': '☕',
-      'whipped': '💨',
-      'whipped_cream': '💨',
-      'bread': '🍞',
-      'bread_type': '🍞',
-      'toppings': '🍯',
-      'ice': '🧊',
-      'ice_level': '🧊',
-      'temperature': '🌡️',
-    }
-    return iconMap[optionType] || '⚙️'
-  }
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto p-0 sm:max-w-lg">
-        <DialogHeader className="px-6 pt-6 pb-4 border-b border-gray-100">
-          <DialogTitle className="font-serif text-2xl text-[var(--coffee-primary)] text-center">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-hidden p-0 sm:max-w-lg bg-[#faf8f5] border-amber-200/50">
+        <DialogHeader className="px-5 sm:px-6 pt-5 sm:pt-6 pb-4 bg-gradient-to-b from-white to-amber-50/30">
+          <DialogTitle className="font-serif text-xl sm:text-2xl text-amber-900 leading-tight">
             {language === "en" ? product.name : product.name_kh}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 px-6 pb-6">
-          {/* Product Image */}
-          <div className="relative -mx-6">
-            <img
-              src={product.image || "/placeholder.svg"}
-              alt={language === "en" ? product.name : product.name_kh}
-              className="w-full h-48 object-cover"
-            />
-            <Badge
-              className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm text-[var(--coffee-primary)] border-0 text-lg px-3 py-1.5 shadow-lg rounded-full font-semibold"
-            >
-              ${product.price.toFixed(2)}
-            </Badge>
-          </div>
-
-          {/* Description */}
-          {(product.description || product.description_kh) && (
-            <p className="text-sm text-gray-600 text-center leading-relaxed">
-              {language === "en" ? product.description : product.description_kh || product.description}
-            </p>
-          )}
-
-          {/* Options */}
-          {product.options && Object.keys(product.options).length > 0 && (
-            <div className="space-y-3">
-              <h3 className="font-semibold text-lg text-center text-gray-900">
-                {language === "en" ? "Customize Your Order" : "ប្ដូរតាមតម្រូវការ"}
-              </h3>
-              
-              {Object.entries(product.options).map(([optionType, options]) => (
-                <div key={optionType} className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-                  {/* Option Header - Always visible */}
-                  <button
-                    onClick={() => toggleSection(optionType)}
-                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <span className="text-lg">{getOptionIcon(optionType)}</span>
-                      <div className="text-left">
-                        <h4 className="font-semibold text-gray-900">
-                          {getOptionDisplayName(optionType)}
-                        </h4>
-                        <p className="text-sm text-gray-600">
-                          {selectedOptions[optionType]}
-                        </p>
-                      </div>
-                    </div>
-                    {expandedSections[optionType] ? (
-                      <ChevronUp className="h-5 w-5 text-gray-500" />
-                    ) : (
-                      <ChevronDown className="h-5 w-5 text-gray-500" />
-                    )}
-                  </button>
-
-                  {/* Option Choices - Collapsible */}
-                  {expandedSections[optionType] && (
-                    <div className="px-4 pb-3 border-t border-gray-100">
-                      <div className="grid gap-2 pt-3">
-                        {options.map((option) => {
-                          const isSelected = selectedOptions[optionType] === option.name
-                          return (
-                            <button
-                              key={option.name}
-                              onClick={() => handleOptionChange(optionType, option.name, option.price)}
-                              className={cn(
-                                "w-full p-3 rounded-lg border-2 transition-all duration-200 text-left",
-                                "flex items-center justify-between group",
-                                "hover:border-[var(--coffee-primary)] hover:bg-[var(--coffee-primary)]/5",
-                                isSelected
-                                  ? "border-[var(--coffee-primary)] bg-[var(--coffee-primary)]/10"
-                                  : "border-gray-200 bg-white"
-                              )}
-                            >
-                              <div className="flex items-center space-x-3">
-                                <div className={cn(
-                                  "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all",
-                                  isSelected
-                                    ? "border-[var(--coffee-primary)] bg-[var(--coffee-primary)]"
-                                    : "border-gray-300 group-hover:border-[var(--coffee-primary)]/50"
-                                )}>
-                                  {isSelected && (
-                                    <Check className="h-3 w-3 text-white" />
-                                  )}
-                                </div>
-                                <span className={cn(
-                                  "font-medium",
-                                  isSelected ? "text-[var(--coffee-primary)]" : "text-gray-900"
-                                )}>
-                                  {option.name}
-                                </span>
-                              </div>
-                              {option.price > 0 && (
-                                <span className={cn(
-                                  "text-sm font-medium px-2 py-1 rounded-full min-w-[60px] text-center",
-                                  isSelected
-                                    ? "bg-[var(--coffee-primary)] text-white"
-                                    : "bg-gray-100 text-gray-700 group-hover:bg-[var(--coffee-primary)]/10 group-hover:text-[var(--coffee-primary)]"
-                                )}>
-                                  +${option.price.toFixed(2)}
-                                </span>
-                              )}
-                            </button>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
+        <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
+          <div className="space-y-5 sm:space-y-6 px-5 sm:px-6 pb-32 sm:pb-36">
+            <div className="relative -mx-5 sm:-mx-6">
+              <img
+                src={product.image || "/placeholder.svg"}
+                alt={language === "en" ? product.name : product.name_kh}
+                className="w-full h-64 sm:h-72 object-cover"
+              />
+              <Badge className="absolute top-4 right-4 bg-amber-900 text-white border-0 text-base sm:text-lg px-4 py-1.5 shadow-lg rounded-full font-semibold">
+                ${product.price.toFixed(2)}
+              </Badge>
             </div>
-          )}
 
-          {/* Quantity Selector */}
-          <div className="bg-gray-50 rounded-xl p-4">
-            <h4 className="font-semibold text-gray-900 text-center mb-3">
-              {language === "en" ? "Quantity" : "បរិមាណ"}
-            </h4>
-            <div className="flex items-center justify-between max-w-xs mx-auto">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                disabled={quantity <= 1}
-                className="rounded-full w-12 h-12 border-2 border-gray-300 hover:border-[var(--coffee-primary)] hover:bg-[var(--coffee-primary)]/5 transition-colors"
-              >
-                <Minus className="h-5 w-5" />
-              </Button>
-              
-              <div className="flex flex-col items-center">
-                <span className="text-2xl font-bold text-[var(--coffee-primary)] w-12 text-center">
+            {(product.description || product.description_kh) && (
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-5 shadow-sm">
+                <p className="text-sm sm:text-base text-stone-700 leading-relaxed">
+                  {language === "en" ? product.description : product.description_kh || product.description}
+                </p>
+              </div>
+            )}
+
+            {product.options && Object.keys(product.options).length > 0 && (
+              <div className="space-y-5 sm:space-y-6">
+                {Object.entries(product.options).map(([optionType, options]) => (
+                  <div key={optionType} className="space-y-3">
+                    <h4 className="font-semibold text-stone-900 text-sm sm:text-base tracking-tight">
+                      {getOptionDisplayName(optionType)}
+                    </h4>
+
+                    <div className="flex flex-wrap gap-2 sm:gap-2.5">
+                      {options.map((option) => {
+                        const isSelected = selectedOptions[optionType] === option.name
+                        return (
+                          <button
+                            key={option.name}
+                            onClick={() => handleOptionChange(optionType, option.name, option.price)}
+                            className={cn(
+                              "px-4 sm:px-5 py-2.5 sm:py-3 rounded-full text-sm sm:text-base font-medium transition-all duration-200 min-h-[44px] sm:min-h-[48px]",
+                              "border-2 active:scale-95",
+                              isSelected
+                                ? "bg-amber-900 text-white border-amber-900 shadow-md"
+                                : "bg-white text-stone-700 border-stone-200 hover:border-amber-900/30 hover:bg-amber-50/50",
+                            )}
+                          >
+                            {option.name}
+                            {option.price > 0 && (
+                              <span className={cn("ml-1.5", isSelected ? "text-amber-100" : "text-amber-900")}>
+                                +${option.price.toFixed(2)}
+                              </span>
+                            )}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-5 sm:p-6 shadow-sm">
+              <h4 className="font-semibold text-stone-900 text-center mb-4 text-sm sm:text-base">
+                {language === "en" ? "Quantity" : "បរិមាណ"}
+              </h4>
+              <div className="flex items-center justify-center gap-6 sm:gap-8">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  disabled={quantity <= 1}
+                  className="rounded-full w-12 h-12 sm:w-14 sm:h-14 border-2 border-stone-300 hover:border-amber-900 hover:bg-amber-50 transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-90"
+                >
+                  <Minus className="h-5 w-5 sm:h-6 sm:w-6" />
+                </Button>
+
+                <span className="text-3xl sm:text-4xl font-bold text-amber-900 min-w-[3rem] text-center">
                   {quantity}
                 </span>
-                <span className="text-xs text-gray-600 mt-1">
-                  {language === "en" ? "items" : "ធាតុ"}
-                </span>
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="rounded-full w-12 h-12 sm:w-14 sm:h-14 border-2 border-stone-300 hover:border-amber-900 hover:bg-amber-50 transition-all active:scale-90"
+                >
+                  <Plus className="h-5 w-5 sm:h-6 sm:w-6" />
+                </Button>
               </div>
-              
-              <Button 
-                variant="outline" 
-                size="icon" 
-                onClick={() => setQuantity(quantity + 1)}
-                className="rounded-full w-12 h-12 border-2 border-gray-300 hover:border-[var(--coffee-primary)] hover:bg-[var(--coffee-primary)]/5 transition-colors"
-              >
-                <Plus className="h-5 w-5" />
-              </Button>
+            </div>
+
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-5 space-y-2.5 shadow-sm">
+              <div className="flex justify-between text-sm sm:text-base">
+                <span className="text-stone-600">{language === "en" ? "Base price" : "តម្លៃមូលដ្ឋាន"}</span>
+                <span className="font-medium text-stone-900">${product.price.toFixed(2)}</span>
+              </div>
+
+              {Object.entries(selectedOptionsPricing).map(([optionType, price]) => {
+                if (price > 0) {
+                  return (
+                    <div key={optionType} className="flex justify-between text-sm">
+                      <span className="text-stone-600">
+                        {getOptionDisplayName(optionType)}: {selectedOptions[optionType]}
+                      </span>
+                      <span className="text-amber-900 font-medium">+${price.toFixed(2)}</span>
+                    </div>
+                  )
+                }
+                return null
+              })}
+
+              <div className="border-t border-stone-200 pt-2.5 flex justify-between font-semibold text-base sm:text-lg">
+                <span className="text-stone-900">{language === "en" ? "Item total" : "សរុបធាតុ"}</span>
+                <span className="text-amber-900">${calculateBasePriceWithOptions().toFixed(2)}</span>
+              </div>
             </div>
           </div>
+        </div>
 
-          {/* Price Breakdown */}
-          <div className="bg-gray-50 rounded-xl p-4 space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">{language === "en" ? "Base price" : "តម្លៃមូលដ្ឋាន"}</span>
-              <span>${product.price.toFixed(2)}</span>
+        <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-white via-white to-white/80 backdrop-blur-md border-t border-amber-200/50 shadow-2xl px-5 sm:px-6 py-4 sm:py-5">
+          <div className="max-w-md mx-auto flex justify-between items-center gap-4 sm:gap-5">
+            <div className="flex flex-col">
+              <span className="text-xs text-stone-600">{language === "en" ? "Total" : "សរុប"}</span>
+              <span className="text-2xl sm:text-3xl font-bold text-amber-900">${calculateTotalPrice().toFixed(2)}</span>
             </div>
-            
-            {Object.entries(selectedOptionsPricing).map(([optionType, price]) => {
-              if (price > 0) {
-                return (
-                  <div key={optionType} className="flex justify-between text-sm">
-                    <span className="text-gray-600">
-                      {getOptionDisplayName(optionType)}: {selectedOptions[optionType]}
-                    </span>
-                    <span className="text-[var(--coffee-primary)]">+${price.toFixed(2)}</span>
-                  </div>
-                )
-              }
-              return null
-            })}
-            
-            <div className="border-t border-gray-200 pt-2 flex justify-between font-semibold">
-              <span className="text-gray-900">{language === "en" ? "Item total" : "សរុបធាតុ"}</span>
-              <span>${calculateBasePriceWithOptions().toFixed(2)}</span>
-            </div>
-          </div>
 
-          {/* Total Price & Add to Cart */}
-          <div className="sticky bottom-0 bg-white pt-4 pb-2 border-t border-gray-100">
-            <div className="flex justify-between items-center mb-4">
-              <div>
-                <span className="text-sm text-gray-600 block">
-                  {language === "en" ? "Total" : "សរុប"}
-                </span>
-                <span className="text-2xl font-bold text-[var(--coffee-primary)]">
-                  ${calculateTotalPrice().toFixed(2)}
-                </span>
-              </div>
-              
-              <Button
-                onClick={handleAddToCart}
-                className="text-lg py-6 px-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 bg-gradient-to-r from-[var(--coffee-primary)] to-[var(--coffee-primary)]/90 hover:from-[var(--coffee-primary)]/90 hover:to-[var(--coffee-primary)] text-white"
-              >
-                {language === "en" ? "Add to Cart" : "បន្ថែមទៅកន្ត្រក"}
-              </Button>
-            </div>
+            <Button
+              onClick={handleAddToCart}
+              className="text-base sm:text-lg py-3 sm:py-3.5 px-8 sm:px-10 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 bg-amber-900 hover:bg-amber-800 text-white active:scale-95 font-semibold whitespace-nowrap"
+            >
+              {language === "en" ? "Add to Cart" : "បន្ថែមទៅកន្ត្រក"}
+            </Button>
           </div>
         </div>
       </DialogContent>
