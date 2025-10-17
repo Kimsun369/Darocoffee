@@ -2,18 +2,9 @@
 // Free Google Sheets integration using JSON API
 
 // =======================
-// Configuration
+// Configuration - Import from sheet-config.ts
 // =======================
-const SHEET_CONFIG = {
-  ID: '1IxeuobNv6Qk7-EbGn4qzTxT4xRwoMqH_1hT2-pRSpPU',
-  NAMES: {
-    CATEGORIES: 'Categories',
-    PRODUCTS: ['Sheet1', 'Products', 'Menu'],
-    DISCOUNTS: 'Discount',
-    EVENTS: 'Events'
-  }
-};
-
+import { SHEET_CONFIG } from "@/config/sheet-config";
 // =======================
 // Fetch All Data
 // =======================
@@ -46,7 +37,7 @@ export async function fetchAllDataFromGoogleSheet() {
 export async function fetchEventsFromGoogleSheet() {
   try {
     console.log('Fetching events from Google Sheet...');
-    const data = await fetchSheetData(SHEET_CONFIG.ID, SHEET_CONFIG.NAMES.EVENTS);
+    const data = await fetchSheetData(SHEET_CONFIG.NAMES.EVENTS);
 
     if (data && data.length > 0) {
       const processedEvents = processEventsData(data);
@@ -65,9 +56,9 @@ export async function fetchEventsFromGoogleSheet() {
 // =======================
 // Helper: Fetch Any Sheet
 // =======================
-async function fetchSheetData(sheetId, sheetName) {
+async function fetchSheetData(sheetName) {
   try {
-    const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
+    const url = `https://opensheet.elk.sh/${SHEET_CONFIG.ID}/${sheetName}`;
     console.log(`Fetching data from: ${url}`);
 
     const res = await fetch(url);
@@ -133,13 +124,13 @@ function processEventsData(eventsData) {
 // =======================
 export async function fetchProductsFromGoogleSheet() {
   try {
-    const categoriesData = await fetchSheetData(SHEET_CONFIG.ID, SHEET_CONFIG.NAMES.CATEGORIES);
+    const categoriesData = await fetchSheetData(SHEET_CONFIG.NAMES.CATEGORIES);
     const categoriesMap = processCategoriesData(categoriesData);
 
     let productsFromSheet = [];
 
     for (const sheetName of SHEET_CONFIG.NAMES.PRODUCTS) {
-      const data = await fetchSheetData(SHEET_CONFIG.ID, sheetName);
+      const data = await fetchSheetData(sheetName);
       if (data && data.length > 0) {
         productsFromSheet = processProductsData(data, categoriesMap);
         console.log(`Found products in sheet: ${sheetName}`);
@@ -163,7 +154,7 @@ export async function fetchProductsFromGoogleSheet() {
 // =======================
 export async function fetchDiscountsFromGoogleSheet() {
   try {
-    const discountData = await fetchSheetData(SHEET_CONFIG.ID, SHEET_CONFIG.NAMES.DISCOUNTS);
+    const discountData = await fetchSheetData(SHEET_CONFIG.NAMES.DISCOUNTS);
     console.log("📋 RAW DISCOUNT DATA FROM SHEET:", discountData);
 
     const processedDiscounts = processDiscountsData(discountData);
@@ -391,142 +382,6 @@ function processProductsData(data, categoriesMap) {
       } catch (error) {
         console.warn(`❌ Failed to parse JSON options from Options column for ${name}:`, error);
       }
-    }
-
-    // Method 3: Process individual option columns with compatible format (only if no JSON options found)
-    if (Object.keys(productsMap[name].options).length === 0) {
-      // Common option patterns
-      const optionPatterns = [
-        // Size options
-        { 
-          name: 'size', 
-          nameColumns: ['Size', 'size', 'Option 1 - Name', 'Option1 Name'],
-          choicesColumns: ['Size Choices', 'size_choices', 'Option 1 - Choices', 'Option1 Choices'],
-          pricesColumns: ['Size Prices', 'size_prices', 'Option 1 - Prices', 'Option1 Prices']
-        },
-        // Sugar level options
-        { 
-          name: 'sugar_level', 
-          nameColumns: ['Sugar Level', 'sugar_level', 'sugar', 'Option 2 - Name', 'Option2 Name'],
-          choicesColumns: ['Sugar Choices', 'sugar_choices', 'Option 2 - Choices', 'Option2 Choices'],
-          pricesColumns: ['Sugar Prices', 'sugar_prices', 'Option 2 - Prices', 'Option2 Prices']
-        },
-        // Milk options
-        { 
-          name: 'milk', 
-          nameColumns: ['Milk', 'milk', 'Milk Type', 'Option 3 - Name', 'Option3 Name'],
-          choicesColumns: ['Milk Choices', 'milk_choices', 'Option 3 - Choices', 'Option3 Choices'],
-          pricesColumns: ['Milk Prices', 'milk_prices', 'Option 3 - Prices', 'Option3 Prices']
-        },
-        // Toppings options
-        { 
-          name: 'toppings', 
-          nameColumns: ['Toppings', 'toppings', 'Topping', 'Option 4 - Name', 'Option4 Name'],
-          choicesColumns: ['Toppings Choices', 'toppings_choices', 'Option 4 - Choices', 'Option4 Choices'],
-          pricesColumns: ['Toppings Prices', 'toppings_prices', 'Option 4 - Prices', 'Option4 Prices']
-        },
-        // Ice level options
-        { 
-          name: 'ice_level', 
-          nameColumns: ['Ice Level', 'ice_level', 'ice', 'Option 5 - Name', 'Option5 Name'],
-          choicesColumns: ['Ice Choices', 'ice_choices', 'Option 5 - Choices', 'Option5 Choices'],
-          pricesColumns: ['Ice Prices', 'ice_prices', 'Option 5 - Prices', 'Option5 Prices']
-        }
-      ];
-
-      optionPatterns.forEach(pattern => {
-        let optionName = '';
-        let choicesStr = '';
-        let pricesStr = '';
-
-        // Find option name
-        for (const col of pattern.nameColumns) {
-          if (item[col] && item[col].toString().trim()) {
-            optionName = item[col].toString().trim();
-            break;
-          }
-        }
-
-        // Find choices
-        for (const col of pattern.choicesColumns) {
-          if (item[col] && item[col].toString().trim()) {
-            choicesStr = item[col].toString().trim();
-            break;
-          }
-        }
-
-        // Find prices
-        for (const col of pattern.pricesColumns) {
-          if (item[col] && item[col].toString().trim()) {
-            pricesStr = item[col].toString().trim();
-            break;
-          }
-        }
-
-        if (optionName && choicesStr) {
-          const choices = choicesStr.split(',').map(v => v.trim()).filter(v => v);
-          const prices = pricesStr
-            .split(',')
-            .map(p => parseFloat(p.trim()) || 0)
-            .slice(0, choices.length);
-
-          // Ensure we have the same number of prices as choices
-          while (prices.length < choices.length) {
-            prices.push(0);
-          }
-
-          const optionKey = pattern.name;
-          
-          // Format options for basket-modal compatibility
-          productsMap[name].options[optionKey] = choices.map((c, idx) => ({
-            name: c,
-            price: prices[idx] || 0,
-          }));
-
-          console.log(`✅ Added option "${optionKey}" for ${name}:`, {
-            choices: choices,
-            prices: prices
-          });
-        }
-      });
-
-      // Method 4: Dynamic option detection for any remaining columns
-      Object.keys(item).forEach(key => {
-        if (key.toLowerCase().includes('option') && key.toLowerCase().includes('name')) {
-          const optionName = item[key];
-          if (optionName && typeof optionName === 'string') {
-            // Try to find corresponding choices and prices
-            const baseKey = key.replace('name', '').replace('Name', '');
-            const choicesKey = key.replace('Name', 'Choices').replace('name', 'choices');
-            const pricesKey = key.replace('Name', 'Prices').replace('name', 'prices');
-            
-            const choicesStr = item[choicesKey] || '';
-            const pricesStr = item[pricesKey] || '';
-
-            if (choicesStr) {
-              const choices = choicesStr.split(',').map(v => v.trim()).filter(v => v);
-              const prices = pricesStr
-                .split(',')
-                .map(p => parseFloat(p.trim()) || 0)
-                .slice(0, choices.length);
-
-              while (prices.length < choices.length) {
-                prices.push(0);
-              }
-
-              const optionKey = optionName.toLowerCase().replace(/\s+/g, '_');
-              
-              // Format options for basket-modal compatibility
-              productsMap[name].options[optionKey] = choices.map((c, idx) => ({
-                name: c,
-                price: prices[idx] || 0,
-              }));
-
-              console.log(`✅ Added dynamic option "${optionKey}" for ${name}`);
-            }
-          }
-        }
-      });
     }
 
     // Log final options for this product

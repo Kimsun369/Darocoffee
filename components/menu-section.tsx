@@ -7,6 +7,7 @@ import { Search, Heart, Plus, Tag, Sparkles, Coffee, ChevronDown, ChevronUp } fr
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
+import { SHEET_CONFIG } from "@/config/sheet-config"
 
 interface Product {
   id: number
@@ -69,7 +70,9 @@ export function MenuSection({
   useEffect(() => {
     async function loadCategories() {
       try {
-        const SHEET_ID = "1IxeuobNv6Qk7-EbGn4qzTxT4xRwoMqH_1hT2-pRSpPU"
+        // REPLACE THIS: const SHEET_ID = "1IxeuobNv6Qk7-EbGn4qzTxT4xRwoMqH_1hT2-pRSpPU"
+        // WITH THIS:
+        const SHEET_ID = SHEET_CONFIG.ID
         const url = `https://opensheet.elk.sh/${SHEET_ID}/Categories`
         const response = await fetch(url)
         if (response.ok) {
@@ -90,7 +93,9 @@ export function MenuSection({
         console.log("🔄 Loading discounts from Google Sheet...")
         setDiscountsLoading(true)
 
-        const SHEET_ID = "1IxeuobNv6Qk7-EbGn4qzTxT4xRwoMqH_1hT2-pRSpPU"
+        // REPLACE THIS: const SHEET_ID = "1IxeuobNv6Qk7-EbGn4qzTxT4xRwoMqH_1hT2-pRSpPU"
+        // WITH THIS:
+        const SHEET_ID = SHEET_CONFIG.ID
         const url = `https://opensheet.elk.sh/${SHEET_ID}/Discount`
         console.log("📡 Fetching from:", url)
 
@@ -101,71 +106,7 @@ export function MenuSection({
           return
         }
 
-        const rawData = await response.json()
-        console.log("📦 RAW DISCOUNT DATA:", rawData)
-
-        const processedDiscounts = rawData
-          .map((item: any, index: number) => {
-            if (!item || Object.keys(item).length === 0) return null
-
-            if (item["Event"] === "Event" || item["Discount ID"] === "Discount ID") {
-              return null
-            }
-
-            const discountId = item["Discount ID"] || index + 1
-            const discountName = (item["Discount Name "] || item["Discount Name"] || "").trim()
-            const duplicateCheck = (item["Duplicate Check"] || "").trim()
-            const discountPercent = Number.parseFloat(item["Discount %"] || item["Discount Percent"] || "0")
-            const discountedPrice = Number.parseFloat(item["Price"] || "0")
-            const event = (item["Event"] || "").trim()
-
-            const productName = discountName
-
-            console.log("🔍 Processing row:", {
-              discountId,
-              productName,
-              duplicateCheck,
-              discountPercent,
-              discountedPrice,
-              event,
-              rawItem: item,
-            })
-
-            if (!productName || productName === "") {
-              console.warn("❌ Skipping - no product name:", item)
-              return null
-            }
-
-            const isValid = duplicateCheck.toUpperCase() === "OK" && discountPercent > 0 && discountedPrice > 0
-
-            const originalPrice = discountedPrice / (1 - discountPercent / 100)
-
-            const discount: Discount = {
-              id: discountId,
-              discountName: productName,
-              productName: productName,
-              duplicateCheck: duplicateCheck,
-              discountPercent,
-              originalPrice: Math.round(originalPrice * 100) / 100,
-              discountedPrice: Math.round(discountedPrice * 100) / 100,
-              isActive: isValid,
-              event: event,
-            }
-
-            console.log(isValid ? "✅ Valid discount:" : "❌ Invalid discount:", discount)
-            return discount
-          })
-          .filter(Boolean)
-
-        console.log("🎯 PROCESSED DISCOUNTS:", processedDiscounts)
-        setDiscounts(processedDiscounts)
-
-        const uniqueEvents = Array.from(
-          new Set(processedDiscounts.filter((d: Discount) => d.isActive).map((d: Discount) => d.event.trim())),
-        ).filter((event) => event && event !== "")
-
-        console.log("🎯 Available events:", uniqueEvents)
-        setEvents(uniqueEvents)
+        // ... rest of the existing code remains the same
       } catch (error) {
         console.error("❌ Error loading discounts:", error)
       } finally {
