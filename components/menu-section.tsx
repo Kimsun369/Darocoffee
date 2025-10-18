@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { SHEET_CONFIG } from "@/config/sheet-config"
+import { COLORS } from "@/config/color-config"
 
 interface Product {
   id: number
@@ -422,8 +423,8 @@ export function MenuSection({
       onClick={() => onProductClick(product)}
       className="group cursor-pointer overflow-hidden border-0 hover:shadow-2xl transition-all duration-300"
       style={{
-        backgroundColor: "#ffffff",
-        border: "2px solid #d97706",
+        backgroundColor: COLORS.background.primary,
+        border: `2px solid ${COLORS.primary[600]}`,
         animation: "scaleIn 0.4s ease-out forwards",
         animationDelay: `${index * 50}ms`,
         opacity: 0,
@@ -434,7 +435,7 @@ export function MenuSection({
         {/* Product Image */}
         <div
           className="relative aspect-[4/3] overflow-hidden"
-          style={{ background: "linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%)" }}
+          style={{ background: COLORS.background.gradient }}
         >
           <img
             src={product.image || "/placeholder.svg"}
@@ -455,7 +456,7 @@ export function MenuSection({
             <div
               className={`absolute top-2 left-2 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 ${language === "kh" ? "font-mono" : "font-sans"}`}
               style={{
-                background: "linear-gradient(135deg, #dc2626 0%, #ea580c 100%)",
+                background: `linear-gradient(135deg, ${COLORS.semantic.error} 0%, ${COLORS.primary[600]} 100%)`,
                 animation: "glowPulse 2s ease-in-out infinite",
               }}
             >
@@ -479,7 +480,7 @@ export function MenuSection({
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "scale(1.1)"
-              e.currentTarget.style.backgroundColor = "#ffffff"
+              e.currentTarget.style.backgroundColor = COLORS.background.primary
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "scale(1)"
@@ -495,16 +496,16 @@ export function MenuSection({
           </button>
         </div>
 
-        <div className="p-4" style={{ backgroundColor: "#ffffff" }}>
+        <div className="p-4" style={{ backgroundColor: COLORS.background.primary }}>
           <h3
             className={`font-semibold text-base mb-1 line-clamp-1 ${language === "kh" ? "font-mono" : "font-sans"}`}
-            style={{ color: "#111827" }}
+            style={{ color: COLORS.text.primary }}
           >
             {language === "en" ? product.name : product.name_kh || product.name}
           </h3>
           <p
             className={`text-xs mb-3 line-clamp-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
-            style={{ color: "#4b5563" }}
+            style={{ color: COLORS.text.secondary }}
           >
             {language === "en" ? product.description : product.description_kh || product.description}
           </p>
@@ -516,7 +517,7 @@ export function MenuSection({
                   <span
                     className={`text-lg font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
                     style={{
-                      color: "#dc2626",
+                      color: COLORS.semantic.error,
                       animation: "priceBounce 1s ease-in-out infinite",
                     }}
                   >
@@ -524,7 +525,7 @@ export function MenuSection({
                   </span>
                   <span
                     className={`text-sm font-medium line-through ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    style={{ color: "#d97706" }}
+                    style={{ color: COLORS.primary[600] }}
                   >
                     ${product.originalPrice.toFixed(2)}
                   </span>
@@ -532,7 +533,7 @@ export function MenuSection({
               ) : (
                 <span
                   className={`text-lg font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
-                  style={{ color: "#d97706" }}
+                  style={{ color: COLORS.primary[600] }}
                 >
                   ${product.price.toFixed(2)}
                 </span>
@@ -547,15 +548,15 @@ export function MenuSection({
               }}
               className={`rounded-full h-8 w-8 p-0 text-white shadow-md transition-all ${language === "kh" ? "font-mono" : "font-sans"}`}
               style={{
-                backgroundColor: "#d97706",
+                backgroundColor: COLORS.primary[600],
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#d97706"
+                e.currentTarget.style.backgroundColor = COLORS.primary[700]
                 e.currentTarget.style.transform = "scale(1.1)"
                 e.currentTarget.style.boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#d97706"
+                e.currentTarget.style.backgroundColor = COLORS.primary[600]
                 e.currentTarget.style.transform = "scale(1)"
                 e.currentTarget.style.boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
               }}
@@ -569,16 +570,16 @@ export function MenuSection({
   )
 
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(to bottom right, #f0fdfa, #ccfbf1)" }}>
+    <div className="min-h-screen" style={{ background: COLORS.background.gradient }}>
       <div
         className="sticky top-0 z-40 border-b-2 shadow-md"
-        style={{ backgroundColor: "#ffffff", borderColor: "#d97706" }}
+        style={{ backgroundColor: COLORS.background.primary, borderColor: COLORS.primary[600] }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="relative max-w-2xl mx-auto">
             <Search
               className="absolute left-4 top-1/2 h-5 w-5"
-              style={{ transform: "translateY(-50%)", color: "#d97706" }}
+              style={{ transform: "translateY(-50%)", color: COLORS.primary[600] }}
             />
             <Input
               type="text"
@@ -587,9 +588,9 @@ export function MenuSection({
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`pl-12 pr-4 h-12 border-2 rounded-xl shadow-sm focus-visible:ring-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
               style={{
-                backgroundColor: "#ffffff",
-                color: "#111827",
-                borderColor: "#d97706",
+                backgroundColor: COLORS.background.primary,
+                color: COLORS.text.primary,
+                borderColor: COLORS.primary[600],
               }}
             />
           </div>
@@ -600,8 +601,8 @@ export function MenuSection({
         <div
           className="relative border-y-4 shadow-2xl overflow-hidden"
           style={{
-            background: "linear-gradient(135deg, #dc2626 0%, #ea580c 100%)",
-            borderColor: "#b91c1c",
+            background: `linear-gradient(135deg, ${COLORS.semantic.error} 0%, ${COLORS.primary[600]} 100%)`,
+            borderColor: COLORS.primary[700],
           }}
         >
           <div
@@ -625,13 +626,13 @@ export function MenuSection({
                     animation: "float 3s ease-in-out infinite",
                   }}
                 >
-                  <Sparkles className="h-7 w-7" style={{ color: "#ffffff" }} />
+                  <Sparkles className="h-7 w-7" style={{ color: COLORS.text.inverse }} />
                 </div>
                 <div>
                   <h2
                     className={`text-3xl font-bold flex items-center gap-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
                     style={{
-                      color: "#ffffff",
+                      color: COLORS.text.inverse,
                       textShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                       animation: "slideRight 0.6s ease-out",
                     }}
@@ -659,8 +660,8 @@ export function MenuSection({
                   onClick={() => onEventChange("all")}
                   className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}
                   style={{
-                    backgroundColor: !selectedEvent || selectedEvent === "all" ? "#ffffff" : "rgba(255, 255, 255, 0.2)",
-                    color: !selectedEvent || selectedEvent === "all" ? "#dc2626" : "#ffffff",
+                    backgroundColor: !selectedEvent || selectedEvent === "all" ? COLORS.background.primary : "rgba(255, 255, 255, 0.2)",
+                    color: !selectedEvent || selectedEvent === "all" ? COLORS.semantic.error : COLORS.text.inverse,
                     backdropFilter: "blur(4px)",
                     transform: !selectedEvent || selectedEvent === "all" ? "scale(1.05)" : "scale(1)",
                     animation: !selectedEvent || selectedEvent === "all" ? "pulse 2s ease-in-out infinite" : "none",
@@ -679,7 +680,7 @@ export function MenuSection({
                   </span>
                   <span
                     className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    style={{ backgroundColor: "#dc2626", color: "#ffffff" }}
+                    style={{ backgroundColor: COLORS.semantic.error, color: COLORS.text.inverse }}
                   >
                     {getEventProductCount.all}
                   </span>
@@ -691,8 +692,8 @@ export function MenuSection({
                     onClick={() => onEventChange(event)}
                     className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}
                     style={{
-                      backgroundColor: selectedEvent === event ? "#ffffff" : "rgba(255, 255, 255, 0.2)",
-                      color: selectedEvent === event ? "#dc2626" : "#ffffff",
+                      backgroundColor: selectedEvent === event ? COLORS.background.primary : "rgba(255, 255, 255, 0.2)",
+                      color: selectedEvent === event ? COLORS.semantic.error : COLORS.text.inverse,
                       backdropFilter: "blur(4px)",
                       transform: selectedEvent === event ? "scale(1.05)" : "scale(1)",
                       animation: selectedEvent === event ? "pulse 2s ease-in-out infinite" : "none",
@@ -707,7 +708,7 @@ export function MenuSection({
                     <span className={language === "kh" ? "font-mono" : "font-sans"}>{getEventDisplayName(event)}</span>
                     <span
                       className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
-                      style={{ backgroundColor: "#dc2626", color: "#ffffff" }}
+                      style={{ backgroundColor: COLORS.semantic.error, color: COLORS.text.inverse }}
                     >
                       {getEventProductCount[event]}
                     </span>
@@ -743,7 +744,7 @@ export function MenuSection({
           top: "73px",
           backgroundColor: "rgba(255, 255, 255, 0.95)",
           backdropFilter: "blur(12px)",
-          borderColor: "#ccfbf1",
+          borderColor: COLORS.border.light,
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
@@ -761,8 +762,8 @@ export function MenuSection({
                     style={{
                       clipPath: "polygon(15% 0, 100% 0, 85% 100%, 0% 100%)",
                       marginLeft: index === 0 ? "0" : "-15px",
-                      backgroundColor: isSelected ? "#e6810eff" : "rgba(255, 255, 255, 0.7)",
-                      color: isSelected ? "#ffffff" : "#d97706",
+                      backgroundColor: isSelected ? COLORS.primary[600] : "rgba(255, 255, 255, 0.7)",
+                      color: isSelected ? COLORS.text.inverse : COLORS.primary[600],
                       transform: isSelected ? "scale(1.05)" : "scale(1)",
                       zIndex: isSelected ? 10 : 1,
                       boxShadow: isSelected
@@ -784,7 +785,7 @@ export function MenuSection({
                     }}
                     onMouseEnter={(e) => {
                       if (!isSelected) {
-                        e.currentTarget.style.backgroundColor = "#ccfbf1"
+                        e.currentTarget.style.backgroundColor = COLORS.background.secondary
                         e.currentTarget.style.transform = "scale(1.02)"
                       }
                     }}
@@ -798,7 +799,7 @@ export function MenuSection({
                     <span
                       className={`relative z-10 text-center font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
                       style={{
-                        color: isSelected ? "#ffffff" : "#d97706",
+                        color: isSelected ? COLORS.text.inverse : COLORS.primary[600],
                         textShadow: isSelected ? "0 2px 4px rgba(0, 0, 0, 0.1)" : "none",
                       }}
                     >
@@ -814,7 +815,7 @@ export function MenuSection({
 
       <div
         className="max-w-7xl mx-auto px-4 sm:px-6 py-8"
-        style={{ background: "linear-gradient(to bottom right, #f0fdfa, #ccfbf1)" }}
+        style={{ background: COLORS.background.gradient }}
       >
         {Object.entries(productsByCategory).map(([categoryId, categoryProducts]) => {
           if (categoryProducts.length === 0) return null
@@ -845,8 +846,8 @@ export function MenuSection({
                     <div
                       className="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 shadow-md border-2"
                       style={{
-                        backgroundColor: "#ccfbf1",
-                        borderColor: "#d97706",
+                        backgroundColor: COLORS.background.secondary,
+                        borderColor: COLORS.primary[600],
                       }}
                     >
                       <img
@@ -858,7 +859,7 @@ export function MenuSection({
                   )}
                   <h2
                     className={`text-2xl font-bold tracking-tight ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    style={{ color: "#111827" }}
+                    style={{ color: COLORS.text.primary }}
                   >
                     {category.name[language]}
                   </h2>
@@ -872,44 +873,36 @@ export function MenuSection({
               </div>
 
               {hasMore && (
-                <div className="mt-6 text-center">
+                <div className="text-center mt-6">
                   <Button
-                    onClick={() => toggleCategoryExpansion(categoryId)}
                     variant="outline"
-                    className="px-6 py-2 rounded-full border-2 font-semibold shadow-sm transition-all"
+                    onClick={() => toggleCategoryExpansion(categoryId)}
+                    className={`rounded-full px-6 py-2 font-medium transition-all duration-300 ${language === "kh" ? "font-mono" : "font-sans"}`}
                     style={{
-                      borderColor: "#d97706",
-                      color: "#d97706",
-                      backgroundColor: "#ffffff",
+                      backgroundColor: COLORS.background.primary,
+                      color: COLORS.primary[600],
+                      borderColor: COLORS.primary[600],
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = "#ccfbf1"
-                      e.currentTarget.style.color = "#d97706"
-                      e.currentTarget.style.transform = "scale(1.05)"
-                      e.currentTarget.style.boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+                      e.currentTarget.style.backgroundColor = COLORS.primary[600]
+                      e.currentTarget.style.color = COLORS.text.inverse
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "#ffffff"
-                      e.currentTarget.style.color = "#d97706"
-                      e.currentTarget.style.transform = "scale(1)"
-                      e.currentTarget.style.boxShadow = "0 1px 2px 0 rgba(0, 0, 0, 0.05)"
+                      e.currentTarget.style.backgroundColor = COLORS.background.primary
+                      e.currentTarget.style.color = COLORS.primary[600]
                     }}
                   >
                     {isExpanded ? (
                       <>
                         <ChevronUp className="h-4 w-4 mr-2" />
-                        <span className={language === "kh" ? "font-mono" : "font-sans"}>
-                          {language === "en" ? "Show Less" : "បង្ហាញតិច"}
-                        </span>
+                        {language === "en" ? "Show Less" : "បង្ហាញតិចជាងនេះ"}
                       </>
                     ) : (
                       <>
                         <ChevronDown className="h-4 w-4 mr-2" />
-                        <span className={language === "kh" ? "font-mono" : "font-sans"}>
-                          {language === "en"
-                            ? `See More (${categoryProducts.length - 4})`
-                            : `មើលបន្ថែម (${categoryProducts.length - 4})`}
-                        </span>
+                        {language === "en"
+                          ? `Show ${categoryProducts.length - 4} More`
+                          : `បង្ហាញ ${categoryProducts.length - 4} បន្ថែម`}
                       </>
                     )}
                   </Button>
@@ -918,33 +911,6 @@ export function MenuSection({
             </div>
           )
         })}
-
-        {/* Empty State */}
-        {filteredProducts.length === 0 && (
-          <div
-            className="text-center py-16"
-            style={{
-              animation: "fadeIn 0.6s ease-out",
-            }}
-          >
-            <Coffee
-              className="h-16 w-16 mx-auto mb-4"
-              style={{
-                color: "#d97706",
-                animation: "bounce 2s ease-in-out infinite",
-              }}
-            />
-            <h3
-              className={`text-xl font-semibold mb-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
-              style={{ color: "#111827" }}
-            >
-              {language === "en" ? "No items found" : "រកមិនឃើញទេ"}
-            </h3>
-            <p className={language === "kh" ? "font-mono" : "font-sans"} style={{ color: "#4b5563" }}>
-              {language === "en" ? "Try adjusting your filters or search query" : "សូមព្យាយាមកែប្រែការស្វែងរករបស់អ្នក"}
-            </p>
-          </div>
-        )}
       </div>
 
       <style jsx>{`

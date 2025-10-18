@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { fetchEventsFromGoogleSheet } from "@/data/google-sheet.data"
+import { COLORS } from "@/config/color-config"
 
 interface Event {
   id: number | string
@@ -132,10 +133,19 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
 
   if (isLoading) {
     return (
-      <section className="relative h-[20vh] min-h-[250px] overflow-hidden bg-gray-100 flex items-center justify-center">
+      <section 
+        className="relative h-[20vh] min-h-[250px] overflow-hidden flex items-center justify-center"
+        style={{ backgroundColor: COLORS.gray[100] }}
+      >
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mx-auto mb-4"></div>
-          <p className={`text-gray-600 ${language === "kh" ? "font-mono" : "font-sans"}`}>
+          <div 
+            className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4"
+            style={{ borderColor: COLORS.primary[600] }}
+          ></div>
+          <p 
+            className={language === "kh" ? "font-mono" : "font-sans"}
+            style={{ color: COLORS.text.secondary }}
+          >
             {language === "en" ? "Loading events from Google Sheets..." : "កំពុងផ្ទុកព្រឹត្តិការណ៍ពី Google Sheets..."}
           </p>
         </div>
@@ -145,8 +155,14 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
 
   if (error) {
     return (
-      <section className="relative h-[20vh] min-h-[250px] overflow-hidden bg-gray-100 flex items-center justify-center">
-        <div className={`text-center text-gray-600 ${language === "kh" ? "font-mono" : "font-sans"}`}>
+      <section 
+        className="relative h-[20vh] min-h-[250px] overflow-hidden flex items-center justify-center"
+        style={{ backgroundColor: COLORS.gray[100] }}
+      >
+        <div 
+          className={`text-center ${language === "kh" ? "font-mono" : "font-sans"}`}
+          style={{ color: COLORS.text.secondary }}
+        >
           <p>{language === "en" ? "Unable to load events" : "មិនអាចផ្ទុកព្រឹត្តិការណ៍បានទេ"}</p>
           <p className="text-sm mt-2">{error}</p>
         </div>
@@ -156,8 +172,14 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
 
   if (events.length === 0) {
     return (
-      <section className="relative h-[20vh] min-h-[250px] overflow-hidden bg-gray-100 flex items-center justify-center">
-        <div className={`text-center text-gray-600 ${language === "kh" ? "font-mono" : "font-sans"}`}>
+      <section 
+        className="relative h-[20vh] min-h-[250px] overflow-hidden flex items-center justify-center"
+        style={{ backgroundColor: COLORS.gray[100] }}
+      >
+        <div 
+          className={`text-center ${language === "kh" ? "font-mono" : "font-sans"}`}
+          style={{ color: COLORS.text.secondary }}
+        >
           <p>{language === "en" ? "No events available" : "មិនមានព្រឹត្តិការណ៍ដែលអាចប្រើបានទេ"}</p>
           <p className="text-sm mt-2">
             {language === "en"
@@ -174,7 +196,10 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
   }
 
   return (
-    <section className="relative h-[20vh] min-h-[250px] overflow-hidden bg-gray-100">
+    <section 
+      className="relative h-[20vh] min-h-[250px] overflow-hidden"
+      style={{ backgroundColor: COLORS.gray[100] }}
+    >
       <div className="relative h-full overflow-hidden">
         {eventsWithDisplayData.map((event, index) => (
           <div key={event.id} className={getTransitionClasses(index)} onClick={() => handleBannerClick(event.name)}>
@@ -189,9 +214,12 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
                 }}
               />
               <div
-                className={`absolute inset-0 transition-all duration-300 ${
-                  selectedEvent === event.name ? "bg-amber-600/30" : "bg-black/40"
-                }`}
+                className="absolute inset-0 transition-all duration-300"
+                style={{
+                  backgroundColor: selectedEvent === event.name 
+                    ? `${COLORS.primary[600]}30` 
+                    : 'rgba(0, 0, 0, 0.4)'
+                }}
               />
               <div className="absolute inset-0 flex items-center justify-center">
                 <div
@@ -202,7 +230,13 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
                   >
                     {event.displayName}
                     {selectedEvent === event.name && (
-                      <span className={`ml-3 text-sm bg-white/20 px-3 py-1 rounded-full ${fontClass}`}>
+                      <span 
+                        className={`ml-3 text-sm px-3 py-1 rounded-full ${fontClass}`}
+                        style={{ 
+                          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                          color: COLORS.text.inverse
+                        }}
+                      >
                         {language === "en" ? "Active" : "សកម្ម"}
                       </span>
                     )}
@@ -224,7 +258,17 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
             size="icon"
             onClick={handlePrevSlide}
             disabled={isTransitioning}
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full h-10 w-10 shadow-lg transition-all disabled:opacity-50"
+            className="absolute left-4 top-1/2 -translate-y-1/2 hover:bg-white text-gray-800 rounded-full h-10 w-10 shadow-lg transition-all disabled:opacity-50"
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+              color: COLORS.text.primary
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = COLORS.background.primary
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)'
+            }}
             aria-label={language === "en" ? "Previous event" : "ព្រឹត្តិការណ៍មុន"}
           >
             <ChevronLeft className="h-5 w-5" />
@@ -234,7 +278,17 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
             size="icon"
             onClick={handleNextSlide}
             disabled={isTransitioning}
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full h-10 w-10 shadow-lg transition-all disabled:opacity-50"
+            className="absolute right-4 top-1/2 -translate-y-1/2 hover:bg-white text-gray-800 rounded-full h-10 w-10 shadow-lg transition-all disabled:opacity-50"
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+              color: COLORS.text.primary
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = COLORS.background.primary
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)'
+            }}
             aria-label={language === "en" ? "Next event" : "ព្រឹត្តិការណ៍បន្ទាប់"}
           >
             <ChevronRight className="h-5 w-5" />
@@ -250,8 +304,13 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
               onClick={() => goToSlide(index)}
               disabled={isTransitioning}
               className={`h-2 rounded-full transition-all duration-300 disabled:opacity-50 ${
-                index === currentSlide ? "bg-white w-8" : "bg-white/60 w-2 hover:bg-white/80"
+                index === currentSlide ? "w-8" : "w-2 hover:bg-white/80"
               }`}
+              style={{
+                backgroundColor: index === currentSlide 
+                  ? COLORS.text.inverse 
+                  : 'rgba(255, 255, 255, 0.6)'
+              }}
               aria-label={language === "en" ? `Go to event ${index + 1}` : `ទៅកាន់ព្រឹត្តិការណ៍ ${index + 1}`}
             />
           ))}
