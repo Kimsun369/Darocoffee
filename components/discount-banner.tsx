@@ -4,7 +4,6 @@ import { useState, useEffect, useMemo, useCallback } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { fetchEventsFromGoogleSheet } from "@/data/google-sheet.data"
-import { SHEET_CONFIG } from "@/config/sheet-config"
 
 interface Event {
   id: number | string
