@@ -155,7 +155,7 @@ export function CartSidebar({
               <ShoppingBag className="h-5 w-5 text-white" />
             </div>
             <h2 
-              className="text-xl font-bold"
+              className={`text-xl font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
               style={{ color: COLORS.text.primary }}
             >
               {language === "en" ? "Your Cart" : "កន្ត្រករបស់អ្នក"}
@@ -178,20 +178,20 @@ export function CartSidebar({
               />
             </div>
             <h3 
-              className="text-xl font-semibold mb-2"
+              className={`text-xl font-semibold mb-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
               style={{ color: COLORS.text.primary }}
             >
               {language === "en" ? "Your cart is empty" : "កន្ត្រករបស់អ្នកទទេ"}
             </h3>
             <p 
-              className="mb-6"
+              className={`mb-6 ${language === "kh" ? "font-mono" : "font-sans"}`}
               style={{ color: COLORS.text.secondary }}
             >
               {language === "en" ? "Add some delicious items to get started!" : "បន្ថែមធាតុឆ្ងាញ់ៗដើម្បីចាប់ផ្តើម!"}
             </p>
             <Button
               onClick={onClose}
-              className="px-8 py-3 rounded-xl font-semibold text-base text-white transition-colors"
+              className={`px-8 py-3 rounded-xl font-semibold text-base text-white transition-colors ${language === "kh" ? "font-mono" : "font-sans"}`}
               style={{
                 backgroundColor: COLORS.primary[600],
               }}
@@ -220,7 +220,7 @@ export function CartSidebar({
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
                       <h4 
-                        className="font-semibold mb-1"
+                        className={`font-semibold mb-1 ${language === "kh" ? "font-mono" : "font-sans"}`}
                         style={{ color: COLORS.text.primary }}
                       >
                         {language === "kh" && item.name_kh ? item.name_kh : item.name}
@@ -234,7 +234,7 @@ export function CartSidebar({
                           }}
                         >
                           {Object.entries(item.options).map(([key, value]) => (
-                            <p key={key}>
+                            <p key={key} className={language === "kh" ? "font-mono" : "font-sans"}>
                               {key}: {value}
                             </p>
                           ))}
@@ -285,7 +285,7 @@ export function CartSidebar({
                         <Minus className="h-3 w-3" />
                       </Button>
                       <span 
-                        className="font-bold w-8 text-center"
+                        className={`font-bold w-8 text-center ${language === "kh" ? "font-mono" : "font-sans"}`}
                         style={{ color: COLORS.text.primary }}
                       >
                         {item.quantity}
@@ -310,13 +310,13 @@ export function CartSidebar({
                     </div>
                     <div className="flex flex-col items-end">
                       <span 
-                        className="text-lg font-bold"
+                        className={`text-lg font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
                         style={{ color: COLORS.primary[600] }}
                       >
                         ${item.price.toFixed(2)}
                       </span>
                       <span 
-                        className="text-xs font-medium"
+                        className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}
                         style={{ color: COLORS.text.secondary }}
                       >
                         R{(item.price * 4000).toLocaleString()}
@@ -342,7 +342,7 @@ export function CartSidebar({
                 }}
               >
                 <label 
-                  className="block font-semibold mb-3 flex items-center gap-2"
+                  className={`block font-semibold mb-3 flex items-center gap-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
                   style={{ color: COLORS.text.primary }}
                 >
                   <Clock 
@@ -363,7 +363,7 @@ export function CartSidebar({
                     <button
                       key={option.value}
                       onClick={() => setPickupOption(option.value as any)}
-                      className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
+                      className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${language === "kh" ? "font-mono" : "font-sans"} ${
                         pickupOption === option.value
                           ? "text-white shadow-sm"
                           : "border hover:border-amber-600"
@@ -402,14 +402,14 @@ export function CartSidebar({
                       max={180}
                       value={customMinutes}
                       onChange={(e) => setCustomMinutes(Number(e.target.value))}
-                      className="border-0 rounded-md px-2 py-1 w-16 text-center font-semibold"
+                      className={`border-0 rounded-md px-2 py-1 w-16 text-center font-semibold ${language === "kh" ? "font-mono" : "font-sans"}`}
                       style={{ 
                         backgroundColor: COLORS.gray[50],
                         color: COLORS.text.primary
                       }}
                     />
                     <span 
-                      className="text-sm font-medium"
+                      className={`text-sm font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}
                       style={{ color: COLORS.text.secondary }}
                     >
                       {language === "en" ? "minutes" : "នាទី"}
@@ -417,7 +417,7 @@ export function CartSidebar({
                   </div>
                 )}
                 <div 
-                  className="mt-3 text-sm font-semibold px-3 py-2 rounded-lg text-center border"
+                  className={`mt-3 text-sm font-semibold px-3 py-2 rounded-lg text-center border ${language === "kh" ? "font-mono" : "font-sans"}`}
                   style={{ 
                     backgroundColor: COLORS.background.primary,
                     color: COLORS.text.primary,
@@ -430,7 +430,7 @@ export function CartSidebar({
 
               <div className="space-y-3 mb-4">
                 <div 
-                  className="flex justify-between items-center text-xl font-bold px-4 py-3 rounded-xl border"
+                  className={`flex justify-between items-center text-xl font-bold px-4 py-3 rounded-xl border ${language === "kh" ? "font-mono" : "font-sans"}`}
                   style={{ 
                     backgroundColor: COLORS.gray[50],
                     color: COLORS.text.primary,
@@ -441,7 +441,7 @@ export function CartSidebar({
                   <div className="flex flex-col items-end">
                     <span style={{ color: COLORS.primary[600] }}>${totalPrice.toFixed(2)}</span>
                     <span 
-                      className="text-sm font-semibold"
+                      className={`text-sm font-semibold ${language === "kh" ? "font-mono" : "font-sans"}`}
                       style={{ color: COLORS.text.secondary }}
                     >
                       R{totalPriceKHR.toLocaleString()}
@@ -453,7 +453,7 @@ export function CartSidebar({
               <Button
                 onClick={handleTelegramOrder}
                 disabled={isOrderProcessing}
-                className={`w-full py-4 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2 ${
+                className={`w-full py-4 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2 ${language === "kh" ? "font-mono" : "font-sans"} ${
                   isOrderProcessing
                     ? "cursor-not-allowed"
                     : "text-white shadow-sm"
@@ -482,7 +482,7 @@ export function CartSidebar({
                     : "បញ្ជាទិញតាម Telegram"}
               </Button>
               <p 
-                className="text-xs text-center mt-3"
+                className={`text-xs text-center mt-3 ${language === "kh" ? "font-mono" : "font-sans"}`}
                 style={{ color: COLORS.text.secondary }}
               >
                 {language === "en"
