@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Coffee, Globe, Laugh, Download, Home, Menu, Phone, ShoppingCart, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { FOOTER_CONFIG } from "@/config/footer-config"
 
 interface HeaderProps {
   cartItemCount: number
@@ -111,7 +112,7 @@ export function Header({
                 <div className="h-10 w-10 rounded-xl bg-amber-600 flex items-center justify-center transition-transform group-hover:scale-105">
                   <Coffee className="h-5 w-5 text-white" />
                 </div>
-                <h1 className="font-serif text-xl font-bold text-gray-900">Fresthie</h1>
+                <h1 className="font-serif text-xl font-bold text-gray-900">{FOOTER_CONFIG.COMPANY.NAME}</h1>
               </a>
             </div>
 

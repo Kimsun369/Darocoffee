@@ -2,7 +2,7 @@
 
 export const FOOTER_CONFIG = {
   COMPANY: {
-    NAME: "Fresthie's Coffee",
+    NAME: "Jmr",
     EMAIL: "hello@Fresthiescoffee.com",
     LOGO: "☕"
   },

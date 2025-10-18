@@ -423,7 +423,7 @@ export function MenuSection({
       className="group cursor-pointer overflow-hidden border-0 hover:shadow-2xl transition-all duration-300"
       style={{
         backgroundColor: "#ffffff",
-        border: "2px solid #5eead4",
+        border: "2px solid #d97706",
         animation: "scaleIn 0.4s ease-out forwards",
         animationDelay: `${index * 50}ms`,
         opacity: 0,
@@ -524,7 +524,7 @@ export function MenuSection({
                   </span>
                   <span
                     className={`text-sm font-medium line-through ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    style={{ color: "#0f766e" }}
+                    style={{ color: "#d97706" }}
                   >
                     ${product.originalPrice.toFixed(2)}
                   </span>
@@ -532,7 +532,7 @@ export function MenuSection({
               ) : (
                 <span
                   className={`text-lg font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
-                  style={{ color: "#0f766e" }}
+                  style={{ color: "#d97706" }}
                 >
                   ${product.price.toFixed(2)}
                 </span>
@@ -547,15 +547,15 @@ export function MenuSection({
               }}
               className={`rounded-full h-8 w-8 p-0 text-white shadow-md transition-all ${language === "kh" ? "font-mono" : "font-sans"}`}
               style={{
-                backgroundColor: "#14b8a6",
+                backgroundColor: "#d97706",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#0d9488"
+                e.currentTarget.style.backgroundColor = "#d97706"
                 e.currentTarget.style.transform = "scale(1.1)"
                 e.currentTarget.style.boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#14b8a6"
+                e.currentTarget.style.backgroundColor = "#d97706"
                 e.currentTarget.style.transform = "scale(1)"
                 e.currentTarget.style.boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
               }}
@@ -572,13 +572,13 @@ export function MenuSection({
     <div className="min-h-screen" style={{ background: "linear-gradient(to bottom right, #f0fdfa, #ccfbf1)" }}>
       <div
         className="sticky top-0 z-40 border-b-2 shadow-md"
-        style={{ backgroundColor: "#ffffff", borderColor: "#5eead4" }}
+        style={{ backgroundColor: "#ffffff", borderColor: "#d97706" }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="relative max-w-2xl mx-auto">
             <Search
               className="absolute left-4 top-1/2 h-5 w-5"
-              style={{ transform: "translateY(-50%)", color: "#14b8a6" }}
+              style={{ transform: "translateY(-50%)", color: "#d97706" }}
             />
             <Input
               type="text"
@@ -589,7 +589,7 @@ export function MenuSection({
               style={{
                 backgroundColor: "#ffffff",
                 color: "#111827",
-                borderColor: "#5eead4",
+                borderColor: "#d97706",
               }}
             />
           </div>
@@ -761,8 +761,8 @@ export function MenuSection({
                     style={{
                       clipPath: "polygon(15% 0, 100% 0, 85% 100%, 0% 100%)",
                       marginLeft: index === 0 ? "0" : "-15px",
-                      backgroundColor: isSelected ? "rgba(20, 184, 166, 0.9)" : "rgba(255, 255, 255, 0.7)",
-                      color: isSelected ? "#ffffff" : "#0f766e",
+                      backgroundColor: isSelected ? "#e6810eff" : "rgba(255, 255, 255, 0.7)",
+                      color: isSelected ? "#ffffff" : "#d97706",
                       transform: isSelected ? "scale(1.05)" : "scale(1)",
                       zIndex: isSelected ? 10 : 1,
                       boxShadow: isSelected
@@ -798,7 +798,7 @@ export function MenuSection({
                     <span
                       className={`relative z-10 text-center font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
                       style={{
-                        color: isSelected ? "#ffffff" : "#0f766e",
+                        color: isSelected ? "#ffffff" : "#d97706",
                         textShadow: isSelected ? "0 2px 4px rgba(0, 0, 0, 0.1)" : "none",
                       }}
                     >
@@ -846,7 +846,7 @@ export function MenuSection({
                       className="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 shadow-md border-2"
                       style={{
                         backgroundColor: "#ccfbf1",
-                        borderColor: "#5eead4",
+                        borderColor: "#d97706",
                       }}
                     >
                       <img
@@ -878,19 +878,19 @@ export function MenuSection({
                     variant="outline"
                     className="px-6 py-2 rounded-full border-2 font-semibold shadow-sm transition-all"
                     style={{
-                      borderColor: "#14b8a6",
-                      color: "#0f766e",
+                      borderColor: "#d97706",
+                      color: "#d97706",
                       backgroundColor: "#ffffff",
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.backgroundColor = "#ccfbf1"
-                      e.currentTarget.style.color = "#0d9488"
+                      e.currentTarget.style.color = "#d97706"
                       e.currentTarget.style.transform = "scale(1.05)"
                       e.currentTarget.style.boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.backgroundColor = "#ffffff"
-                      e.currentTarget.style.color = "#0f766e"
+                      e.currentTarget.style.color = "#d97706"
                       e.currentTarget.style.transform = "scale(1)"
                       e.currentTarget.style.boxShadow = "0 1px 2px 0 rgba(0, 0, 0, 0.05)"
                     }}
@@ -930,7 +930,7 @@ export function MenuSection({
             <Coffee
               className="h-16 w-16 mx-auto mb-4"
               style={{
-                color: "#5eead4",
+                color: "#d97706",
                 animation: "bounce 2s ease-in-out infinite",
               }}
             />
