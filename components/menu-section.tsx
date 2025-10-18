@@ -7,6 +7,7 @@ import { Search, Heart, Plus, Tag, Sparkles, Coffee, ChevronDown, ChevronUp } fr
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
+import { SHEET_CONFIG } from "@/config/sheet-config"
 
 interface Product {
   id: number
@@ -69,7 +70,7 @@ export function MenuSection({
   useEffect(() => {
     async function loadCategories() {
       try {
-        const SHEET_ID = "1IxeuobNv6Qk7-EbGn4qzTxT4xRwoMqH_1hT2-pRSpPU"
+        const SHEET_ID = SHEET_CONFIG.ID
         const url = `https://opensheet.elk.sh/${SHEET_ID}/Categories`
         const response = await fetch(url)
         if (response.ok) {
@@ -90,7 +91,7 @@ export function MenuSection({
         console.log("🔄 Loading discounts from Google Sheet...")
         setDiscountsLoading(true)
 
-        const SHEET_ID = "1IxeuobNv6Qk7-EbGn4qzTxT4xRwoMqH_1hT2-pRSpPU"
+        const SHEET_ID = SHEET_CONFIG.ID
         const url = `https://opensheet.elk.sh/${SHEET_ID}/Discount`
         console.log("📡 Fetching from:", url)
 

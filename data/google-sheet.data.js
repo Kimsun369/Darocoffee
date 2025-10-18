@@ -1,18 +1,18 @@
 // googleSheetData.js
 // Free Google Sheets integration using JSON API
-
+import { SHEET_CONFIG } from "@/config/sheet-config";
 // =======================
 // Configuration
 // =======================
-const SHEET_CONFIG = {
-  ID: '1IxeuobNv6Qk7-EbGn4qzTxT4xRwoMqH_1hT2-pRSpPU',
-  NAMES: {
-    CATEGORIES: 'Categories',
-    PRODUCTS: ['Sheet1', 'Products', 'Menu'],
-    DISCOUNTS: 'Discount',
-    EVENTS: 'Events'
-  }
-};
+// const SHEET_CONFIG = {
+//   ID: '1IxeuobNv6Qk7-EbGn4qzTxT4xRwoMqH_1hT2-pRSpPU',
+//   NAMES: {
+//     CATEGORIES: 'Categories',
+//     PRODUCTS: ['Sheet1', 'Products', 'Menu'],
+//     DISCOUNTS: 'Discount',
+//     EVENTS: 'Events'
+//   }
+// };
 
 // =======================
 // Fetch All Data
