@@ -224,7 +224,6 @@ export function BottomNavigation({
           )}
         </div>
       </div>
-      
 
       <style jsx>{`
         @keyframes slideUp {

@@ -456,17 +456,12 @@ export function MenuSection({
             <div
               className={`absolute top-2 left-2 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 ${language === "kh" ? "font-mono" : "font-sans"}`}
               style={{
-                background: `linear-gradient(135deg, ${COLORS.semantic.error} 0%, ${COLORS.primary[600]} 100%)`,
-                animation: "glowPulse 2s ease-in-out infinite",
+                background: "linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)",
+                border: "2px solid #ffffff",
               }}
             >
-              <Sparkles
-                className="h-3 w-3"
-                style={{
-                  animation: "spin 3s linear infinite",
-                }}
-              />
-              <span style={{ animation: "pulse 1.5s ease-in-out infinite" }}>{`-${product.discount}%`}</span>
+              <Sparkles className="h-3 w-3" />
+              <span>{`-${product.discount}%`}</span>
             </div>
           )}
 
@@ -491,7 +486,6 @@ export function MenuSection({
               className={`h-5 w-5 transition-all ${
                 favorites.has(product.id) ? "fill-red-500 text-red-500" : "text-gray-400"
               }`}
-              style={favorites.has(product.id) ? { animation: "pulse 1s ease-in-out infinite" } : {}}
             />
           </button>
         </div>
@@ -517,8 +511,7 @@ export function MenuSection({
                   <span
                     className={`text-lg font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
                     style={{
-                      color: COLORS.semantic.error,
-                      animation: "priceBounce 1s ease-in-out infinite",
+                      color: "#dc2626",
                     }}
                   >
                     ${product.price.toFixed(2)}
@@ -579,7 +572,7 @@ export function MenuSection({
           <div className="relative max-w-2xl mx-auto">
             <Search
               className="absolute left-4 top-1/2 h-5 w-5"
-              style={{ transform: "translateY(-50%)", color: COLORS.primary[600] }}
+              style={{ transform: "translateY(-50%)", color: COLORS.primary[800] }}
             />
             <Input
               type="text"
@@ -601,8 +594,8 @@ export function MenuSection({
         <div
           className="relative border-y-4 shadow-2xl overflow-hidden"
           style={{
-            background: `linear-gradient(135deg, ${COLORS.semantic.error} 0%, ${COLORS.primary[600]} 100%)`,
-            borderColor: COLORS.primary[700],
+            background: "linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)",
+            borderColor: "#991b1b",
           }}
         >
           <div
@@ -611,7 +604,6 @@ export function MenuSection({
               opacity: 0.1,
               backgroundImage:
                 "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')",
-              animation: "shimmer 20s linear infinite",
             }}
           />
 
@@ -623,18 +615,16 @@ export function MenuSection({
                   style={{
                     backgroundColor: "rgba(255, 255, 255, 0.2)",
                     backdropFilter: "blur(4px)",
-                    animation: "float 3s ease-in-out infinite",
                   }}
                 >
-                  <Sparkles className="h-7 w-7" style={{ color: COLORS.text.inverse }} />
+                  <Sparkles className="h-7 w-7" style={{ color: "#ffffff" }} />
                 </div>
                 <div>
                   <h2
                     className={`text-3xl font-bold flex items-center gap-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
                     style={{
-                      color: COLORS.text.inverse,
+                      color: "#ffffff",
                       textShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                      animation: "slideRight 0.6s ease-out",
                     }}
                   >
                     {language === "en" ? "🔥 Hot Deals" : "🔥 ការផ្តល់ជូនពិសេស"}
@@ -643,7 +633,6 @@ export function MenuSection({
                     className={`text-base font-medium mt-1 ${language === "kh" ? "font-mono" : "font-sans"}`}
                     style={{
                       color: "rgba(255, 255, 255, 0.9)",
-                      animation: "fadeIn 0.8s ease-out",
                     }}
                   >
                     {language === "en"
@@ -660,11 +649,10 @@ export function MenuSection({
                   onClick={() => onEventChange("all")}
                   className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}
                   style={{
-                    backgroundColor: !selectedEvent || selectedEvent === "all" ? COLORS.background.primary : "rgba(255, 255, 255, 0.2)",
-                    color: !selectedEvent || selectedEvent === "all" ? COLORS.semantic.error : COLORS.text.inverse,
+                    backgroundColor: !selectedEvent || selectedEvent === "all" ? "#ffffff" : "rgba(255, 255, 255, 0.2)",
+                    color: !selectedEvent || selectedEvent === "all" ? "#dc2626" : "#ffffff",
                     backdropFilter: "blur(4px)",
                     transform: !selectedEvent || selectedEvent === "all" ? "scale(1.05)" : "scale(1)",
-                    animation: !selectedEvent || selectedEvent === "all" ? "pulse 2s ease-in-out infinite" : "none",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "scale(1.05)"
@@ -680,7 +668,7 @@ export function MenuSection({
                   </span>
                   <span
                     className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    style={{ backgroundColor: COLORS.semantic.error, color: COLORS.text.inverse }}
+                    style={{ backgroundColor: "#dc2626", color: "#ffffff" }}
                   >
                     {getEventProductCount.all}
                   </span>
@@ -692,11 +680,10 @@ export function MenuSection({
                     onClick={() => onEventChange(event)}
                     className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}
                     style={{
-                      backgroundColor: selectedEvent === event ? COLORS.background.primary : "rgba(255, 255, 255, 0.2)",
-                      color: selectedEvent === event ? COLORS.semantic.error : COLORS.text.inverse,
+                      backgroundColor: selectedEvent === event ? "#ffffff" : "rgba(255, 255, 255, 0.2)",
+                      color: selectedEvent === event ? "#dc2626" : "#ffffff",
                       backdropFilter: "blur(4px)",
                       transform: selectedEvent === event ? "scale(1.05)" : "scale(1)",
-                      animation: selectedEvent === event ? "pulse 2s ease-in-out infinite" : "none",
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = "scale(1.05)"
@@ -708,7 +695,7 @@ export function MenuSection({
                     <span className={language === "kh" ? "font-mono" : "font-sans"}>{getEventDisplayName(event)}</span>
                     <span
                       className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
-                      style={{ backgroundColor: COLORS.semantic.error, color: COLORS.text.inverse }}
+                      style={{ backgroundColor: "#dc2626", color: "#ffffff" }}
                     >
                       {getEventProductCount[event]}
                     </span>
@@ -742,7 +729,7 @@ export function MenuSection({
         className="sticky z-30 border-b shadow-sm"
         style={{
           top: "73px",
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          backgroundColor: COLORS.background.primary,
           backdropFilter: "blur(12px)",
           borderColor: COLORS.border.light,
         }}
@@ -762,36 +749,32 @@ export function MenuSection({
                     style={{
                       clipPath: "polygon(15% 0, 100% 0, 85% 100%, 0% 100%)",
                       marginLeft: index === 0 ? "0" : "-15px",
-                      backgroundColor: isSelected ? COLORS.primary[600] : "rgba(255, 255, 255, 0.7)",
-                      color: isSelected ? COLORS.text.inverse : COLORS.primary[600],
+                      backgroundColor: isSelected ? COLORS.primary[800] : COLORS.background.primary,
+                      color: "#ffffff",
                       transform: isSelected ? "scale(1.05)" : "scale(1)",
                       zIndex: isSelected ? 10 : 1,
                       boxShadow: isSelected
                         ? "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
                         : "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                      ...(imageUrl && isSelected
+                      ...(imageUrl
                         ? {
-                            backgroundImage: `linear-gradient(rgba(20, 184, 166, 0.7), rgba(13, 148, 136, 0.7)), url(${imageUrl})`,
-                            backgroundSize: "120%",
+                            backgroundImage: `linear-gradient(rgba(6, 78, 59, 0.8), rgba(6, 78, 59, 0.8)), url(${imageUrl})`,
+                            backgroundSize: "cover",
                             backgroundPosition: "center",
                           }
-                        : imageUrl && !isSelected
-                          ? {
-                              backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url(${imageUrl})`,
-                              backgroundSize: "120%",
-                              backgroundPosition: "center",
-                            }
-                          : undefined),
+                        : {
+                            backgroundColor: isSelected ? COLORS.primary[800] : COLORS.primary[600],
+                          }),
                     }}
                     onMouseEnter={(e) => {
                       if (!isSelected) {
-                        e.currentTarget.style.backgroundColor = COLORS.background.secondary
+                        e.currentTarget.style.backgroundColor = COLORS.primary[700]
                         e.currentTarget.style.transform = "scale(1.02)"
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (!isSelected) {
-                        e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.7)"
+                        e.currentTarget.style.backgroundColor = COLORS.primary[600]
                         e.currentTarget.style.transform = "scale(1)"
                       }
                     }}
@@ -799,8 +782,8 @@ export function MenuSection({
                     <span
                       className={`relative z-10 text-center font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
                       style={{
-                        color: isSelected ? COLORS.text.inverse : COLORS.primary[600],
-                        textShadow: isSelected ? "0 2px 4px rgba(0, 0, 0, 0.1)" : "none",
+                        color: "#ffffff",
+                        textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
                       }}
                     >
                       {category.name[language]}
@@ -925,42 +908,6 @@ export function MenuSection({
           }
         }
 
-        @keyframes glowPulse {
-          0%, 100% {
-            box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
-          }
-          50% {
-            box-shadow: 0 0 30px rgba(220, 38, 38, 0.8);
-          }
-        }
-
-        @keyframes priceBounce {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-3px);
-          }
-        }
-
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-
-        @keyframes shimmer {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
-        }
-
         @keyframes slideRight {
           from {
             opacity: 0;
@@ -978,33 +925,6 @@ export function MenuSection({
           }
           to {
             opacity: 1;
-          }
-        }
-
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.8;
-          }
-        }
-
-        @keyframes spin {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        @keyframes bounce {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
           }
         }
       `}</style>

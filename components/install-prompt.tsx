@@ -41,10 +41,10 @@ export function InstallPrompt({ language }: { language: "en" | "kh" }) {
 
     // We've used the prompt, and can't use it again, throw it away
     setDeferredPrompt(null)
-    
+
     // Hide the install prompt UI
     setIsVisible(false)
-    
+
     // Optionally, send analytics event with outcome of user choice
     console.log(`User response to the install prompt: ${outcome}`)
   }
@@ -57,37 +57,28 @@ export function InstallPrompt({ language }: { language: "en" | "kh" }) {
   if (!isVisible) return null
 
   return (
-    <div className={`fixed bottom-4 right-4 z-40 bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm ${language === "kh" ? "font-mono" : "font-sans"}`}>
+    <div
+      className={`fixed bottom-4 right-4 z-40 bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm ${language === "kh" ? "font-mono" : "font-sans"}`}
+    >
       <div className="flex items-start justify-between mb-3">
         <h3 className="font-semibold text-gray-900">
           {language === "en" ? "Install Fresthie's Coffee App" : "តំឡើងកម្មវិធី Fresthie's Coffee"}
         </h3>
-        <button
-          onClick={handleDismiss}
-          className="text-gray-400 hover:text-gray-600"
-        >
+        <button onClick={handleDismiss} className="text-gray-400 hover:text-gray-600">
           <X className="h-4 w-4" />
         </button>
       </div>
       <p className="text-sm text-gray-600 mb-4">
-        {language === "en" 
-          ? "Install our app now for more convenient. Access your menu and orders quickly from your home screen." 
-          : "តំឡើងកម្មវិធីឥឡូវនេះដើម្បីភាពងាយស្រួលជាងមុន។ ចូលប្រើម៉ឺនុយ និងការកម្មង់របស់អ្នកយ៉ាងរហ័សពីអេក្រង់ដំបូងរបស់អ្នក។"
-        }
+        {language === "en"
+          ? "Install our app now for more convenient. Access your menu and orders quickly from your home screen."
+          : "តំឡើងកម្មវិធីឥឡូវនេះដើម្បីភាពងាយស្រួលជាងមុន។ ចូលប្រើម៉ឺនុយ និងការកម្មង់របស់អ្នកយ៉ាងរហ័សពីអេក្រង់ដំបូងរបស់អ្នក។"}
       </p>
       <div className="flex gap-2">
-        <Button
-          onClick={handleInstallClick}
-          className="flex-1 bg-amber-600 hover:bg-amber-700"
-        >
+        <Button onClick={handleInstallClick} className="flex-1 bg-amber-600 hover:bg-amber-700">
           <Download className="h-4 w-4 mr-2" />
           {language === "en" ? "Install" : "តំឡើង"}
         </Button>
-        <Button
-          onClick={handleDismiss}
-          variant="outline"
-          className="border-gray-300"
-        >
+        <Button onClick={handleDismiss} variant="outline" className="border-gray-300 bg-transparent">
           {language === "en" ? "Not Now" : "មិនទាន់"}
         </Button>
       </div>

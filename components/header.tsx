@@ -77,10 +77,7 @@ export function Header({
 
   return (
     <>
-      <div 
-        className="text-white py-2.5 text-xs overflow-hidden"
-        style={{ backgroundColor: COLORS.primary[600] }}
-      >
+      <div className="text-white py-2.5 text-xs overflow-hidden" style={{ backgroundColor: COLORS.primary[600] }}>
         <div className="flex whitespace-nowrap">
           <div className="flex animate-marquee space-x-8">
             {promotionalItems.map((item, index) => (
@@ -101,11 +98,11 @@ export function Header({
         </div>
       </div>
 
-      <header 
+      <header
         className="sticky top-0 z-40 w-full border-b"
-        style={{ 
+        style={{
           backgroundColor: COLORS.background.primary,
-          borderColor: COLORS.border.light
+          borderColor: COLORS.border.light,
         }}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -119,16 +116,13 @@ export function Header({
                 }}
                 className="flex items-center space-x-3 cursor-pointer group"
               >
-                <div 
+                <div
                   className="h-10 w-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105"
                   style={{ backgroundColor: COLORS.primary[600] }}
                 >
                   <Coffee className="h-5 w-5 text-white" />
                 </div>
-                <h1 
-                  className="font-serif text-xl font-bold"
-                  style={{ color: COLORS.text.primary }}
-                >
+                <h1 className="font-serif text-xl font-bold" style={{ color: COLORS.text.primary }}>
                   {FOOTER_CONFIG.COMPANY.NAME}
                 </h1>
               </a>
@@ -141,10 +135,7 @@ export function Header({
                 onClick={() => onLanguageChange(language === "en" ? "kh" : "en")}
                 className="h-10 w-10 rounded-xl hover:bg-gray-100 transition-colors"
               >
-                <Globe 
-                  className="h-5 w-5" 
-                  style={{ color: COLORS.text.secondary }}
-                />
+                <Globe className="h-5 w-5" style={{ color: COLORS.text.secondary }} />
               </Button>
 
               <Button
@@ -154,10 +145,7 @@ export function Header({
                 className="h-10 w-10 rounded-xl hover:bg-gray-100 transition-colors"
                 title={language === "en" ? "Install App" : "តំឡើងកម្មវិធី"}
               >
-                <Download 
-                  className="h-5 w-5" 
-                  style={{ color: COLORS.text.secondary }}
-                />
+                <Download className="h-5 w-5" style={{ color: COLORS.text.secondary }} />
               </Button>
             </div>
           </div>
@@ -171,28 +159,22 @@ export function Header({
           }`}
           style={{
             backgroundColor: COLORS.background.primary,
-            borderColor: COLORS.border.light
+            borderColor: COLORS.border.light,
           }}
         >
           <div className="flex items-start justify-between mb-3">
-            <h3 
-              className="font-semibold text-lg"
-              style={{ color: COLORS.text.primary }}
-            >
+            <h3 className="font-semibold text-lg" style={{ color: COLORS.text.primary }}>
               {language === "en" ? "Install Fresthie's Coffee App" : "តំឡើងកម្មវិធី Fresthie's Coffee"}
             </h3>
-            <button 
-              onClick={handleDismissInstall} 
+            <button
+              onClick={handleDismissInstall}
               className="hover:text-gray-600 transition-colors"
               style={{ color: COLORS.text.tertiary }}
             >
               <X className="h-5 w-5" />
             </button>
           </div>
-          <p 
-            className="text-sm mb-4 leading-relaxed"
-            style={{ color: COLORS.text.secondary }}
-          >
+          <p className="text-sm mb-4 leading-relaxed" style={{ color: COLORS.text.secondary }}>
             {language === "en"
               ? "Install our app now for more convenient. Access your menu and orders quickly from your home screen."
               : "តំឡើងកម្មវិធីឥឡូវនេះសម្រាប់ភាពងាយស្រួល។ ចូលប្រើម៉ឺនុយ និងការកម្មង់របស់អ្នកយ៉ាងរហ័សពីអេក្រង់ដើមរបស់អ្នក។"}
@@ -229,7 +211,7 @@ export function Header({
               className="rounded-xl h-11 hover:bg-gray-50 transition-colors bg-transparent"
               style={{
                 borderColor: COLORS.border.medium,
-                color: COLORS.text.primary
+                color: COLORS.text.primary,
               }}
             >
               {language === "en" ? "Not Now" : "មិនមែនឥឡូវ"}
@@ -238,11 +220,11 @@ export function Header({
         </div>
       )}
 
-      <nav 
+      <nav
         className="fixed bottom-0 left-0 right-0 z-50 border-t shadow-lg"
-        style={{ 
+        style={{
           backgroundColor: COLORS.background.primary,
-          borderColor: COLORS.border.light
+          borderColor: COLORS.border.light,
         }}
       >
         <div className="grid grid-cols-5 h-16 max-w-lg mx-auto">
@@ -256,20 +238,20 @@ export function Header({
               currentSection === "top" ? "hover:bg-gray-50" : "hover:bg-gray-50"
             }`}
             style={{
-              color: currentSection === "top" ? COLORS.primary[600] : COLORS.text.secondary
+              color: currentSection === "top" ? COLORS.primary[600] : COLORS.text.secondary,
             }}
           >
-            <Home 
+            <Home
               className={`h-5 w-5 mb-1 ${currentSection === "top" ? "fill-current" : ""}`}
               style={{
-                color: currentSection === "top" ? COLORS.primary[600] : COLORS.text.secondary
+                color: currentSection === "top" ? COLORS.primary[600] : COLORS.text.secondary,
               }}
             />
             <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
               {language === "en" ? "Home" : "ទំព័រដើម"}
             </span>
             {currentSection === "top" && (
-              <div 
+              <div
                 className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 rounded-t-full"
                 style={{ backgroundColor: COLORS.primary[600] }}
               />
@@ -286,20 +268,20 @@ export function Header({
               currentSection === "menu" ? "hover:bg-gray-50" : "hover:bg-gray-50"
             }`}
             style={{
-              color: currentSection === "menu" ? COLORS.primary[600] : COLORS.text.secondary
+              color: currentSection === "menu" ? COLORS.primary[600] : COLORS.text.secondary,
             }}
           >
-            <Menu 
+            <Menu
               className={`h-5 w-5 mb-1 ${currentSection === "menu" ? "fill-current" : ""}`}
               style={{
-                color: currentSection === "menu" ? COLORS.primary[600] : COLORS.text.secondary
+                color: currentSection === "menu" ? COLORS.primary[600] : COLORS.text.secondary,
               }}
             />
             <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
               {language === "en" ? "Menu" : "ម្ហូប"}
             </span>
             {currentSection === "menu" && (
-              <div 
+              <div
                 className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 rounded-t-full"
                 style={{ backgroundColor: COLORS.primary[600] }}
               />
@@ -316,20 +298,20 @@ export function Header({
               currentSection === "contact" ? "hover:bg-gray-50" : "hover:bg-gray-50"
             }`}
             style={{
-              color: currentSection === "contact" ? COLORS.primary[600] : COLORS.text.secondary
+              color: currentSection === "contact" ? COLORS.primary[600] : COLORS.text.secondary,
             }}
           >
-            <Phone 
+            <Phone
               className={`h-5 w-5 mb-1 ${currentSection === "contact" ? "fill-current" : ""}`}
               style={{
-                color: currentSection === "contact" ? COLORS.primary[600] : COLORS.text.secondary
+                color: currentSection === "contact" ? COLORS.primary[600] : COLORS.text.secondary,
               }}
             />
             <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
               {language === "en" ? "Contact" : "ទំនាក់ទំនង"}
             </span>
             {currentSection === "contact" && (
-              <div 
+              <div
                 className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 rounded-t-full"
                 style={{ backgroundColor: COLORS.primary[600] }}
               />
@@ -369,7 +351,7 @@ export function Header({
             <div className="relative">
               <ShoppingCart className="h-5 w-5 mb-1" />
               {cartItemCount > 0 && (
-                <span 
+                <span
                   className="absolute -top-2 -right-2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-sm"
                   style={{ backgroundColor: COLORS.semantic.error }}
                 >
