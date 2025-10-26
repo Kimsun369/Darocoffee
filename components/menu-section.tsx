@@ -652,7 +652,7 @@ export function MenuSection({
           </div>
           <div>
             <h1
-              className={`text-lg sm:text-2xl font-bold flex items-center gap-1 ${language === "kh" ? "font-mono" : "font-sans"}`}
+              className={`text-lg sm:text-xl font-bold flex items-center gap-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
               style={{
                 color: "#ffffff",
                 textShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
