@@ -75,11 +75,71 @@ export function Header({
     },
   ]
 
+  // Navigation items configuration
+  const navItems = [
+    {
+      id: "top",
+      icon: Home,
+      label: {
+        en: "Home",
+        kh: "ទំព័រដើម"
+      }
+    },
+    {
+      id: "menu",
+      icon: Menu,
+      label: {
+        en: "Menu",
+        kh: "ម្ហូប"
+      }
+    },
+    {
+      id: "contact",
+      icon: Phone,
+      label: {
+        en: "Contact",
+        kh: "ទំនាក់ទំនង"
+      }
+    },
+    {
+      id: "install",
+      icon: Download,
+      label: {
+        en: "Install",
+        kh: "តំឡើង"
+      },
+      onClick: handleInstallClick
+    },
+    {
+      id: "cart",
+      icon: ShoppingCart,
+      label: {
+        en: "Cart",
+        kh: "កន្ត្រក"
+      },
+      onClick: onCartClick,
+      badge: cartItemCount
+    }
+  ]
+
+  // Apply the same background color as footer
+  const headerBackgroundStyle = {
+    backgroundColor: COLORS.primary[100],
+  }
+
+  const promotionalBarStyle = {
+    backgroundColor: COLORS.primary[700],
+  }
+
+  // Dynamic color for active state
+  const activeColor = COLORS.primary[600]
+
   return (
     <>
+      {/* Promotional Bar - Same background family */}
       <div 
-        className="text-white py-2.5 text-xs overflow-hidden"
-        style={{ backgroundColor: COLORS.primary[600] }}
+        className="text-white py-2.5 text-xs overflow-hidden" 
+        style={promotionalBarStyle}
       >
         <div className="flex whitespace-nowrap">
           <div className="flex animate-marquee space-x-8">
@@ -101,12 +161,10 @@ export function Header({
         </div>
       </div>
 
-      <header 
+      {/* Main Header - Same background as footer */}
+      <header
         className="sticky top-0 z-40 w-full border-b"
-        style={{ 
-          backgroundColor: COLORS.background.primary,
-          borderColor: COLORS.border.light
-        }}
+        style={headerBackgroundStyle}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
@@ -119,16 +177,13 @@ export function Header({
                 }}
                 className="flex items-center space-x-3 cursor-pointer group"
               >
-                <div 
+                <div
                   className="h-10 w-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105"
                   style={{ backgroundColor: COLORS.primary[600] }}
                 >
                   <Coffee className="h-5 w-5 text-white" />
                 </div>
-                <h1 
-                  className="font-serif text-xl font-bold"
-                  style={{ color: COLORS.text.primary }}
-                >
+                <h1 className="font-serif text-xl font-bold text-grey">
                   {FOOTER_CONFIG.COMPANY.NAME}
                 </h1>
               </a>
@@ -139,60 +194,49 @@ export function Header({
                 variant="ghost"
                 size="icon"
                 onClick={() => onLanguageChange(language === "en" ? "kh" : "en")}
-                className="h-10 w-10 rounded-xl hover:bg-gray-100 transition-colors"
+                className="h-10 w-10 rounded-xl hover:bg-white/10 transition-colors text-grey"
               >
-                <Globe 
-                  className="h-5 w-5" 
-                  style={{ color: COLORS.text.secondary }}
-                />
+                <Globe className="h-5 w-5" />
               </Button>
 
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={handleInstallClick}
-                className="h-10 w-10 rounded-xl hover:bg-gray-100 transition-colors"
+                className="h-10 w-10 rounded-xl hover:bg-white/10 transition-colors text-black"
                 title={language === "en" ? "Install App" : "តំឡើងកម្មវិធី"}
               >
-                <Download 
-                  className="h-5 w-5" 
-                  style={{ color: COLORS.text.secondary }}
-                />
+                <Download className="h-5 w-5" />
               </Button>
             </div>
           </div>
         </div>
       </header>
 
+      {/* Install Prompt - Updated to match theme */}
       {showInstallPrompt && (
         <div
           className={`fixed bottom-24 left-1/2 transform -translate-x-1/2 z-50 rounded-2xl shadow-xl p-5 max-w-sm mx-4 border ${
             language === "kh" ? "font-mono" : "font-sans"
           }`}
           style={{
-            backgroundColor: COLORS.background.primary,
-            borderColor: COLORS.border.light
+            backgroundColor: COLORS.primary[800],
+            borderColor: COLORS.primary[600],
+            color: COLORS.text.inverse,
           }}
         >
           <div className="flex items-start justify-between mb-3">
-            <h3 
-              className="font-semibold text-lg"
-              style={{ color: COLORS.text.primary }}
-            >
+            <h3 className="font-semibold text-lg text-grey">
               {language === "en" ? "Install Fresthie's Coffee App" : "តំឡើងកម្មវិធី Fresthie's Coffee"}
             </h3>
-            <button 
-              onClick={handleDismissInstall} 
-              className="hover:text-gray-600 transition-colors"
-              style={{ color: COLORS.text.tertiary }}
+            <button
+              onClick={handleDismissInstall}
+              className="hover:text-gray-300 transition-colors text-grey"
             >
               <X className="h-5 w-5" />
             </button>
           </div>
-          <p 
-            className="text-sm mb-4 leading-relaxed"
-            style={{ color: COLORS.text.secondary }}
-          >
+          <p className="text-sm mb-4 leading-relaxed text-gray-200">
             {language === "en"
               ? "Install our app now for more convenient. Access your menu and orders quickly from your home screen."
               : "តំឡើងកម្មវិធីឥឡូវនេះសម្រាប់ភាពងាយស្រួល។ ចូលប្រើម៉ឺនុយ និងការកម្មង់របស់អ្នកយ៉ាងរហ័សពីអេក្រង់ដើមរបស់អ្នក។"}
@@ -226,11 +270,7 @@ export function Header({
             <Button
               onClick={handleDismissInstall}
               variant="outline"
-              className="rounded-xl h-11 hover:bg-gray-50 transition-colors bg-transparent"
-              style={{
-                borderColor: COLORS.border.medium,
-                color: COLORS.text.primary
-              }}
+              className="rounded-xl h-11 hover:bg-white/10 transition-colors bg-transparent text-white border-white/30"
             >
               {language === "en" ? "Not Now" : "មិនមែនឥឡូវ"}
             </Button>
@@ -238,149 +278,80 @@ export function Header({
         </div>
       )}
 
-      <nav 
+      {/* Bottom Navigation - Fixed with proper active states */}
+      <nav
         className="fixed bottom-0 left-0 right-0 z-50 border-t shadow-lg"
-        style={{ 
-          backgroundColor: COLORS.background.primary,
-          borderColor: COLORS.border.light
-        }}
+        style={headerBackgroundStyle}
       >
         <div className="grid grid-cols-5 h-16 max-w-lg mx-auto">
-          <Button
-            variant="ghost"
-            onClick={(e) => {
-              e.preventDefault()
-              onScrollToSection("top")
-            }}
-            className={`flex flex-col items-center justify-center h-full px-2 py-2 rounded-none transition-all ${
-              currentSection === "top" ? "hover:bg-gray-50" : "hover:bg-gray-50"
-            }`}
-            style={{
-              color: currentSection === "top" ? COLORS.primary[600] : COLORS.text.secondary
-            }}
-          >
-            <Home 
-              className={`h-5 w-5 mb-1 ${currentSection === "top" ? "fill-current" : ""}`}
-              style={{
-                color: currentSection === "top" ? COLORS.primary[600] : COLORS.text.secondary
-              }}
-            />
-            <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
-              {language === "en" ? "Home" : "ទំព័រដើម"}
-            </span>
-            {currentSection === "top" && (
-              <div 
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 rounded-t-full"
-                style={{ backgroundColor: COLORS.primary[600] }}
-              />
-            )}
-          </Button>
+          {navItems.map((item) => {
+            const isActive = currentSection === item.id;
+            const IconComponent = item.icon;
+            
+            return (
+              <Button
+                key={item.id}
+                variant="ghost"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (item.onClick) {
+                    item.onClick();
+                  } else if (item.id !== "install" && item.id !== "cart") {
+                    onScrollToSection(item.id);
+                  }
+                }}
+                className={`flex flex-col items-center justify-center h-full px-2 py-2 rounded-none transition-all relative group ${
+                  isActive ? "text-white" : "text-gray-600 hover:text-gray-800"
+                }`}
+              >
+                {/* Active indicator bar */}
+                {isActive && (
+                  <div
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 rounded-t-full"
+                    style={{ backgroundColor: activeColor }}
+                  />
+                )}
 
-          <Button
-            variant="ghost"
-            onClick={(e) => {
-              e.preventDefault()
-              onScrollToSection("menu")
-            }}
-            className={`flex flex-col items-center justify-center h-full px-2 py-2 rounded-none transition-all ${
-              currentSection === "menu" ? "hover:bg-gray-50" : "hover:bg-gray-50"
-            }`}
-            style={{
-              color: currentSection === "menu" ? COLORS.primary[600] : COLORS.text.secondary
-            }}
-          >
-            <Menu 
-              className={`h-5 w-5 mb-1 ${currentSection === "menu" ? "fill-current" : ""}`}
-              style={{
-                color: currentSection === "menu" ? COLORS.primary[600] : COLORS.text.secondary
-              }}
-            />
-            <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
-              {language === "en" ? "Menu" : "ម្ហូប"}
-            </span>
-            {currentSection === "menu" && (
-              <div 
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 rounded-t-full"
-                style={{ backgroundColor: COLORS.primary[600] }}
-              />
-            )}
-          </Button>
+                {/* Icon with active state */}
+                <div className="relative">
+                  <IconComponent 
+                    className={`h-5 w-5 mb-1 transition-colors ${
+                      isActive ? "fill-current" : ""
+                    }`}
+                    style={isActive ? { color: activeColor } : {}}
+                  />
+                  
+                  {/* Badge for cart */}
+                  {item.badge && item.badge > 0 && (
+                    <span
+                      className="absolute -top-2 -right-2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-sm"
+                      style={{ backgroundColor: COLORS.semantic.error }}
+                    >
+                      {item.badge > 99 ? "99+" : item.badge}
+                    </span>
+                  )}
+                </div>
 
-          <Button
-            variant="ghost"
-            onClick={(e) => {
-              e.preventDefault()
-              onScrollToSection("contact")
-            }}
-            className={`flex flex-col items-center justify-center h-full px-2 py-2 rounded-none transition-all ${
-              currentSection === "contact" ? "hover:bg-gray-50" : "hover:bg-gray-50"
-            }`}
-            style={{
-              color: currentSection === "contact" ? COLORS.primary[600] : COLORS.text.secondary
-            }}
-          >
-            <Phone 
-              className={`h-5 w-5 mb-1 ${currentSection === "contact" ? "fill-current" : ""}`}
-              style={{
-                color: currentSection === "contact" ? COLORS.primary[600] : COLORS.text.secondary
-              }}
-            />
-            <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
-              {language === "en" ? "Contact" : "ទំនាក់ទំនង"}
-            </span>
-            {currentSection === "contact" && (
-              <div 
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 rounded-t-full"
-                style={{ backgroundColor: COLORS.primary[600] }}
-              />
-            )}
-          </Button>
-
-          <Button
-            variant="ghost"
-            onClick={handleInstallClick}
-            className="flex flex-col items-center justify-center h-full px-2 py-2 rounded-none hover:bg-gray-50 transition-all"
-            style={{ color: COLORS.text.secondary }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = COLORS.primary[600]
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = COLORS.text.secondary
-            }}
-          >
-            <Download className="h-5 w-5 mb-1" />
-            <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
-              {language === "en" ? "Install" : "តំឡើង"}
-            </span>
-          </Button>
-
-          <Button
-            variant="ghost"
-            onClick={onCartClick}
-            className="flex flex-col items-center justify-center h-full px-2 py-2 rounded-none hover:bg-gray-50 transition-all relative"
-            style={{ color: COLORS.text.secondary }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = COLORS.primary[600]
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = COLORS.text.secondary
-            }}
-          >
-            <div className="relative">
-              <ShoppingCart className="h-5 w-5 mb-1" />
-              {cartItemCount > 0 && (
+                {/* Label with active state */}
                 <span 
-                  className="absolute -top-2 -right-2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-sm"
-                  style={{ backgroundColor: COLORS.semantic.error }}
+                  className={`text-xs font-medium transition-colors ${
+                    language === "kh" ? "font-mono" : "font-sans"
+                  } ${isActive ? "font-semibold" : ""}`}
+                  style={isActive ? { color: activeColor } : {}}
                 >
-                  {cartItemCount > 99 ? "99+" : cartItemCount}
+                  {item.label[language]}
                 </span>
-              )}
-            </div>
-            <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
-              {language === "en" ? "Cart" : "កន្ត្រក"}
-            </span>
-          </Button>
+
+                {/* Hover effect */}
+                <div 
+                  className={`absolute inset-0 rounded-lg transition-opacity ${
+                    isActive ? "opacity-10" : "opacity-0 group-hover:opacity-5"
+                  }`}
+                  style={{ backgroundColor: activeColor }}
+                />
+              </Button>
+            );
+          })}
         </div>
       </nav>
     </>

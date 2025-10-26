@@ -3,7 +3,7 @@
 
 import type React from "react"
 import { useState, useMemo, useEffect } from "react"
-import { Search, Heart, Plus, Tag, Sparkles, Coffee, ChevronDown, ChevronUp } from "lucide-react"
+import { Search, Heart, Plus, Tag, Sparkles, ChevronDown, ChevronUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
@@ -425,30 +425,27 @@ export function MenuSection({
       style={{
         backgroundColor: COLORS.background.primary,
         border: `2px solid ${COLORS.primary[600]}`,
-        animation: "scaleIn 0.4s ease-out forwards",
-        animationDelay: `${index * 50}ms`,
+        animation: "scaleInBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
+        animationDelay: `${index * 80}ms`,
         opacity: 0,
-        transform: "scale(0.9)",
+        transform: "scale(0.8) translateY(20px)",
       }}
     >
       <CardContent className="p-0">
         {/* Product Image */}
-        <div
-          className="relative aspect-[4/3] overflow-hidden"
-          style={{ background: COLORS.background.gradient }}
-        >
+        <div className="relative aspect-[4/3] overflow-hidden" style={{ background: COLORS.background.gradient }}>
           <img
             src={product.image || "/placeholder.svg"}
             alt={language === "en" ? product.name : product.name_kh}
-            className="w-full h-full object-cover transition-transform duration-500"
+            className="w-full h-full object-cover transition-all duration-700 ease-out"
             style={{
               transform: "scale(1)",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(1.1)"
+              e.currentTarget.style.transform = "scale(1.15) rotate(2deg)"
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "scale(1)"
+              e.currentTarget.style.transform = "scale(1) rotate(0deg)"
             }}
           />
 
@@ -456,42 +453,41 @@ export function MenuSection({
             <div
               className={`absolute top-2 left-2 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 ${language === "kh" ? "font-mono" : "font-sans"}`}
               style={{
-                background: `linear-gradient(135deg, ${COLORS.semantic.error} 0%, ${COLORS.primary[600]} 100%)`,
-                animation: "glowPulse 2s ease-in-out infinite",
+                background: `linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)`,
+                border: "2px solid #ffffff",
+                animation: "discountPulse 2s ease-in-out infinite",
               }}
             >
-              <Sparkles
-                className="h-3 w-3"
-                style={{
-                  animation: "spin 3s linear infinite",
-                }}
-              />
-              <span style={{ animation: "pulse 1.5s ease-in-out infinite" }}>{`-${product.discount}%`}</span>
+              <Sparkles className="h-3 w-3" style={{ animation: "sparkleRotate 2s linear infinite" }} />
+              <span>{`-${product.discount}%`}</span>
             </div>
           )}
 
           {/* Favorite Button */}
           <button
             onClick={(e) => toggleFavorite(product.id, e)}
-            className="absolute top-2 right-2 w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-md"
+            className="absolute top-2 right-2 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 ease-out"
             style={{
               backgroundColor: "rgba(255, 255, 255, 0.95)",
               backdropFilter: "blur(4px)",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(1.1)"
+              e.currentTarget.style.transform = "scale(1.2) rotate(10deg)"
               e.currentTarget.style.backgroundColor = COLORS.background.primary
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "scale(1)"
+              e.currentTarget.style.transform = "scale(1) rotate(0deg)"
               e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.95)"
             }}
           >
             <Heart
-              className={`h-5 w-5 transition-all ${
-                favorites.has(product.id) ? "fill-red-500 text-red-500" : "text-gray-400"
+              className={`h-5 w-5 transition-all duration-300 ${
+                favorites.has(product.id) ? "fill-red-500 text-red-500" : ""
               }`}
-              style={favorites.has(product.id) ? { animation: "pulse 1s ease-in-out infinite" } : {}}
+              style={{
+                color: favorites.has(product.id) ? COLORS.semantic.error : COLORS.gray[400],
+                animation: favorites.has(product.id) ? "heartBeat 0.5s ease-in-out" : "none",
+              }}
             />
           </button>
         </div>
@@ -517,15 +513,15 @@ export function MenuSection({
                   <span
                     className={`text-lg font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
                     style={{
-                      color: COLORS.semantic.error,
-                      animation: "priceBounce 1s ease-in-out infinite",
+                      color: "#dc2626",
+                      animation: "priceEmphasis 2s ease-in-out infinite",
                     }}
                   >
                     ${product.price.toFixed(2)}
                   </span>
                   <span
                     className={`text-sm font-medium line-through ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    style={{ color: COLORS.primary[600] }}
+                    style={{ color: COLORS.text.tertiary }}
                   >
                     ${product.originalPrice.toFixed(2)}
                   </span>
@@ -546,18 +542,18 @@ export function MenuSection({
                 e.stopPropagation()
                 onAddToCart(product)
               }}
-              className={`rounded-full h-8 w-8 p-0 text-white shadow-md transition-all ${language === "kh" ? "font-mono" : "font-sans"}`}
+              className={`rounded-full h-8 w-8 p-0 text-white shadow-md transition-all duration-300 ease-out ${language === "kh" ? "font-mono" : "font-sans"}`}
               style={{
                 backgroundColor: COLORS.primary[600],
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = COLORS.primary[700]
-                e.currentTarget.style.transform = "scale(1.1)"
+                e.currentTarget.style.transform = "scale(1.15) rotate(90deg)"
                 e.currentTarget.style.boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = COLORS.primary[600]
-                e.currentTarget.style.transform = "scale(1)"
+                e.currentTarget.style.transform = "scale(1) rotate(0deg)"
                 e.currentTarget.style.boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
               }}
             >
@@ -571,22 +567,31 @@ export function MenuSection({
 
   return (
     <div className="min-h-screen" style={{ background: COLORS.background.gradient }}>
+      {/* Search Bar */}
       <div
         className="sticky top-0 z-40 border-b-2 shadow-md"
-        style={{ backgroundColor: COLORS.background.primary, borderColor: COLORS.primary[600] }}
+        style={{
+          backgroundColor: COLORS.background.primary,
+          borderColor: COLORS.border.strong,
+          animation: "slideDown 0.5s ease-out",
+        }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="relative max-w-2xl mx-auto">
             <Search
               className="absolute left-4 top-1/2 h-5 w-5"
-              style={{ transform: "translateY(-50%)", color: COLORS.primary[600] }}
+              style={{
+                transform: "translateY(-50%)",
+                color: COLORS.primary[600],
+                animation: "float 3s ease-in-out infinite",
+              }}
             />
             <Input
               type="text"
               placeholder={language === "en" ? "Search menu..." : "ស្វែងរកម្ហូប..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`pl-12 pr-4 h-12 border-2 rounded-xl shadow-sm focus-visible:ring-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
+              className={`pl-12 pr-4 h-12 border-2 rounded-xl shadow-sm focus-visible:ring-2 transition-all duration-300 ${language === "kh" ? "font-mono" : "font-sans"}`}
               style={{
                 backgroundColor: COLORS.background.primary,
                 color: COLORS.text.primary,
@@ -601,17 +606,26 @@ export function MenuSection({
         <div
           className="relative border-y-4 shadow-2xl overflow-hidden"
           style={{
-            background: `linear-gradient(135deg, ${COLORS.semantic.error} 0%, ${COLORS.primary[600]} 100%)`,
-            borderColor: COLORS.primary[700],
+            background: `linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)`,
+            borderColor: "#b91c1c",
+            animation: "discountGlow 3s ease-in-out infinite",
           }}
         >
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)",
+              animation: "shimmer 3s linear infinite",
+            }}
+          />
+
           <div
             className="absolute inset-0"
             style={{
               opacity: 0.1,
               backgroundImage:
                 "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')",
-              animation: "shimmer 20s linear infinite",
+              animation: "rotatePattern 20s linear infinite",
             }}
           />
 
@@ -623,18 +637,24 @@ export function MenuSection({
                   style={{
                     backgroundColor: "rgba(255, 255, 255, 0.2)",
                     backdropFilter: "blur(4px)",
-                    animation: "float 3s ease-in-out infinite",
+                    animation: "discountBounce 2s ease-in-out infinite",
                   }}
                 >
-                  <Sparkles className="h-7 w-7" style={{ color: COLORS.text.inverse }} />
+                  <Sparkles
+                    className="h-7 w-7"
+                    style={{
+                      color: "#ffffff",
+                      animation: "sparkleRotate 2s ease-in-out infinite",
+                    }}
+                  />
                 </div>
                 <div>
                   <h2
                     className={`text-3xl font-bold flex items-center gap-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
                     style={{
-                      color: COLORS.text.inverse,
+                      color: "#ffffff",
                       textShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                      animation: "slideRight 0.6s ease-out",
+                      animation: "slideInLeft 0.6s ease-out",
                     }}
                   >
                     {language === "en" ? "🔥 Hot Deals" : "🔥 ការផ្តល់ជូនពិសេស"}
@@ -643,7 +663,7 @@ export function MenuSection({
                     className={`text-base font-medium mt-1 ${language === "kh" ? "font-mono" : "font-sans"}`}
                     style={{
                       color: "rgba(255, 255, 255, 0.9)",
-                      animation: "fadeIn 0.8s ease-out",
+                      animation: "slideInLeft 0.6s ease-out 0.2s backwards",
                     }}
                   >
                     {language === "en"
@@ -655,60 +675,77 @@ export function MenuSection({
             </div>
 
             {events.length > 0 && (
-              <div className="flex items-center gap-3 overflow-x-auto pb-3 mb-6" style={{ scrollbarWidth: "thin" }}>
+              <div
+                className="flex items-center gap-3 overflow-x-auto pb-3 mb-6"
+                style={{
+                  scrollbarWidth: "thin",
+                  animation: "fadeInUp 0.6s ease-out 0.3s backwards",
+                }}
+              >
                 <button
                   onClick={() => onEventChange("all")}
-                  className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}
+                  className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-500 shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}
                   style={{
-                    backgroundColor: !selectedEvent || selectedEvent === "all" ? COLORS.background.primary : "rgba(255, 255, 255, 0.2)",
-                    color: !selectedEvent || selectedEvent === "all" ? COLORS.semantic.error : COLORS.text.inverse,
+                    backgroundColor: !selectedEvent || selectedEvent === "all" ? "#ffffff" : "rgba(255, 255, 255, 0.2)",
+                    color: !selectedEvent || selectedEvent === "all" ? "#dc2626" : "#ffffff",
                     backdropFilter: "blur(4px)",
                     transform: !selectedEvent || selectedEvent === "all" ? "scale(1.05)" : "scale(1)",
-                    animation: !selectedEvent || selectedEvent === "all" ? "pulse 2s ease-in-out infinite" : "none",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "scale(1.05)"
+                    e.currentTarget.style.transform = "scale(1.1) translateY(-2px)"
+                    e.currentTarget.style.boxShadow = "0 10px 20px rgba(0,0,0,0.2)"
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform =
                       !selectedEvent || selectedEvent === "all" ? "scale(1.05)" : "scale(1)"
+                    e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)"
                   }}
                 >
-                  <Tag className="h-4 w-4" />
+                  <Tag className="h-4 w-4" style={{ animation: "wiggle 1s ease-in-out infinite" }} />
                   <span className={language === "kh" ? "font-mono" : "font-sans"}>
                     {language === "en" ? "All Offers" : "ទាំងអស់"}
                   </span>
                   <span
                     className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    style={{ backgroundColor: COLORS.semantic.error, color: COLORS.text.inverse }}
+                    style={{
+                      backgroundColor: "#dc2626",
+                      color: "#ffffff",
+                      animation: "badgePulse 2s ease-in-out infinite",
+                    }}
                   >
                     {getEventProductCount.all}
                   </span>
                 </button>
 
-                {events.map((event) => (
+                {events.map((event, idx) => (
                   <button
                     key={event}
                     onClick={() => onEventChange(event)}
-                    className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}
+                    className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-500 shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}
                     style={{
-                      backgroundColor: selectedEvent === event ? COLORS.background.primary : "rgba(255, 255, 255, 0.2)",
-                      color: selectedEvent === event ? COLORS.semantic.error : COLORS.text.inverse,
+                      backgroundColor: selectedEvent === event ? "#ffffff" : "rgba(255, 255, 255, 0.2)",
+                      color: selectedEvent === event ? "#dc2626" : "#ffffff",
                       backdropFilter: "blur(4px)",
                       transform: selectedEvent === event ? "scale(1.05)" : "scale(1)",
-                      animation: selectedEvent === event ? "pulse 2s ease-in-out infinite" : "none",
+                      animation: `fadeInScale 0.5s ease-out ${idx * 0.1}s backwards`,
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "scale(1.05)"
+                      e.currentTarget.style.transform = "scale(1.1) translateY(-2px)"
+                      e.currentTarget.style.boxShadow = "0 10px 20px rgba(0,0,0,0.2)"
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = selectedEvent === event ? "scale(1.05)" : "scale(1)"
+                      e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)"
                     }}
                   >
                     <span className={language === "kh" ? "font-mono" : "font-sans"}>{getEventDisplayName(event)}</span>
                     <span
                       className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
-                      style={{ backgroundColor: COLORS.semantic.error, color: COLORS.text.inverse }}
+                      style={{
+                        backgroundColor: "#dc2626",
+                        color: "#ffffff",
+                        animation: "badgePulse 2s ease-in-out infinite",
+                      }}
                     >
                       {getEventProductCount[event]}
                     </span>
@@ -724,8 +761,8 @@ export function MenuSection({
                     key={product.id}
                     className="flex-shrink-0 w-[160px] sm:w-[200px]"
                     style={{
-                      animation: "slideRight 0.5s ease-out forwards",
-                      animationDelay: `${index * 100}ms`,
+                      animation: "slideRightBounce 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
+                      animationDelay: `${index * 120}ms`,
                       opacity: 0,
                     }}
                   >
@@ -742,9 +779,10 @@ export function MenuSection({
         className="sticky z-30 border-b shadow-sm"
         style={{
           top: "73px",
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          backgroundColor: COLORS.background.primary,
           backdropFilter: "blur(12px)",
           borderColor: COLORS.border.light,
+          animation: "slideDown 0.5s ease-out 0.2s backwards",
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
@@ -754,44 +792,44 @@ export function MenuSection({
               const isSelected = selectedCategory === category.id
 
               return (
-                <div key={category.id} className="relative flex-shrink-0">
+                <div
+                  key={category.id}
+                  className="relative flex-shrink-0"
+                  style={{
+                    animation: `fadeInScale 0.5s ease-out ${index * 0.08}s backwards`,
+                  }}
+                >
                   <Button
                     variant="ghost"
                     onClick={() => setSelectedCategory(category.id)}
-                    className="relative text-xs sm:text-sm font-bold whitespace-nowrap px-4 sm:px-6 py-3 sm:py-4 h-auto transition-all duration-300 border-0 overflow-hidden min-h-[50px] sm:min-h-[60px] min-w-[90px] sm:min-w-[110px] shadow-md"
+                    className="relative text-xs sm:text-sm font-bold whitespace-nowrap px-4 sm:px-6 py-3 sm:py-4 h-auto transition-all duration-500 ease-out border-0 overflow-hidden min-h-[50px] sm:min-h-[60px] min-w-[90px] sm:min-w-[110px] shadow-md"
                     style={{
                       clipPath: "polygon(15% 0, 100% 0, 85% 100%, 0% 100%)",
                       marginLeft: index === 0 ? "0" : "-15px",
-                      backgroundColor: isSelected ? COLORS.primary[600] : "rgba(255, 255, 255, 0.7)",
-                      color: isSelected ? COLORS.text.inverse : COLORS.primary[600],
+                      backgroundColor: isSelected ? COLORS.primary[800] : COLORS.primary[600],
+                      color: COLORS.text.inverse,
                       transform: isSelected ? "scale(1.05)" : "scale(1)",
                       zIndex: isSelected ? 10 : 1,
                       boxShadow: isSelected
                         ? "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
                         : "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                      ...(imageUrl && isSelected
+                      ...(imageUrl
                         ? {
-                            backgroundImage: `linear-gradient(rgba(20, 184, 166, 0.7), rgba(13, 148, 136, 0.7)), url(${imageUrl})`,
-                            backgroundSize: "120%",
+                            backgroundImage: `linear-gradient(${COLORS.primary[800]}CC, ${COLORS.primary[800]}CC), url(${imageUrl})`,
+                            backgroundSize: "cover",
                             backgroundPosition: "center",
                           }
-                        : imageUrl && !isSelected
-                          ? {
-                              backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url(${imageUrl})`,
-                              backgroundSize: "120%",
-                              backgroundPosition: "center",
-                            }
-                          : undefined),
+                        : {}),
                     }}
                     onMouseEnter={(e) => {
                       if (!isSelected) {
-                        e.currentTarget.style.backgroundColor = COLORS.background.secondary
-                        e.currentTarget.style.transform = "scale(1.02)"
+                        e.currentTarget.style.backgroundColor = COLORS.primary[700]
+                        e.currentTarget.style.transform = "scale(1.08) translateY(-3px)"
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (!isSelected) {
-                        e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.7)"
+                        e.currentTarget.style.backgroundColor = COLORS.primary[600]
                         e.currentTarget.style.transform = "scale(1)"
                       }
                     }}
@@ -799,8 +837,8 @@ export function MenuSection({
                     <span
                       className={`relative z-10 text-center font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
                       style={{
-                        color: isSelected ? COLORS.text.inverse : COLORS.primary[600],
-                        textShadow: isSelected ? "0 2px 4px rgba(0, 0, 0, 0.1)" : "none",
+                        color: COLORS.text.inverse,
+                        textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
                       }}
                     >
                       {category.name[language]}
@@ -813,10 +851,7 @@ export function MenuSection({
         </div>
       </div>
 
-      <div
-        className="max-w-7xl mx-auto px-4 sm:px-6 py-8"
-        style={{ background: COLORS.background.gradient }}
-      >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8" style={{ background: COLORS.background.gradient }}>
         {Object.entries(productsByCategory).map(([categoryId, categoryProducts]) => {
           if (categoryProducts.length === 0) return null
 
@@ -831,7 +866,7 @@ export function MenuSection({
               key={categoryId}
               className="mb-12"
               style={{
-                animation: "fadeIn 0.6s ease-out",
+                animation: "fadeInUp 0.8s ease-out",
               }}
             >
               {/* Category Header */}
@@ -839,15 +874,21 @@ export function MenuSection({
                 <div
                   className="mb-6 flex items-center gap-4"
                   style={{
-                    animation: "slideRight 0.5s ease-out",
+                    animation: "slideInLeft 0.6s ease-out",
                   }}
                 >
                   {categoryImage && (
                     <div
-                      className="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 shadow-md border-2"
+                      className="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 shadow-md border-2 transition-all duration-300"
                       style={{
                         backgroundColor: COLORS.background.secondary,
                         borderColor: COLORS.primary[600],
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = "scale(1.1) rotate(5deg)"
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = "scale(1) rotate(0deg)"
                       }}
                     >
                       <img
@@ -877,7 +918,7 @@ export function MenuSection({
                   <Button
                     variant="outline"
                     onClick={() => toggleCategoryExpansion(categoryId)}
-                    className={`rounded-full px-6 py-2 font-medium transition-all duration-300 ${language === "kh" ? "font-mono" : "font-sans"}`}
+                    className={`rounded-full px-6 py-2 font-medium transition-all duration-500 ease-out ${language === "kh" ? "font-mono" : "font-sans"}`}
                     style={{
                       backgroundColor: COLORS.background.primary,
                       color: COLORS.primary[600],
@@ -886,20 +927,24 @@ export function MenuSection({
                     onMouseEnter={(e) => {
                       e.currentTarget.style.backgroundColor = COLORS.primary[600]
                       e.currentTarget.style.color = COLORS.text.inverse
+                      e.currentTarget.style.transform = "scale(1.05) translateY(-2px)"
+                      e.currentTarget.style.boxShadow = "0 10px 20px rgba(0,0,0,0.15)"
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.backgroundColor = COLORS.background.primary
                       e.currentTarget.style.color = COLORS.primary[600]
+                      e.currentTarget.style.transform = "scale(1) translateY(0)"
+                      e.currentTarget.style.boxShadow = "none"
                     }}
                   >
                     {isExpanded ? (
                       <>
-                        <ChevronUp className="h-4 w-4 mr-2" />
+                        <ChevronUp className="h-4 w-4 mr-2 transition-transform duration-300" />
                         {language === "en" ? "Show Less" : "បង្ហាញតិចជាងនេះ"}
                       </>
                     ) : (
                       <>
-                        <ChevronDown className="h-4 w-4 mr-2" />
+                        <ChevronDown className="h-4 w-4 mr-2 transition-transform duration-300" />
                         {language === "en"
                           ? `Show ${categoryProducts.length - 4} More`
                           : `បង្ហាញ ${categoryProducts.length - 4} បន្ថែម`}
@@ -914,7 +959,59 @@ export function MenuSection({
       </div>
 
       <style jsx>{`
-        @keyframes scaleIn {
+        @keyframes scaleInBounce {
+          0% {
+            opacity: 0;
+            transform: scale(0.8) translateY(20px);
+          }
+          60% {
+            opacity: 1;
+            transform: scale(1.05) translateY(-5px);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+
+        @keyframes slideRightBounce {
+          0% {
+            opacity: 0;
+            transform: translateX(-30px);
+          }
+          60% {
+            opacity: 1;
+            transform: translateX(5px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes slideInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeInScale {
           from {
             opacity: 0;
             transform: scale(0.9);
@@ -925,30 +1022,57 @@ export function MenuSection({
           }
         }
 
-        @keyframes glowPulse {
-          0%, 100% {
-            box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
           }
-          50% {
-            box-shadow: 0 0 30px rgba(220, 38, 38, 0.8);
-          }
-        }
-
-        @keyframes priceBounce {
-          0%, 100% {
+          to {
+            opacity: 1;
             transform: translateY(0);
           }
+        }
+
+        /* Updated discount animations to pulse between red shades */
+        @keyframes discountGlow {
+          0%, 100% {
+            /* Using static red colors for glow animation */
+            box-shadow: 0 0 20px #dc262680, 0 0 40px #dc262650;
+          }
           50% {
-            transform: translateY(-3px);
+            box-shadow: 0 0 30px #b91c1cCC, 0 0 60px #b91c1c80;
           }
         }
 
-        @keyframes float {
+        @keyframes discountPulse {
+          0%, 100% {
+            /* Using static red gradient that pulses between shades */
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            transform: scale(1);
+          }
+          50% {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            transform: scale(1.05);
+          }
+        }
+
+        @keyframes discountBounce {
           0%, 100% {
             transform: translateY(0);
           }
           50% {
             transform: translateY(-10px);
+          }
+        }
+
+        @keyframes badgePulse {
+          0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+          50% {
+            transform: scale(1.1);
+            opacity: 0.95;
           }
         }
 
@@ -961,50 +1085,65 @@ export function MenuSection({
           }
         }
 
-        @keyframes slideRight {
-          from {
-            opacity: 0;
-            transform: translateX(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-
-        @keyframes pulse {
+        @keyframes sparkleRotate {
           0%, 100% {
+            transform: scale(1) rotate(0deg);
             opacity: 1;
           }
           50% {
-            opacity: 0.8;
+            transform: scale(1.2) rotate(180deg);
+            opacity: 0.9;
           }
         }
 
-        @keyframes spin {
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(-50%) translateX(0);
+          }
+          50% {
+            transform: translateY(-50%) translateX(3px);
+          }
+        }
+
+        @keyframes wiggle {
+          0%, 100% {
+            transform: rotate(0deg);
+          }
+          25% {
+            transform: rotate(-5deg);
+          }
+          75% {
+            transform: rotate(5deg);
+          }
+        }
+
+        @keyframes heartBeat {
+          0%, 100% {
+            transform: scale(1);
+          }
+          25% {
+            transform: scale(1.3);
+          }
+          50% {
+            transform: scale(1.1);
+          }
+        }
+
+        @keyframes priceEmphasis {
+          0%, 100% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.08);
+          }
+        }
+
+        @keyframes rotatePattern {
           from {
             transform: rotate(0deg);
           }
           to {
             transform: rotate(360deg);
-          }
-        }
-
-        @keyframes bounce {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
           }
         }
       `}</style>

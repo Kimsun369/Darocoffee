@@ -146,7 +146,7 @@ export function DiscountBanner({ onEventClick, selectedEvent, language = "en" }:
             className={language === "kh" ? "font-mono" : "font-sans"}
             style={{ color: COLORS.text.secondary }}
           >
-            {language === "en" ? "Loading events from Google Sheets..." : "កំពុងផ្ទុកព្រឹត្តិការណ៍ពី Google Sheets..."}
+            {language === "en" ? "Loading events..." : "កំពុងទាញព្រឹត្តិការណ៍..."}
           </p>
         </div>
       </section>
