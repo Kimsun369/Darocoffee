@@ -602,178 +602,180 @@ export function MenuSection({
         </div>
       </div>
 
-      {discountedProducts.length > 0 && (
-        <div
-          className="relative border-y-4 shadow-2xl overflow-hidden"
-          style={{
-            background: `linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)`,
-            borderColor: "#b91c1c",
-            animation: "discountGlow 3s ease-in-out infinite",
-          }}
-        >
+       {/* MenuSection.tsx - Only showing the changed discount banner section */}
+
+{discountedProducts.length > 0 && (
+  <div
+    className="relative border-y-4 shadow-2xl overflow-hidden"
+    style={{
+      background: `linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)`,
+      borderColor: "#b91c1c",
+      animation: "discountGlow 3s ease-in-out infinite",
+    }}
+  >
+    <div
+      className="absolute inset-0 pointer-events-none"
+      style={{
+        background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)",
+        animation: "shimmer 3s linear infinite",
+      }}
+    />
+
+    <div
+      className="absolute inset-0"
+      style={{
+        opacity: 0.1,
+        backgroundImage:
+          "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')",
+        animation: "rotatePattern 20s linear infinite",
+      }}
+    />
+
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
+        <div className="flex items-center gap-2 sm:gap-3">
           <div
-            className="absolute inset-0 pointer-events-none"
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg"
             style={{
-              background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)",
-              animation: "shimmer 3s linear infinite",
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              backdropFilter: "blur(4px)",
+              animation: "discountBounce 2s ease-in-out infinite",
             }}
-          />
-
-          <div
-            className="absolute inset-0"
-            style={{
-              opacity: 0.1,
-              backgroundImage:
-                "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')",
-              animation: "rotatePattern 20s linear infinite",
-            }}
-          />
-
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-8">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-4">
-                <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg"
-                  style={{
-                    backgroundColor: "rgba(255, 255, 255, 0.2)",
-                    backdropFilter: "blur(4px)",
-                    animation: "discountBounce 2s ease-in-out infinite",
-                  }}
-                >
-                  <Sparkles
-                    className="h-7 w-7"
-                    style={{
-                      color: "#ffffff",
-                      animation: "sparkleRotate 2s ease-in-out infinite",
-                    }}
-                  />
-                </div>
-                <div>
-                  <h2
-                    className={`text-3xl font-bold flex items-center gap-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    style={{
-                      color: "#ffffff",
-                      textShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                      animation: "slideInLeft 0.6s ease-out",
-                    }}
-                  >
-                    {language === "en" ? "🔥 Hot Deals" : "🔥 ការផ្តល់ជូនពិសេស"}
-                  </h2>
-                  <p
-                    className={`text-base font-medium mt-1 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    style={{
-                      color: "rgba(255, 255, 255, 0.9)",
-                      animation: "slideInLeft 0.6s ease-out 0.2s backwards",
-                    }}
-                  >
-                    {language === "en"
-                      ? `${eventFilteredDiscountedProducts.length} amazing offers waiting for you!`
-                      : `${eventFilteredDiscountedProducts.length} ការផ្តល់ជូនពិសេសសម្រាប់អ្នក!`}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {events.length > 0 && (
-              <div
-                className="flex items-center gap-3 overflow-x-auto pb-3 mb-6"
-                style={{
-                  scrollbarWidth: "thin",
-                  animation: "fadeInUp 0.6s ease-out 0.3s backwards",
-                }}
-              >
-                <button
-                  onClick={() => onEventChange("all")}
-                  className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-500 shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}
-                  style={{
-                    backgroundColor: !selectedEvent || selectedEvent === "all" ? "#ffffff" : "rgba(255, 255, 255, 0.2)",
-                    color: !selectedEvent || selectedEvent === "all" ? "#dc2626" : "#ffffff",
-                    backdropFilter: "blur(4px)",
-                    transform: !selectedEvent || selectedEvent === "all" ? "scale(1.05)" : "scale(1)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "scale(1.1) translateY(-2px)"
-                    e.currentTarget.style.boxShadow = "0 10px 20px rgba(0,0,0,0.2)"
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform =
-                      !selectedEvent || selectedEvent === "all" ? "scale(1.05)" : "scale(1)"
-                    e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)"
-                  }}
-                >
-                  <Tag className="h-4 w-4" style={{ animation: "wiggle 1s ease-in-out infinite" }} />
-                  <span className={language === "kh" ? "font-mono" : "font-sans"}>
-                    {language === "en" ? "All Offers" : "ទាំងអស់"}
-                  </span>
-                  <span
-                    className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    style={{
-                      backgroundColor: "#dc2626",
-                      color: "#ffffff",
-                      animation: "badgePulse 2s ease-in-out infinite",
-                    }}
-                  >
-                    {getEventProductCount.all}
-                  </span>
-                </button>
-
-                {events.map((event, idx) => (
-                  <button
-                    key={event}
-                    onClick={() => onEventChange(event)}
-                    className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-500 shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    style={{
-                      backgroundColor: selectedEvent === event ? "#ffffff" : "rgba(255, 255, 255, 0.2)",
-                      color: selectedEvent === event ? "#dc2626" : "#ffffff",
-                      backdropFilter: "blur(4px)",
-                      transform: selectedEvent === event ? "scale(1.05)" : "scale(1)",
-                      animation: `fadeInScale 0.5s ease-out ${idx * 0.1}s backwards`,
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "scale(1.1) translateY(-2px)"
-                      e.currentTarget.style.boxShadow = "0 10px 20px rgba(0,0,0,0.2)"
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = selectedEvent === event ? "scale(1.05)" : "scale(1)"
-                      e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)"
-                    }}
-                  >
-                    <span className={language === "kh" ? "font-mono" : "font-sans"}>{getEventDisplayName(event)}</span>
-                    <span
-                      className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
-                      style={{
-                        backgroundColor: "#dc2626",
-                        color: "#ffffff",
-                        animation: "badgePulse 2s ease-in-out infinite",
-                      }}
-                    >
-                      {getEventProductCount[event]}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
-
-            <div className="overflow-x-auto pb-4" style={{ scrollbarWidth: "thin" }}>
-              <div className="flex gap-4 sm:gap-5" style={{ minWidth: "min-content" }}>
-                {eventFilteredDiscountedProducts.map((product, index) => (
-                  <div
-                    key={product.id}
-                    className="flex-shrink-0 w-[160px] sm:w-[200px]"
-                    style={{
-                      animation: "slideRightBounce 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
-                      animationDelay: `${index * 120}ms`,
-                      opacity: 0,
-                    }}
-                  >
-                    <ProductCard product={product} index={index} />
-                  </div>
-                ))}
-              </div>
-            </div>
+          >
+            <Sparkles
+              className="h-4 w-4 sm:h-5 sm:w-5"
+              style={{
+                color: "#ffffff",
+                animation: "sparkleRotate 2s ease-in-out infinite",
+              }}
+            />
+          </div>
+          <div>
+            <h1
+              className={`text-lg sm:text-2xl font-bold flex items-center gap-1 ${language === "kh" ? "font-mono" : "font-sans"}`}
+              style={{
+                color: "#ffffff",
+                textShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                animation: "slideInLeft 0.6s ease-out",
+              }}
+            >
+              {language === "en" ? "🔥 Hot Deals" : "🔥 ការផ្តល់ជូនពិសេស"}
+            </h1>
+            <p
+              className={`text-xs font-medium mt-0.5 ${language === "kh" ? "font-mono" : "font-sans"}`}
+              style={{
+                color: "rgba(255, 255, 255, 0.9)",
+                animation: "slideInLeft 0.6s ease-out 0.2s backwards",
+              }}
+            >
+              {language === "en"
+                ? `${eventFilteredDiscountedProducts.length} amazing offers!`
+                : `${eventFilteredDiscountedProducts.length} ការផ្តល់ជូនពិសេស!`}
+            </p>
           </div>
         </div>
+      </div>
+
+      {events.length > 0 && (
+        <div
+          className="flex items-center gap-1 sm:gap-2 overflow-x-auto pb-2 mb-3 sm:mb-4"
+          style={{
+            scrollbarWidth: "thin",
+            animation: "fadeInUp 0.6s ease-out 0.3s backwards",
+          }}
+        >
+          <button
+            onClick={() => onEventChange("all")}
+            className={`flex-shrink-0 flex items-center gap-1 px-3 py-1.5 sm:px-4 sm:py-2 rounded-md sm:rounded-lg text-xs font-bold transition-all duration-500 shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}
+            style={{
+              backgroundColor: !selectedEvent || selectedEvent === "all" ? "#ffffff" : "rgba(255, 255, 255, 0.2)",
+              color: !selectedEvent || selectedEvent === "all" ? "#dc2626" : "#ffffff",
+              backdropFilter: "blur(4px)",
+              transform: !selectedEvent || selectedEvent === "all" ? "scale(1.05)" : "scale(1)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.1) translateY(-2px)"
+              e.currentTarget.style.boxShadow = "0 10px 20px rgba(0,0,0,0.2)"
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform =
+                !selectedEvent || selectedEvent === "all" ? "scale(1.05)" : "scale(1)"
+              e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)"
+            }}
+          >
+            <Tag className="h-3 w-3" style={{ animation: "wiggle 1s ease-in-out infinite" }} />
+            <span className={language === "kh" ? "font-mono" : "font-sans"}>
+              {language === "en" ? "All" : "ទាំងអស់"}
+            </span>
+            <span
+              className={`ml-1 px-1 py-0.5 rounded-full text-xs font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
+              style={{
+                backgroundColor: "#dc2626",
+                color: "#ffffff",
+                animation: "badgePulse 2s ease-in-out infinite",
+              }}
+            >
+              {getEventProductCount.all}
+            </span>
+          </button>
+
+          {events.map((event, idx) => (
+            <button
+              key={event}
+              onClick={() => onEventChange(event)}
+              className={`flex-shrink-0 flex items-center gap-1 px-3 py-1.5 sm:px-4 sm:py-2 rounded-md sm:rounded-lg text-xs font-bold transition-all duration-500 shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}
+              style={{
+                backgroundColor: selectedEvent === event ? "#ffffff" : "rgba(255, 255, 255, 0.2)",
+                color: selectedEvent === event ? "#dc2626" : "#ffffff",
+                backdropFilter: "blur(4px)",
+                transform: selectedEvent === event ? "scale(1.05)" : "scale(1)",
+                animation: `fadeInScale 0.5s ease-out ${idx * 0.1}s backwards`,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "scale(1.1) translateY(-2px)"
+                e.currentTarget.style.boxShadow = "0 10px 20px rgba(0,0,0,0.2)"
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = selectedEvent === event ? "scale(1.05)" : "scale(1)"
+                e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)"
+              }}
+            >
+              <span className={`text-xs ${language === "kh" ? "font-mono" : "font-sans"}`}>{getEventDisplayName(event)}</span>
+              <span
+                className={`ml-1 px-1 py-0.5 rounded-full text-xs font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
+                style={{
+                  backgroundColor: "#dc2626",
+                  color: "#ffffff",
+                  animation: "badgePulse 2s ease-in-out infinite",
+                }}
+              >
+                {getEventProductCount[event]}
+              </span>
+            </button>
+          ))}
+        </div>
       )}
+
+      <div className="overflow-x-auto pb-2" style={{ scrollbarWidth: "thin" }}>
+        <div className="flex gap-2 sm:gap-3" style={{ minWidth: "min-content" }}>
+          {eventFilteredDiscountedProducts.map((product, index) => (
+            <div
+              key={product.id}
+              className="flex-shrink-0 w-[160px] sm:w-[190px]"
+              style={{
+                animation: "slideRightBounce 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
+                animationDelay: `${index * 120}ms`,
+                opacity: 0,
+              }}
+            >
+              <ProductCard product={product} index={index} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+)}
 
       <div
         className="sticky z-30 border-b shadow-sm"
