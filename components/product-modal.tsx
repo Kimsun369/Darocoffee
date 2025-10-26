@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Minus, Plus, X } from "lucide-react"
+import { Minus, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
@@ -110,8 +110,8 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
     }
 
     setAddedItems((prev) => [...prev, newItem])
-    setQuantity(1) // Reset quantity for next item
-    
+    setQuantity(1)
+
     // Reset options to defaults for next item
     const defaultOptions: Record<string, string> = {}
     const defaultPricing: Record<string, number> = {}
@@ -130,7 +130,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
   }
 
   const handleRemoveAddedItem = (itemId: string) => {
-    setAddedItems((prev) => prev.filter(item => item.id !== itemId))
+    setAddedItems((prev) => prev.filter((item) => item.id !== itemId))
   }
 
   const handleAddAllToCart = () => {
@@ -139,7 +139,8 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
         id: `${product.id}-${item.id}`,
         productId: product.id,
         name: language === "en" ? product.name : product.name_kh,
-        price: (item.basePrice + Object.values(item.optionsPricing).reduce((sum, price) => sum + price, 0)) * item.quantity,
+        price:
+          (item.basePrice + Object.values(item.optionsPricing).reduce((sum, price) => sum + price, 0)) * item.quantity,
         quantity: item.quantity,
         options: item.options,
         optionsPricing: item.optionsPricing,
@@ -192,68 +193,72 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
         style={modalBackgroundStyle}
       >
         <DialogHeader
-          className="px-4 sm:px-6 pt-4 sm:pt-6 pb-3 border-b relative"
+          className="px-6 pt-6 pb-4 border-b"
           style={{
             backgroundColor: COLORS.background.primary,
             borderColor: COLORS.border.light,
           }}
         >
-          <DialogTitle className="font-serif text-lg sm:text-2xl leading-tight pr-12" style={{ color: COLORS.text.primary }}>
+          <DialogTitle
+            className="font-serif text-xl text-center"
+            style={{ color: COLORS.text.primary }}
+          >
             {language === "en" ? product.name : product.name_kh}
           </DialogTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className="absolute right-3 top-3 h-8 w-8 rounded-full"
-            style={{
-              color: COLORS.text.secondary,
-              backgroundColor: COLORS.background.primary,
-            }}
-          >
-           
-          </Button>
         </DialogHeader>
 
         <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
-          <div className="space-y-4 sm:space-y-6 px-4 sm:px-6 pb-28 sm:pb-32">
-            {/* Added Items Preview */}
+          <div className="space-y-6 px-6 pb-32">
             {addedItems.length > 0 && (
               <div
-                className="rounded-xl p-3 sm:p-4 shadow-sm border"
+                className="rounded-xl p-4 shadow-lg border-2"
                 style={{
-                  backgroundColor: COLORS.background.primary,
-                  borderColor: COLORS.border.light,
+                  background: `linear-gradient(135deg, ${COLORS.primary[50]} 0%, ${COLORS.background.primary} 100%)`,
+                  borderColor: COLORS.primary[200],
                 }}
               >
-                <h4 className="font-semibold text-sm sm:text-base mb-2" style={{ color: COLORS.text.primary }}>
-                  {language === "en" ? "Items to Add" : "ធាតុដែលត្រូវបន្ថែម"} ({getTotalItemsCount()})
-                </h4>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-bold text-sm" style={{ color: COLORS.primary[700] }}>
+                    {language === "en" ? "Items to Add" : "មុខទំនិញដែលត្រូវបន្ថែម"}
+                  </h4>
+                  <div
+                    className="px-3 py-1 rounded-full font-bold text-xs"
+                    style={{
+                      backgroundColor: COLORS.primary[600],
+                      color: COLORS.text.inverse,
+                    }}
+                  >
+                    {getTotalItemsCount()}
+                  </div>
+                </div>
                 <div className="space-y-2 max-h-32 overflow-y-auto">
                   {addedItems.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center justify-between p-2 rounded-lg text-xs sm:text-sm"
-                      style={{ backgroundColor: COLORS.primary[50] }}
+                      className="flex items-center justify-between p-3 rounded-lg text-sm border group"
+                      style={{
+                        backgroundColor: COLORS.background.primary,
+                        borderColor: COLORS.primary[100],
+                      }}
                     >
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium" style={{ color: COLORS.text.primary }}>
+                      <div className="flex-1">
+                        <div className="font-semibold" style={{ color: COLORS.text.primary }}>
                           {item.quantity}x {language === "en" ? product.name : product.name_kh}
                         </div>
-                        <div className="text-xs" style={{ color: COLORS.text.secondary }}>
+                        <div className="text-xs mt-1" style={{ color: COLORS.text.secondary }}>
                           {getOptionsSummary(item.options)}
                         </div>
                       </div>
                       <Button
                         variant="ghost"
-                        size="icon"
+                        size="sm"
                         onClick={() => handleRemoveAddedItem(item.id)}
-                        className="h-6 w-6 rounded-full ml-2 flex-shrink-0"
+                        className="h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                         style={{
-                          color: COLORS.text.secondary,
+                          color: COLORS.semantic.error,
                         }}
                       >
-                        <X className="h-3 w-3" />
+                        ×
                       </Button>
                     </div>
                   ))}
@@ -261,15 +266,17 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
               </div>
             )}
 
-            <div className="relative -mx-4 sm:-mx-6">
+            <div className="relative -mx-6">
               <img
                 src={product.image || "/placeholder.svg"}
                 alt={language === "en" ? product.name : product.name_kh}
-                className="w-full h-48 sm:h-72 object-cover"
+                className="w-full h-64 object-cover"
               />
               <Badge
-                className="absolute top-3 right-3 text-white border-0 text-sm sm:text-lg px-3 py-1 sm:px-4 sm:py-1.5 shadow-lg rounded-full font-semibold"
-                style={{ backgroundColor: COLORS.primary[600] }}
+                className="absolute top-4 right-4 text-white border-0 text-lg px-4 py-2 rounded-full font-bold"
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.primary[500]} 0%, ${COLORS.primary[700]} 100%)`,
+                }}
               >
                 ${product.price.toFixed(2)}
               </Badge>
@@ -277,30 +284,26 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
 
             {(product.description || product.description_kh) && (
               <div
-                className="rounded-xl p-3 sm:p-5 shadow-sm border"
+                className="rounded-xl p-4 border"
                 style={{
                   backgroundColor: COLORS.background.primary,
                   borderColor: COLORS.border.light,
                 }}
               >
-                <p className="text-xs sm:text-base leading-relaxed" style={{ color: COLORS.text.secondary }}>
+                <p className="text-sm leading-relaxed" style={{ color: COLORS.text.secondary }}>
                   {language === "en" ? product.description : product.description_kh || product.description}
                 </p>
               </div>
             )}
 
             {product.options && Object.keys(product.options).length > 0 && (
-              <div className="space-y-4 sm:space-y-6">
+              <div className="space-y-4">
                 {Object.entries(product.options).map(([optionType, options]) => (
-                  <div key={optionType} className="space-y-2 sm:space-y-3">
-                    <h4
-                      className="font-semibold text-xs sm:text-base tracking-tight"
-                      style={{ color: COLORS.text.primary }}
-                    >
+                  <div key={optionType} className="space-y-3">
+                    <h4 className="font-bold text-sm" style={{ color: COLORS.text.primary }}>
                       {getOptionDisplayName(optionType)}
                     </h4>
-
-                    <div className="flex flex-wrap gap-1.5 sm:gap-2.5">
+                    <div className="flex flex-wrap gap-2">
                       {options.map((option) => {
                         const isSelected = selectedOptions[optionType] === option.name
                         return (
@@ -308,36 +311,18 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
                             key={option.name}
                             onClick={() => handleOptionChange(optionType, option.name, option.price)}
                             className={cn(
-                              "px-3 sm:px-5 py-2 sm:py-3 rounded-full text-xs sm:text-base font-medium transition-all duration-200 min-h-[40px] sm:min-h-[48px]",
-                              "border-2 active:scale-95 shadow-sm",
+                              "px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border",
+                              isSelected && "shadow-md"
                             )}
                             style={{
                               backgroundColor: isSelected ? COLORS.primary[600] : COLORS.background.primary,
                               color: isSelected ? COLORS.text.inverse : COLORS.text.primary,
                               borderColor: isSelected ? COLORS.primary[600] : COLORS.border.light,
                             }}
-                            onMouseEnter={(e) => {
-                              if (!isSelected) {
-                                e.currentTarget.style.borderColor = COLORS.primary[600]
-                                e.currentTarget.style.backgroundColor = COLORS.primary[50]
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              if (!isSelected) {
-                                e.currentTarget.style.borderColor = COLORS.border.light
-                                e.currentTarget.style.backgroundColor = COLORS.background.primary
-                              }
-                            }}
                           >
                             {option.name}
                             {option.price > 0 && (
-                              <span
-                                className="ml-1"
-                                style={{
-                                  color: isSelected ? COLORS.text.inverse : COLORS.text.secondary,
-                                  opacity: isSelected ? 0.9 : 1,
-                                }}
-                              >
+                              <span className="ml-1 font-bold" style={{ color: isSelected ? COLORS.text.inverse : COLORS.primary[600] }}>
                                 +${option.price.toFixed(2)}
                               </span>
                             )}
@@ -351,38 +336,31 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
             )}
 
             <div
-              className="rounded-xl p-4 sm:p-6 shadow-sm border"
+              className="rounded-xl p-4 border"
               style={{
                 backgroundColor: COLORS.background.primary,
                 borderColor: COLORS.border.light,
               }}
             >
-              <h4
-                className="font-semibold text-center mb-3 text-sm sm:text-base"
-                style={{ color: COLORS.text.primary }}
-              >
+              <h4 className="font-bold text-center mb-3 text-sm" style={{ color: COLORS.text.primary }}>
                 {language === "en" ? "Quantity" : "បរិមាណ"}
               </h4>
-              <div className="flex items-center justify-center gap-4 sm:gap-8">
+              <div className="flex items-center justify-center gap-6">
                 <Button
                   variant="outline"
                   size="icon"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   disabled={quantity <= 1}
-                  className="rounded-full w-10 h-10 sm:w-14 sm:h-14 border-2 transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-90"
+                  className="rounded-full w-12 h-12 border-2"
                   style={{
-                    borderColor: COLORS.border.medium,
+                    borderColor: quantity <= 1 ? COLORS.border.light : COLORS.primary[600],
                     color: COLORS.text.primary,
-                    backgroundColor: COLORS.background.primary,
                   }}
                 >
-                  <Minus className="h-4 w-4 sm:h-6 sm:w-6" />
+                  <Minus className="h-5 w-5" />
                 </Button>
 
-                <span
-                  className="text-2xl sm:text-4xl font-bold min-w-[2.5rem] sm:min-w-[3rem] text-center"
-                  style={{ color: COLORS.primary[600] }}
-                >
+                <span className="text-3xl font-bold min-w-[3rem] text-center" style={{ color: COLORS.primary[600] }}>
                   {quantity}
                 </span>
 
@@ -390,28 +368,29 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
                   variant="outline"
                   size="icon"
                   onClick={() => setQuantity(quantity + 1)}
-                  className="rounded-full w-10 h-10 sm:w-14 sm:h-14 border-2 transition-all active:scale-90"
+                  className="rounded-full w-12 h-12 border-2"
                   style={{
-                    borderColor: COLORS.border.medium,
+                    borderColor: COLORS.primary[600],
                     color: COLORS.text.primary,
-                    backgroundColor: COLORS.background.primary,
                   }}
                 >
-                  <Plus className="h-4 w-4 sm:h-6 sm:w-6" />
+                  <Plus className="h-5 w-5" />
                 </Button>
               </div>
             </div>
 
             <div
-              className="rounded-xl p-3 sm:p-5 space-y-2 shadow-sm border"
+              className="rounded-xl p-4 space-y-2 border"
               style={{
                 backgroundColor: COLORS.background.primary,
                 borderColor: COLORS.border.light,
               }}
             >
-              <div className="flex justify-between text-xs sm:text-base">
-                <span style={{ color: COLORS.text.secondary }}>{language === "en" ? "Base price" : "តម្លៃមូលដ្ឋាន"}</span>
-                <span className="font-medium" style={{ color: COLORS.text.primary }}>
+              <div className="flex justify-between text-sm">
+                <span style={{ color: COLORS.text.secondary }}>
+                  {language === "en" ? "Base price" : "តម្លៃមូលដ្ឋាន"}
+                </span>
+                <span className="font-semibold" style={{ color: COLORS.text.primary }}>
                   ${product.price.toFixed(2)}
                 </span>
               </div>
@@ -419,11 +398,11 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
               {Object.entries(selectedOptionsPricing).map(([optionType, price]) => {
                 if (price > 0) {
                   return (
-                    <div key={optionType} className="flex justify-between text-xs sm:text-sm">
+                    <div key={optionType} className="flex justify-between text-sm">
                       <span style={{ color: COLORS.text.secondary }}>
                         {getOptionDisplayName(optionType)}: {selectedOptions[optionType]}
                       </span>
-                      <span className="font-medium" style={{ color: COLORS.primary[600] }}>
+                      <span className="font-semibold" style={{ color: COLORS.primary[600] }}>
                         +${price.toFixed(2)}
                       </span>
                     </div>
@@ -432,11 +411,8 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
                 return null
               })}
 
-              <div
-                className="pt-2 flex justify-between font-semibold text-sm sm:text-lg border-t"
-                style={{ borderColor: COLORS.border.light }}
-              >
-                <span style={{ color: COLORS.text.primary }}>{language === "en" ? "Item total" : "សរុបធាតុ"}</span>
+              <div className="pt-3 flex justify-between font-bold text-lg border-t" style={{ borderColor: COLORS.primary[200] }}>
+                <span style={{ color: COLORS.text.primary }}>{language === "en" ? "Item total" : "សរុបមុខទំនិញ"}</span>
                 <span style={{ color: COLORS.primary[600] }}>${calculateBasePriceWithOptions().toFixed(2)}</span>
               </div>
             </div>
@@ -444,43 +420,43 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
         </div>
 
         <div
-          className="fixed bottom-0 left-0 right-0 px-4 sm:px-6 py-3 sm:py-5 border-t shadow-2xl"
+          className="fixed bottom-0 left-0 right-0 px-6 py-4 border-t shadow-2xl"
           style={{
-            background: `linear-gradient(to top, ${COLORS.background.primary} 0%, ${COLORS.background.primary} 80%, ${COLORS.background.primary}CC 100%)`,
-            backdropFilter: "blur(12px)",
-            borderColor: COLORS.border.light,
+            backgroundColor: COLORS.background.primary,
+            borderColor: COLORS.border.medium,
           }}
         >
-          <div className="max-w-md mx-auto flex flex-col sm:flex-row gap-3 sm:gap-5">
-            <div className="flex justify-between items-center sm:flex-col sm:items-start sm:justify-center">
-              <span className="text-xs" style={{ color: COLORS.text.secondary }}>
-                {language === "en" ? "Current Item" : "ធាតុបច្ចុប្បន្ន"}
-              </span>
-              <span className="text-xl sm:text-3xl font-bold" style={{ color: COLORS.primary[600] }}>
+          <div className="max-w-md mx-auto flex items-center justify-between">
+            <div>
+              <div className="text-xs font-semibold" style={{ color: COLORS.text.secondary }}>
+                {language === "en" ? "Current Item" : "មុខទំនិញបច្ចុប្បន្ន"}
+              </div>
+              <div className="text-2xl font-bold" style={{ color: COLORS.primary[600] }}>
                 ${calculateTotalPrice().toFixed(2)}
-              </span>
+              </div>
             </div>
 
-            <div className="flex gap-2 sm:gap-3 flex-1">
+            <div className="flex gap-3">
               <Button
                 onClick={handleAddItem}
                 variant="outline"
-                className="flex-1 text-sm sm:text-base py-2.5 sm:py-3.5 rounded-full border-2 font-medium whitespace-nowrap"
+                className="px-6 py-2.5 rounded-full border-2 font-semibold"
                 style={{
                   borderColor: COLORS.primary[600],
                   color: COLORS.primary[600],
-                  backgroundColor: COLORS.background.primary,
                 }}
               >
-                {language === "en" ? "Add Item" : "បន្ថែមធាតុ"}
+                {language === "en" ? "Add Item" : "បន្ថែមមុខទំនិញ"}
               </Button>
 
               <Button
                 onClick={handleAddAllToCart}
                 disabled={addedItems.length === 0}
-                className="flex-1 text-sm sm:text-base py-2.5 sm:py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 text-white active:scale-95 font-semibold whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2.5 rounded-full text-white font-bold"
                 style={{
-                  backgroundColor: addedItems.length > 0 ? COLORS.primary[600] : COLORS.border.medium,
+                  background: addedItems.length > 0
+                    ? `linear-gradient(135deg, ${COLORS.primary[500]} 0%, ${COLORS.primary[700]} 100%)`
+                    : COLORS.border.medium,
                 }}
               >
                 {language === "en" ? `Add All (${getTotalItemsCount()})` : `បន្ថែមទាំងអស់ (${getTotalItemsCount()})`}

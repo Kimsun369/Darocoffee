@@ -1,4 +1,3 @@
-// MenuSection.tsx
 "use client"
 
 import type React from "react"
@@ -67,7 +66,6 @@ export function MenuSection({
   const [discountsLoading, setDiscountsLoading] = useState(true)
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
 
-  // Fetch categories from Google Sheets
   useEffect(() => {
     async function loadCategories() {
       try {
@@ -85,7 +83,6 @@ export function MenuSection({
     loadCategories()
   }, [])
 
-  // Fetch discounts from Google Sheets
   useEffect(() => {
     async function loadDiscounts() {
       try {
@@ -177,9 +174,7 @@ export function MenuSection({
     loadDiscounts()
   }, [])
 
-  // Get translated event name from Google Sheets data
   const getEventDisplayName = (eventName: string) => {
-    // Try to find event in categories from sheet
     const eventFromSheet = categoriesFromSheet.find((cat) => cat.Category === eventName || cat.category === eventName)
 
     if (eventFromSheet) {
@@ -188,7 +183,7 @@ export function MenuSection({
         : eventFromSheet.Category || eventFromSheet.category || eventName
     }
 
-    return eventName // Fallback to original name if no translation found
+    return eventName
   }
 
   const mapCategoryToId = (categoryName: string): string => {
@@ -215,21 +210,17 @@ export function MenuSection({
     const productClean = productName.toLowerCase().trim()
     const discountClean = discountProductName.toLowerCase().trim()
 
-    // 1. Exact match (highest priority)
     if (productClean === discountClean) return true
 
-    // 2. Word boundary matching - more strict than includes()
     const productWords = productClean.split(/\s+/)
     const discountWords = discountClean.split(/\s+/)
 
-    // Check if all discount words appear in product name as whole words
     const allDiscountWordsMatch = discountWords.every((discountWord) =>
       productWords.some((productWord) => productWord === discountWord),
     )
 
     if (allDiscountWordsMatch) return true
 
-    // 3. Handle common variations but be more specific
     const variations: Record<string, string[]> = {
       iced: ["ice"],
       latte: ["late"],
@@ -244,13 +235,11 @@ export function MenuSection({
 
     Object.entries(variations).forEach(([standard, alts]) => {
       alts.forEach((alt) => {
-        // Use word boundaries to avoid partial matches
         productVar = productVar.replace(new RegExp(`\\b${alt}\\b`, "g"), standard)
         discountVar = discountVar.replace(new RegExp(`\\b${alt}\\b`, "g"), standard)
       })
     })
 
-    // Only return true if we have exact match after variations
     return productVar === discountVar
   }
 
@@ -364,11 +353,9 @@ export function MenuSection({
     return Array.from(uniqueCategories)
   }, [productsWithDiscounts])
 
-  // Generate dynamic categories from Google Sheets data
   const dynamicCategories = useMemo(() => {
     const dynamicCats = [{ id: "all", name: { en: "All", kh: "ទាំងអស់" } }]
 
-    // Add categories from Google Sheets
     categoriesFromSheet.forEach((sheetCategory) => {
       const categoryId = mapCategoryToId(sheetCategory.Category || sheetCategory.category)
       if (categoryId && categoryId !== "all") {
@@ -432,7 +419,6 @@ export function MenuSection({
       }}
     >
       <CardContent className="p-0">
-        {/* Product Image */}
         <div className="relative aspect-[4/3] overflow-hidden" style={{ background: COLORS.background.gradient }}>
           <img
             src={product.image || "/placeholder.svg"}
@@ -451,19 +437,28 @@ export function MenuSection({
 
           {product.isDiscounted && product.discount && (
             <div
-              className={`absolute top-2 left-2 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 ${language === "kh" ? "font-mono" : "font-sans"}`}
+              className={`absolute top-2 left-2 text-white px-3 py-1.5 rounded-lg text-xs font-extrabold shadow-2xl flex items-center gap-1.5 ${language === "kh" ? "font-mono" : "font-sans"}`}
               style={{
-                background: `linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)`,
-                border: "2px solid #ffffff",
-                animation: "discountPulse 2s ease-in-out infinite",
+                background: `linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%)`,
+                border: "2px solid rgba(255, 255, 255, 0.3)",
+                boxShadow:
+                  "0 8px 16px rgba(220, 38, 38, 0.4), 0 0 20px rgba(220, 38, 38, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
+                animation: "discountPulseEnhanced 2s ease-in-out infinite",
+                backdropFilter: "blur(4px)",
+                letterSpacing: "0.5px",
               }}
             >
-              <Sparkles className="h-3 w-3" style={{ animation: "sparkleRotate 2s linear infinite" }} />
-              <span>{`-${product.discount}%`}</span>
+              <Sparkles
+                className="h-3.5 w-3.5"
+                style={{
+                  animation: "sparkleRotate 2s linear infinite",
+                  filter: "drop-shadow(0 0 2px rgba(255,255,255,0.8))",
+                }}
+              />
+              <span style={{ textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)" }}>{`-${product.discount}%`}</span>
             </div>
           )}
 
-          {/* Favorite Button */}
           <button
             onClick={(e) => toggleFavorite(product.id, e)}
             className="absolute top-2 right-2 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 ease-out"
@@ -507,24 +502,51 @@ export function MenuSection({
           </p>
 
           <div className="flex items-center justify-between">
-            <div className="flex items-baseline gap-2">
+            <div className="flex items-center gap-2">
               {product.isDiscounted && product.originalPrice ? (
                 <>
-                  <span
-                    className={`text-lg font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    style={{
-                      color: "#dc2626",
-                      animation: "priceEmphasis 2s ease-in-out infinite",
-                    }}
-                  >
-                    ${product.price.toFixed(2)}
-                  </span>
-                  <span
-                    className={`text-sm font-medium line-through ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    style={{ color: COLORS.text.tertiary }}
-                  >
-                    ${product.originalPrice.toFixed(2)}
-                  </span>
+                  <div className="flex flex-col gap-0.5">
+                    <span
+                      className={`text-lg font-black leading-none ${language === "kh" ? "font-mono" : "font-sans"}`}
+                      style={{
+                        background: "linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                        filter: "drop-shadow(0 1px 2px rgba(220, 38, 38, 0.2))",
+                        animation: "priceEmphasisEnhanced 2s ease-in-out infinite",
+                      }}
+                    >
+                      ${product.price.toFixed(2)}
+                    </span>
+                    <span
+                      className={`text-xs font-semibold leading-none relative ${language === "kh" ? "font-mono" : "font-sans"}`}
+                      style={{
+                        color: COLORS.text.tertiary,
+                      }}
+                    >
+                      <span
+                        style={{
+                          position: "relative",
+                          display: "inline-block",
+                        }}
+                      >
+                        ${product.originalPrice.toFixed(2)}
+                        <span
+                          style={{
+                            position: "absolute",
+                            left: 0,
+                            right: 0,
+                            top: "50%",
+                            height: "2px",
+                            background: `linear-gradient(90deg, transparent 0%, ${COLORS.semantic.error} 10%, ${COLORS.semantic.error} 90%, transparent 100%)`,
+                            transform: "translateY(-50%) rotate(-8deg)",
+                            boxShadow: `0 0 4px ${COLORS.semantic.error}`,
+                          }}
+                        />
+                      </span>
+                    </span>
+                  </div>
                 </>
               ) : (
                 <span
@@ -567,7 +589,6 @@ export function MenuSection({
 
   return (
     <div className="min-h-screen" style={{ background: COLORS.background.gradient }}>
-      {/* Search Bar */}
       <div
         className="sticky top-0 z-40 border-b-2 shadow-md"
         style={{
@@ -602,180 +623,180 @@ export function MenuSection({
         </div>
       </div>
 
-       {/* MenuSection.tsx - Only showing the changed discount banner section */}
-
-{discountedProducts.length > 0 && (
-  <div
-    className="relative border-y-4 shadow-2xl overflow-hidden"
-    style={{
-      background: `linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)`,
-      borderColor: "#b91c1c",
-      animation: "discountGlow 3s ease-in-out infinite",
-    }}
-  >
-    <div
-      className="absolute inset-0 pointer-events-none"
-      style={{
-        background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)",
-        animation: "shimmer 3s linear infinite",
-      }}
-    />
-
-    <div
-      className="absolute inset-0"
-      style={{
-        opacity: 0.1,
-        backgroundImage:
-          "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')",
-        animation: "rotatePattern 20s linear infinite",
-      }}
-    />
-
-    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
-      <div className="flex items-center justify-between mb-3 sm:mb-4">
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div
-            className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg"
-            style={{
-              backgroundColor: "rgba(255, 255, 255, 0.2)",
-              backdropFilter: "blur(4px)",
-              animation: "discountBounce 2s ease-in-out infinite",
-            }}
-          >
-            <Sparkles
-              className="h-4 w-4 sm:h-5 sm:w-5"
-              style={{
-                color: "#ffffff",
-                animation: "sparkleRotate 2s ease-in-out infinite",
-              }}
-            />
-          </div>
-          <div>
-            <h1
-              className={`text-lg sm:text-xl font-bold flex items-center gap-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
-              style={{
-                color: "#ffffff",
-                textShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                animation: "slideInLeft 0.6s ease-out",
-              }}
-            >
-              {language === "en" ? "🔥 Hot Deals" : "🔥 ការផ្តល់ជូនពិសេស"}
-            </h1>
-            <p
-              className={`text-xs font-medium mt-0.5 ${language === "kh" ? "font-mono" : "font-sans"}`}
-              style={{
-                color: "rgba(255, 255, 255, 0.9)",
-                animation: "slideInLeft 0.6s ease-out 0.2s backwards",
-              }}
-            >
-              {language === "en"
-                ? `${eventFilteredDiscountedProducts.length} amazing offers!`
-                : `${eventFilteredDiscountedProducts.length} ការផ្តល់ជូនពិសេស!`}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {events.length > 0 && (
+      {discountedProducts.length > 0 && (
         <div
-          className="flex items-center gap-1 sm:gap-2 overflow-x-auto pb-2 mb-3 sm:mb-4"
+          className="relative border-y-4 shadow-2xl overflow-hidden"
           style={{
-            scrollbarWidth: "thin",
-            animation: "fadeInUp 0.6s ease-out 0.3s backwards",
+            background: `linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)`,
+            borderColor: "#b91c1c",
+            animation: "discountGlow 3s ease-in-out infinite",
           }}
         >
-          <button
-            onClick={() => onEventChange("all")}
-            className={`flex-shrink-0 flex items-center gap-1 px-3 py-1.5 sm:px-4 sm:py-2 rounded-md sm:rounded-lg text-xs font-bold transition-all duration-500 shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}
+          <div
+            className="absolute inset-0 pointer-events-none"
             style={{
-              backgroundColor: !selectedEvent || selectedEvent === "all" ? "#ffffff" : "rgba(255, 255, 255, 0.2)",
-              color: !selectedEvent || selectedEvent === "all" ? "#dc2626" : "#ffffff",
-              backdropFilter: "blur(4px)",
-              transform: !selectedEvent || selectedEvent === "all" ? "scale(1.05)" : "scale(1)",
+              background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)",
+              animation: "shimmer 3s linear infinite",
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(1.1) translateY(-2px)"
-              e.currentTarget.style.boxShadow = "0 10px 20px rgba(0,0,0,0.2)"
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform =
-                !selectedEvent || selectedEvent === "all" ? "scale(1.05)" : "scale(1)"
-              e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)"
-            }}
-          >
-            <Tag className="h-3 w-3" style={{ animation: "wiggle 1s ease-in-out infinite" }} />
-            <span className={language === "kh" ? "font-mono" : "font-sans"}>
-              {language === "en" ? "All" : "ទាំងអស់"}
-            </span>
-            <span
-              className={`ml-1 px-1 py-0.5 rounded-full text-xs font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
-              style={{
-                backgroundColor: "#dc2626",
-                color: "#ffffff",
-                animation: "badgePulse 2s ease-in-out infinite",
-              }}
-            >
-              {getEventProductCount.all}
-            </span>
-          </button>
+          />
 
-          {events.map((event, idx) => (
-            <button
-              key={event}
-              onClick={() => onEventChange(event)}
-              className={`flex-shrink-0 flex items-center gap-1 px-3 py-1.5 sm:px-4 sm:py-2 rounded-md sm:rounded-lg text-xs font-bold transition-all duration-500 shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}
-              style={{
-                backgroundColor: selectedEvent === event ? "#ffffff" : "rgba(255, 255, 255, 0.2)",
-                color: selectedEvent === event ? "#dc2626" : "#ffffff",
-                backdropFilter: "blur(4px)",
-                transform: selectedEvent === event ? "scale(1.05)" : "scale(1)",
-                animation: `fadeInScale 0.5s ease-out ${idx * 0.1}s backwards`,
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.1) translateY(-2px)"
-                e.currentTarget.style.boxShadow = "0 10px 20px rgba(0,0,0,0.2)"
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = selectedEvent === event ? "scale(1.05)" : "scale(1)"
-                e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)"
-              }}
-            >
-              <span className={`text-xs ${language === "kh" ? "font-mono" : "font-sans"}`}>{getEventDisplayName(event)}</span>
-              <span
-                className={`ml-1 px-1 py-0.5 rounded-full text-xs font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
+          <div
+            className="absolute inset-0"
+            style={{
+              opacity: 0.1,
+              backgroundImage:
+                "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')",
+              animation: "rotatePattern 20s linear infinite",
+            }}
+          />
+
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div
+                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg"
+                  style={{
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                    backdropFilter: "blur(4px)",
+                    animation: "discountBounce 2s ease-in-out infinite",
+                  }}
+                >
+                  <Sparkles
+                    className="h-4 w-4 sm:h-5 sm:w-5"
+                    style={{
+                      color: "#ffffff",
+                      animation: "sparkleRotate 2s ease-in-out infinite",
+                    }}
+                  />
+                </div>
+                <div>
+                  <h1
+                    className={`text-lg sm:text-xl font-bold flex items-center gap-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
+                    style={{
+                      color: "#ffffff",
+                      textShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                      animation: "slideInLeft 0.6s ease-out",
+                    }}
+                  >
+                    {language === "en" ? "🔥 Hot Deals" : "🔥 ការផ្តល់ជូនពិសេស"}
+                  </h1>
+                  <p
+                    className={`text-xs font-medium mt-0.5 ${language === "kh" ? "font-mono" : "font-sans"}`}
+                    style={{
+                      color: "rgba(255, 255, 255, 0.9)",
+                      animation: "slideInLeft 0.6s ease-out 0.2s backwards",
+                    }}
+                  >
+                    {language === "en"
+                      ? `${eventFilteredDiscountedProducts.length} amazing offers!`
+                      : `${eventFilteredDiscountedProducts.length} ការផ្តល់ជូនពិសេស!`}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {events.length > 0 && (
+              <div
+                className="flex items-center gap-1 sm:gap-2 overflow-x-auto pb-2 mb-3 sm:mb-4"
                 style={{
-                  backgroundColor: "#dc2626",
-                  color: "#ffffff",
-                  animation: "badgePulse 2s ease-in-out infinite",
+                  scrollbarWidth: "thin",
+                  animation: "fadeInUp 0.6s ease-out 0.3s backwards",
                 }}
               >
-                {getEventProductCount[event]}
-              </span>
-            </button>
-          ))}
+                <button
+                  onClick={() => onEventChange("all")}
+                  className={`flex-shrink-0 flex items-center gap-1 px-3 py-1.5 sm:px-4 sm:py-2 rounded-md sm:rounded-lg text-xs font-bold transition-all duration-500 shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}
+                  style={{
+                    backgroundColor: !selectedEvent || selectedEvent === "all" ? "#ffffff" : "rgba(255, 255, 255, 0.2)",
+                    color: !selectedEvent || selectedEvent === "all" ? "#dc2626" : "#ffffff",
+                    backdropFilter: "blur(4px)",
+                    transform: !selectedEvent || selectedEvent === "all" ? "scale(1.05)" : "scale(1)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "scale(1.1) translateY(-2px)"
+                    e.currentTarget.style.boxShadow = "0 10px 20px rgba(0,0,0,0.2)"
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform =
+                      !selectedEvent || selectedEvent === "all" ? "scale(1.05)" : "scale(1)"
+                    e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)"
+                  }}
+                >
+                  <Tag className="h-3 w-3" style={{ animation: "wiggle 1s ease-in-out infinite" }} />
+                  <span className={language === "kh" ? "font-mono" : "font-sans"}>
+                    {language === "en" ? "All" : "ទាំងអស់"}
+                  </span>
+                  <span
+                    className={`ml-1 px-1 py-0.5 rounded-full text-xs font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
+                    style={{
+                      backgroundColor: "#dc2626",
+                      color: "#ffffff",
+                      animation: "badgePulse 2s ease-in-out infinite",
+                    }}
+                  >
+                    {getEventProductCount.all}
+                  </span>
+                </button>
+
+                {events.map((event, idx) => (
+                  <button
+                    key={event}
+                    onClick={() => onEventChange(event)}
+                    className={`flex-shrink-0 flex items-center gap-1 px-3 py-1.5 sm:px-4 sm:py-2 rounded-md sm:rounded-lg text-xs font-bold transition-all duration-500 shadow-lg ${language === "kh" ? "font-mono" : "font-sans"}`}
+                    style={{
+                      backgroundColor: selectedEvent === event ? "#ffffff" : "rgba(255, 255, 255, 0.2)",
+                      color: selectedEvent === event ? "#dc2626" : "#ffffff",
+                      backdropFilter: "blur(4px)",
+                      transform: selectedEvent === event ? "scale(1.05)" : "scale(1)",
+                      animation: `fadeInScale 0.5s ease-out ${idx * 0.1}s backwards`,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "scale(1.1) translateY(-2px)"
+                      e.currentTarget.style.boxShadow = "0 10px 20px rgba(0,0,0,0.2)"
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = selectedEvent === event ? "scale(1.05)" : "scale(1)"
+                      e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)"
+                    }}
+                  >
+                    <span className={`text-xs ${language === "kh" ? "font-mono" : "font-sans"}`}>
+                      {getEventDisplayName(event)}
+                    </span>
+                    <span
+                      className={`ml-1 px-1 py-0.5 rounded-full text-xs font-bold ${language === "kh" ? "font-mono" : "font-sans"}`}
+                      style={{
+                        backgroundColor: "#dc2626",
+                        color: "#ffffff",
+                        animation: "badgePulse 2s ease-in-out infinite",
+                      }}
+                    >
+                      {getEventProductCount[event]}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div className="overflow-x-auto pb-2" style={{ scrollbarWidth: "thin" }}>
+              <div className="flex gap-2 sm:gap-3" style={{ minWidth: "min-content" }}>
+                {eventFilteredDiscountedProducts.map((product, index) => (
+                  <div
+                    key={product.id}
+                    className="flex-shrink-0 w-[160px] sm:w-[190px]"
+                    style={{
+                      animation: "slideRightBounce 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
+                      animationDelay: `${index * 120}ms`,
+                      opacity: 0,
+                    }}
+                  >
+                    <ProductCard product={product} index={index} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       )}
-
-      <div className="overflow-x-auto pb-2" style={{ scrollbarWidth: "thin" }}>
-        <div className="flex gap-2 sm:gap-3" style={{ minWidth: "min-content" }}>
-          {eventFilteredDiscountedProducts.map((product, index) => (
-            <div
-              key={product.id}
-              className="flex-shrink-0 w-[160px] sm:w-[190px]"
-              style={{
-                animation: "slideRightBounce 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
-                animationDelay: `${index * 120}ms`,
-                opacity: 0,
-              }}
-            >
-              <ProductCard product={product} index={index} />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  </div>
-)}
 
       <div
         className="sticky z-30 border-b shadow-sm"
@@ -871,7 +892,6 @@ export function MenuSection({
                 animation: "fadeInUp 0.8s ease-out",
               }}
             >
-              {/* Category Header */}
               {selectedCategory === "all" && category && (
                 <div
                   className="mb-6 flex items-center gap-4"
@@ -1035,10 +1055,8 @@ export function MenuSection({
           }
         }
 
-        /* Updated discount animations to pulse between red shades */
         @keyframes discountGlow {
           0%, 100% {
-            /* Using static red colors for glow animation */
             box-shadow: 0 0 20px #dc262680, 0 0 40px #dc262650;
           }
           50% {
@@ -1048,13 +1066,24 @@ export function MenuSection({
 
         @keyframes discountPulse {
           0%, 100% {
-            /* Using static red gradient that pulses between shades */
             background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
             transform: scale(1);
           }
           50% {
             background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             transform: scale(1.05);
+          }
+        }
+
+        /* Enhanced discount badge pulse animation with premium glow and smooth scaling */
+        @keyframes discountPulseEnhanced {
+          0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 8px 16px rgba(220, 38, 38, 0.4), 0 0 20px rgba(220, 38, 38, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+          }
+          50% {
+            transform: scale(1.08);
+            box-shadow: 0 12px 24px rgba(220, 38, 38, 0.5), 0 0 30px rgba(220, 38, 38, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
           }
         }
 
@@ -1128,6 +1157,18 @@ export function MenuSection({
           }
           50% {
             transform: scale(1.1);
+          }
+        }
+
+        /* Enhanced price emphasis animation with gradient shimmer and drop shadow effects */
+        @keyframes priceEmphasisEnhanced {
+          0%, 100% {
+            transform: scale(1);
+            filter: drop-shadow(0 1px 2px rgba(220, 38, 38, 0.2));
+          }
+          50% {
+            transform: scale(1.05);
+            filter: drop-shadow(0 2px 4px rgba(220, 38, 38, 0.4));
           }
         }
 

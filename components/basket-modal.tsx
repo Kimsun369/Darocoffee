@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Minus, Plus } from "lucide-react"
+import { Minus, Plus, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
@@ -129,10 +129,11 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md max-h-[90vh] overflow-hidden p-0 sm:max-w-lg bg-[#faf8f5] border-amber-200/50">
-        <DialogHeader className="px-5 sm:px-6 pt-5 sm:pt-6 pb-4 bg-gradient-to-b from-white to-amber-50/30">
-          <DialogTitle className="font-serif text-xl sm:text-2xl text-amber-900 leading-tight">
+        <DialogHeader className="relative px-5 sm:px-6 pt-5 sm:pt-6 pb-4 bg-gradient-to-b from-white to-amber-50/30">
+          <DialogTitle className="font-serif text-xl sm:text-2xl text-amber-900 leading-tight text-center pr-8">
             {language === "en" ? product.name : product.name_kh}
           </DialogTitle>
+          
         </DialogHeader>
 
         <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
@@ -245,7 +246,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
               })}
 
               <div className="border-t border-stone-200 pt-2.5 flex justify-between font-semibold text-base sm:text-lg">
-                <span className="text-stone-900">{language === "en" ? "Item total" : "សរុបធាតុ"}</span>
+                <span className="text-stone-900">{language === "en" ? "Item total" : "សរុបមុខទំនិញ"}</span>
                 <span className="text-amber-900">${calculateBasePriceWithOptions().toFixed(2)}</span>
               </div>
             </div>

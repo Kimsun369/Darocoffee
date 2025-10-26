@@ -141,14 +141,19 @@ export function CartSidebar({
         style={{ backgroundColor: COLORS.background.secondary }}
       >
         <div
-          className="px-6 py-5 border-b shadow-sm"
+          className="px-6 py-5 border-b-2 shadow-md"
           style={{
-            backgroundColor: COLORS.background.primary,
-            borderColor: COLORS.border.light,
+            background: `linear-gradient(135deg, ${COLORS.background.primary} 0%, ${COLORS.primary[50]} 100%)`,
+            borderColor: COLORS.primary[200],
           }}
         >
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl shadow-sm" style={{ backgroundColor: COLORS.primary[600] }}>
+            <div
+              className="p-2.5 rounded-xl shadow-md"
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.primary[500]} 0%, ${COLORS.primary[700]} 100%)`,
+              }}
+            >
               <ShoppingBag className="h-5 w-5 text-white" />
             </div>
             <h2 className="text-xl font-bold" style={{ color: COLORS.text.primary }}>
@@ -163,7 +168,7 @@ export function CartSidebar({
             style={{ backgroundColor: COLORS.background.primary }}
           >
             <div
-              className="w-24 h-24 rounded-full flex items-center justify-center mb-6"
+              className="w-24 h-24 rounded-full flex items-center justify-center mb-6 shadow-inner"
               style={{ backgroundColor: COLORS.gray[100] }}
             >
               <ShoppingBag className="h-12 w-12" style={{ color: COLORS.gray[400] }} />
@@ -172,21 +177,21 @@ export function CartSidebar({
               {language === "en" ? "Your cart is empty" : "កន្ត្រករបស់អ្នកទទេ"}
             </h3>
             <p className="mb-6" style={{ color: COLORS.text.secondary }}>
-              {language === "en" ? "Add some delicious items to get started!" : "បន្ថែមធាតុឆ្ងាញ់ៗដើម្បីចាប់ផ្តើម!"}
+              {language === "en" ? "Add some delicious items to get started!" : "បន្ថែមមុខទំនិញដើម្បីចាប់ផ្តើម!"}
             </p>
             <Button
               onClick={onClose}
-              className="px-8 py-3 rounded-xl font-semibold text-base text-white transition-all shadow-md"
+              className="px-8 py-3 rounded-xl font-semibold text-base text-white transition-all shadow-lg"
               style={{
-                backgroundColor: COLORS.primary[600],
+                background: `linear-gradient(135deg, ${COLORS.primary[500]} 0%, ${COLORS.primary[700]} 100%)`,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = COLORS.primary[700]
                 e.currentTarget.style.transform = "scale(1.05)"
+                e.currentTarget.style.boxShadow = `0 8px 20px ${COLORS.primary[600]}44`
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = COLORS.primary[600]
                 e.currentTarget.style.transform = "scale(1)"
+                e.currentTarget.style.boxShadow = `0 4px 12px ${COLORS.primary[600]}33`
               }}
             >
               {language === "en" ? "Continue Shopping" : "បន្តទិញទំនិញ"}
@@ -198,23 +203,32 @@ export function CartSidebar({
               {cartItems.map((item) => (
                 <div
                   key={item.id}
-                  className="rounded-xl p-4 border hover:shadow-md transition-all duration-200"
+                  className="rounded-xl p-4 border-2 hover:shadow-lg transition-all duration-200"
                   style={{
                     backgroundColor: COLORS.background.primary,
                     borderColor: COLORS.border.light,
                   }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = COLORS.primary[300]
+                    e.currentTarget.style.transform = "translateY(-2px)"
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = COLORS.border.light
+                    e.currentTarget.style.transform = "translateY(0)"
+                  }}
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
-                      <h4 className="font-semibold mb-1" style={{ color: COLORS.text.primary }}>
+                      <h4 className="font-bold mb-1" style={{ color: COLORS.text.primary }}>
                         {language === "kh" && item.name_kh ? item.name_kh : item.name}
                       </h4>
                       {Object.keys(item.options).length > 0 && (
                         <div
-                          className="text-xs mt-2 px-3 py-2 rounded-lg"
+                          className="text-xs mt-2 px-3 py-2 rounded-lg border"
                           style={{
                             backgroundColor: COLORS.gray[50],
                             color: COLORS.text.secondary,
+                            borderColor: COLORS.border.light,
                           }}
                         >
                           {Object.entries(item.options).map(([key, value]) => (
@@ -233,11 +247,11 @@ export function CartSidebar({
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.backgroundColor = "#fef2f2"
-                        e.currentTarget.style.transform = "scale(1.1)"
+                        e.currentTarget.style.transform = "scale(1.1) rotate(90deg)"
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.backgroundColor = "transparent"
-                        e.currentTarget.style.transform = "scale(1)"
+                        e.currentTarget.style.transform = "scale(1) rotate(0deg)"
                       }}
                     >
                       <Trash2 className="h-4 w-4" />
@@ -246,10 +260,10 @@ export function CartSidebar({
 
                   <div className="flex justify-between items-center">
                     <div
-                      className="flex items-center gap-2 px-3 py-2 rounded-full border shadow-sm"
+                      className="flex items-center gap-2 px-3 py-2 rounded-full border-2 shadow-sm"
                       style={{
                         backgroundColor: COLORS.gray[50],
-                        borderColor: COLORS.border.light,
+                        borderColor: COLORS.primary[200],
                       }}
                     >
                       <Button
@@ -264,10 +278,12 @@ export function CartSidebar({
                         onMouseEnter={(e) => {
                           if (item.quantity > 1) {
                             e.currentTarget.style.backgroundColor = COLORS.primary[100]
+                            e.currentTarget.style.transform = "scale(1.1)"
                           }
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.backgroundColor = "transparent"
+                          e.currentTarget.style.transform = "scale(1)"
                         }}
                       >
                         <Minus className="h-3 w-3" />
@@ -285,9 +301,11 @@ export function CartSidebar({
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.backgroundColor = COLORS.primary[100]
+                          e.currentTarget.style.transform = "scale(1.1)"
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.backgroundColor = "transparent"
+                          e.currentTarget.style.transform = "scale(1)"
                         }}
                       >
                         <Plus className="h-3 w-3" />
@@ -307,23 +325,20 @@ export function CartSidebar({
             </div>
 
             <div
-              className="flex-shrink-0 border-t px-4 py-4 shadow-lg"
+              className="flex-shrink-0 border-t-2 px-4 py-4 shadow-2xl"
               style={{
                 backgroundColor: COLORS.background.primary,
-                borderColor: COLORS.border.light,
+                borderColor: COLORS.primary[200],
               }}
             >
               <div
-                className="mb-4 rounded-xl p-4 border shadow-sm"
+                className="mb-4 rounded-xl p-4 border-2 shadow-md"
                 style={{
-                  backgroundColor: COLORS.gray[50],
-                  borderColor: COLORS.border.light,
+                  background: `linear-gradient(135deg, ${COLORS.gray[50]} 0%, ${COLORS.background.primary} 100%)`,
+                  borderColor: COLORS.primary[200],
                 }}
               >
-                <label
-                  className="block font-semibold mb-3 flex items-center gap-2"
-                  style={{ color: COLORS.text.primary }}
-                >
+                <label className="block font-bold mb-3 flex items-center gap-2" style={{ color: COLORS.text.primary }}>
                   <Clock className="w-5 h-5" style={{ color: COLORS.primary[600] }} />
                   {language === "en" ? "Pick up time:" : "ពេលយក:"}
                 </label>
@@ -339,24 +354,29 @@ export function CartSidebar({
                     <button
                       key={option.value}
                       onClick={() => setPickupOption(option.value as any)}
-                      className="px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-200 shadow-sm"
+                      className="px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200 shadow-sm"
                       style={{
-                        backgroundColor:
-                          pickupOption === option.value ? COLORS.primary[600] : COLORS.background.primary,
+                        background:
+                          pickupOption === option.value
+                            ? `linear-gradient(135deg, ${COLORS.primary[500]} 0%, ${COLORS.primary[700]} 100%)`
+                            : COLORS.background.primary,
                         color: pickupOption === option.value ? COLORS.text.inverse : COLORS.text.primary,
                         borderColor: pickupOption === option.value ? COLORS.primary[600] : COLORS.border.light,
                         border: `2px solid`,
+                        boxShadow: pickupOption === option.value ? `0 4px 12px ${COLORS.primary[600]}33` : "none",
                       }}
                       onMouseEnter={(e) => {
                         if (pickupOption !== option.value) {
                           e.currentTarget.style.borderColor = COLORS.primary[600]
                           e.currentTarget.style.backgroundColor = COLORS.primary[50]
+                          e.currentTarget.style.transform = "translateY(-2px)"
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (pickupOption !== option.value) {
                           e.currentTarget.style.borderColor = COLORS.border.light
                           e.currentTarget.style.backgroundColor = COLORS.background.primary
+                          e.currentTarget.style.transform = "translateY(0)"
                         }
                       }}
                     >
@@ -366,10 +386,10 @@ export function CartSidebar({
                 </div>
                 {pickupOption === "other" && (
                   <div
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg border"
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg border-2"
                     style={{
                       backgroundColor: COLORS.background.primary,
-                      borderColor: COLORS.border.light,
+                      borderColor: COLORS.primary[200],
                     }}
                   >
                     <input
@@ -378,23 +398,23 @@ export function CartSidebar({
                       max={180}
                       value={customMinutes}
                       onChange={(e) => setCustomMinutes(Number(e.target.value))}
-                      className="border-0 rounded-md px-2 py-1 w-16 text-center font-semibold"
+                      className="border-0 rounded-md px-2 py-1 w-16 text-center font-bold"
                       style={{
                         backgroundColor: COLORS.gray[50],
                         color: COLORS.text.primary,
                       }}
                     />
-                    <span className="text-sm font-medium" style={{ color: COLORS.text.secondary }}>
+                    <span className="text-sm font-semibold" style={{ color: COLORS.text.secondary }}>
                       {language === "en" ? "minutes" : "នាទី"}
                     </span>
                   </div>
                 )}
                 <div
-                  className="mt-3 text-sm font-semibold px-3 py-2 rounded-lg text-center border"
+                  className="mt-3 text-sm font-bold px-3 py-2 rounded-lg text-center border-2"
                   style={{
                     backgroundColor: COLORS.background.primary,
-                    color: COLORS.text.primary,
-                    borderColor: COLORS.border.light,
+                    color: COLORS.primary[600],
+                    borderColor: COLORS.primary[200],
                   }}
                 >
                   {language === "en" ? `Pick up at: ${getPickupTimeString()}` : `យកនៅម៉ោង: ${getPickupTimeString()}`}
@@ -403,17 +423,17 @@ export function CartSidebar({
 
               <div className="space-y-3 mb-4">
                 <div
-                  className="flex justify-between items-center text-xl font-bold px-4 py-3 rounded-xl border shadow-sm"
+                  className="flex justify-between items-center text-xl font-bold px-4 py-3 rounded-xl border-2 shadow-md"
                   style={{
-                    backgroundColor: COLORS.primary[50],
+                    background: `linear-gradient(135deg, ${COLORS.primary[50]} 0%, ${COLORS.background.primary} 100%)`,
                     color: COLORS.text.primary,
-                    borderColor: COLORS.primary[200],
+                    borderColor: COLORS.primary[300],
                   }}
                 >
                   <span>{language === "en" ? "Total:" : "សរុប:"}</span>
                   <div className="flex flex-col items-end">
                     <span style={{ color: COLORS.primary[600] }}>${totalPrice.toFixed(2)}</span>
-                    <span className="text-sm font-semibold" style={{ color: COLORS.text.secondary }}>
+                    <span className="text-sm font-bold" style={{ color: COLORS.text.secondary }}>
                       R{totalPriceKHR.toLocaleString()}
                     </span>
                   </div>
@@ -425,20 +445,23 @@ export function CartSidebar({
                 disabled={isOrderProcessing}
                 className="w-full py-4 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2 shadow-lg"
                 style={{
-                  backgroundColor: isOrderProcessing ? COLORS.gray[400] : COLORS.semantic.info,
+                  background: isOrderProcessing
+                    ? COLORS.gray[400]
+                    : `linear-gradient(135deg, ${COLORS.primary[500]} 0%, ${COLORS.primary[700]} 100%)`,
                   color: COLORS.text.inverse,
                   cursor: isOrderProcessing ? "not-allowed" : "pointer",
+                  boxShadow: isOrderProcessing ? "none" : `0 4px 16px ${COLORS.primary[600]}44`,
                 }}
                 onMouseEnter={(e) => {
                   if (!isOrderProcessing) {
-                    e.currentTarget.style.backgroundColor = COLORS.semantic.infoDark
                     e.currentTarget.style.transform = "scale(1.02)"
+                    e.currentTarget.style.boxShadow = `0 8px 24px ${COLORS.primary[600]}55`
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isOrderProcessing) {
-                    e.currentTarget.style.backgroundColor = COLORS.semantic.info
                     e.currentTarget.style.transform = "scale(1)"
+                    e.currentTarget.style.boxShadow = `0 4px 16px ${COLORS.primary[600]}44`
                   }
                 }}
               >
