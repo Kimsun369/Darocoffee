@@ -1,8 +1,8 @@
-// config/colors.ts
+// config/color-config.ts
 export type ThemeName = 'amber' | 'red' | 'blue' | 'green' | 'purple' | 'pink';
 
 // JUST CHANGE THIS VARIABLE TO SWITCH THEMES
-export const CURRENT_THEME: ThemeName = 'blue'; // Change to 'blue', 'green', etc.
+export const CURRENT_THEME: ThemeName = 'pink'; // Change to 'blue', 'green', etc.
 
 // Theme definitions
 const THEMES = {
@@ -92,6 +92,36 @@ const THEMES = {
   }
 } as const;
 
+// Get dynamic gradient based on current theme
+const getThemeGradient = (theme: ThemeName) => {
+  const gradients = {
+    amber: `linear-gradient(to bottom right, ${THEMES.amber.primary[50]}, ${THEMES.amber.primary[100]})`,
+    red: `linear-gradient(to bottom right, ${THEMES.red.primary[50]}, ${THEMES.red.primary[100]})`,
+    blue: `linear-gradient(to bottom right, ${THEMES.blue.primary[50]}, ${THEMES.blue.primary[100]})`,
+    green: `linear-gradient(to bottom right, ${THEMES.green.primary[50]}, ${THEMES.green.primary[100]})`,
+    purple: `linear-gradient(to bottom right, ${THEMES.purple.primary[50]}, ${THEMES.purple.primary[100]})`,
+    pink: `linear-gradient(to bottom right, ${THEMES.pink.primary[50]}, ${THEMES.pink.primary[100]})`,
+  };
+  return gradients[theme];
+};
+
+// Function to determine if background is light or dark for text contrast
+const getTextColorForBackground = (theme: ThemeName) => {
+  // For light gradient backgrounds, use dark text for contrast
+  const lightThemes = ['amber', 'blue', 'green', 'pink'];
+  return lightThemes.includes(theme) ? '#111827' : '#ffffff';
+};
+
+const getSecondaryTextColor = (theme: ThemeName) => {
+  const lightThemes = ['amber', 'blue', 'green', 'pink'];
+  return lightThemes.includes(theme) ? '#6b7280' : '#d1d5db';
+};
+
+const getTertiaryTextColor = (theme: ThemeName) => {
+  const lightThemes = ['amber', 'blue', 'green', 'pink'];
+  return lightThemes.includes(theme) ? '#9ca3af' : '#9ca3af';
+};
+
 // Shared colors (consistent across all themes)
 const SHARED = {
   semantic: {
@@ -116,13 +146,18 @@ const SHARED = {
     primary: '#ffffff',
     secondary: '#faf8f5',
     tertiary: '#f0fdfa',
-    gradient: 'linear-gradient(to bottom right, #f0fdfa, #ccfbf1)',
+    gradient: getThemeGradient(CURRENT_THEME), // Dynamic gradient based on theme
+    menu: getThemeGradient(CURRENT_THEME), // Add this for menu background
+    transparentLight: 'rgba(255, 255, 255, 0.2)',
   },
   text: {
-    primary: '#111827',
-    secondary: '#6b7280',
-    tertiary: '#9ca3af', 
+    primary: getTextColorForBackground(CURRENT_THEME), // Dynamic based on theme
+    secondary: getSecondaryTextColor(CURRENT_THEME), // Dynamic based on theme
+    tertiary: getTertiaryTextColor(CURRENT_THEME), // Dynamic based on theme
     inverse: '#ffffff',
+    inverseLight: 'rgba(255, 255, 255, 0.9)',
+    onLight: '#111827', // Always dark for light backgrounds
+    onDark: '#ffffff', // Always light for dark backgrounds
   },
   border: {
     light: '#e5e7eb',

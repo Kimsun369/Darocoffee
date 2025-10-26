@@ -75,9 +75,22 @@ export function Header({
     },
   ]
 
+  // Apply the same background color as footer
+  const headerBackgroundStyle = {
+    backgroundColor: COLORS.primary[100],
+  }
+
+  const promotionalBarStyle = {
+    backgroundColor: COLORS.primary[700], // Slightly lighter for promotional bar
+  }
+
   return (
     <>
-      <div className="text-white py-2.5 text-xs overflow-hidden" style={{ backgroundColor: COLORS.primary[600] }}>
+      {/* Promotional Bar - Same background family */}
+      <div 
+        className="text-white py-2.5 text-xs overflow-hidden" 
+        style={promotionalBarStyle}
+      >
         <div className="flex whitespace-nowrap">
           <div className="flex animate-marquee space-x-8">
             {promotionalItems.map((item, index) => (
@@ -98,12 +111,10 @@ export function Header({
         </div>
       </div>
 
+      {/* Main Header - Same background as footer */}
       <header
         className="sticky top-0 z-40 w-full border-b"
-        style={{
-          backgroundColor: COLORS.background.primary,
-          borderColor: COLORS.border.light,
-        }}
+        style={headerBackgroundStyle}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
@@ -122,7 +133,7 @@ export function Header({
                 >
                   <Coffee className="h-5 w-5 text-white" />
                 </div>
-                <h1 className="font-serif text-xl font-bold" style={{ color: COLORS.text.primary }}>
+                <h1 className="font-serif text-xl font-bold text-grey">
                   {FOOTER_CONFIG.COMPANY.NAME}
                 </h1>
               </a>
@@ -133,48 +144,49 @@ export function Header({
                 variant="ghost"
                 size="icon"
                 onClick={() => onLanguageChange(language === "en" ? "kh" : "en")}
-                className="h-10 w-10 rounded-xl hover:bg-gray-100 transition-colors"
+                className="h-10 w-10 rounded-xl hover:bg-white/10 transition-colors text-grey"
               >
-                <Globe className="h-5 w-5" style={{ color: COLORS.text.secondary }} />
+                <Globe className="h-5 w-5" />
               </Button>
 
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={handleInstallClick}
-                className="h-10 w-10 rounded-xl hover:bg-gray-100 transition-colors"
+                className="h-10 w-10 rounded-xl hover:bg-white/10 transition-colors text-black"
                 title={language === "en" ? "Install App" : "តំឡើងកម្មវិធី"}
               >
-                <Download className="h-5 w-5" style={{ color: COLORS.text.secondary }} />
+                <Download className="h-5 w-5" />
               </Button>
             </div>
           </div>
         </div>
       </header>
 
+      {/* Install Prompt - Updated to match theme */}
       {showInstallPrompt && (
         <div
           className={`fixed bottom-24 left-1/2 transform -translate-x-1/2 z-50 rounded-2xl shadow-xl p-5 max-w-sm mx-4 border ${
             language === "kh" ? "font-mono" : "font-sans"
           }`}
           style={{
-            backgroundColor: COLORS.background.primary,
-            borderColor: COLORS.border.light,
+            backgroundColor: COLORS.primary[800],
+            borderColor: COLORS.primary[600],
+            color: COLORS.text.inverse,
           }}
         >
           <div className="flex items-start justify-between mb-3">
-            <h3 className="font-semibold text-lg" style={{ color: COLORS.text.primary }}>
+            <h3 className="font-semibold text-lg text-grey">
               {language === "en" ? "Install Fresthie's Coffee App" : "តំឡើងកម្មវិធី Fresthie's Coffee"}
             </h3>
             <button
               onClick={handleDismissInstall}
-              className="hover:text-gray-600 transition-colors"
-              style={{ color: COLORS.text.tertiary }}
+              className="hover:text-gray-300 transition-colors text-grey"
             >
               <X className="h-5 w-5" />
             </button>
           </div>
-          <p className="text-sm mb-4 leading-relaxed" style={{ color: COLORS.text.secondary }}>
+          <p className="text-sm mb-4 leading-relaxed text-gray-200">
             {language === "en"
               ? "Install our app now for more convenient. Access your menu and orders quickly from your home screen."
               : "តំឡើងកម្មវិធីឥឡូវនេះសម្រាប់ភាពងាយស្រួល។ ចូលប្រើម៉ឺនុយ និងការកម្មង់របស់អ្នកយ៉ាងរហ័សពីអេក្រង់ដើមរបស់អ្នក។"}
@@ -208,11 +220,7 @@ export function Header({
             <Button
               onClick={handleDismissInstall}
               variant="outline"
-              className="rounded-xl h-11 hover:bg-gray-50 transition-colors bg-transparent"
-              style={{
-                borderColor: COLORS.border.medium,
-                color: COLORS.text.primary,
-              }}
+              className="rounded-xl h-11 hover:bg-white/10 transition-colors bg-transparent text-white border-white/30"
             >
               {language === "en" ? "Not Now" : "មិនមែនឥឡូវ"}
             </Button>
@@ -220,12 +228,10 @@ export function Header({
         </div>
       )}
 
+      {/* Bottom Navigation - Same background as footer */}
       <nav
         className="fixed bottom-0 left-0 right-0 z-50 border-t shadow-lg"
-        style={{
-          backgroundColor: COLORS.background.primary,
-          borderColor: COLORS.border.light,
-        }}
+        style={headerBackgroundStyle}
       >
         <div className="grid grid-cols-5 h-16 max-w-lg mx-auto">
           <Button
@@ -235,25 +241,18 @@ export function Header({
               onScrollToSection("top")
             }}
             className={`flex flex-col items-center justify-center h-full px-2 py-2 rounded-none transition-all ${
-              currentSection === "top" ? "hover:bg-gray-50" : "hover:bg-gray-50"
-            }`}
-            style={{
-              color: currentSection === "top" ? COLORS.primary[600] : COLORS.text.secondary,
-            }}
+              currentSection === "top" ? "hover:bg-white/10" : "hover:bg-white/10"
+            } text-grey`}
           >
             <Home
               className={`h-5 w-5 mb-1 ${currentSection === "top" ? "fill-current" : ""}`}
-              style={{
-                color: currentSection === "top" ? COLORS.primary[600] : COLORS.text.secondary,
-              }}
             />
             <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
               {language === "en" ? "Home" : "ទំព័រដើម"}
             </span>
             {currentSection === "top" && (
               <div
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 rounded-t-full"
-                style={{ backgroundColor: COLORS.primary[600] }}
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 rounded-t-full bg-white"
               />
             )}
           </Button>
@@ -265,25 +264,18 @@ export function Header({
               onScrollToSection("menu")
             }}
             className={`flex flex-col items-center justify-center h-full px-2 py-2 rounded-none transition-all ${
-              currentSection === "menu" ? "hover:bg-gray-50" : "hover:bg-gray-50"
-            }`}
-            style={{
-              color: currentSection === "menu" ? COLORS.primary[600] : COLORS.text.secondary,
-            }}
+              currentSection === "menu" ? "hover:bg-white/10" : "hover:bg-white/10"
+            } text-grey`}
           >
             <Menu
               className={`h-5 w-5 mb-1 ${currentSection === "menu" ? "fill-current" : ""}`}
-              style={{
-                color: currentSection === "menu" ? COLORS.primary[600] : COLORS.text.secondary,
-              }}
             />
             <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
               {language === "en" ? "Menu" : "ម្ហូប"}
             </span>
             {currentSection === "menu" && (
               <div
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 rounded-t-full"
-                style={{ backgroundColor: COLORS.primary[600] }}
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 rounded-t-full bg-white"
               />
             )}
           </Button>
@@ -295,25 +287,18 @@ export function Header({
               onScrollToSection("contact")
             }}
             className={`flex flex-col items-center justify-center h-full px-2 py-2 rounded-none transition-all ${
-              currentSection === "contact" ? "hover:bg-gray-50" : "hover:bg-gray-50"
-            }`}
-            style={{
-              color: currentSection === "contact" ? COLORS.primary[600] : COLORS.text.secondary,
-            }}
+              currentSection === "contact" ? "hover:bg-white/10" : "hover:bg-white/10"
+            } text-grey`}
           >
             <Phone
               className={`h-5 w-5 mb-1 ${currentSection === "contact" ? "fill-current" : ""}`}
-              style={{
-                color: currentSection === "contact" ? COLORS.primary[600] : COLORS.text.secondary,
-              }}
             />
             <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
               {language === "en" ? "Contact" : "ទំនាក់ទំនង"}
             </span>
             {currentSection === "contact" && (
               <div
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 rounded-t-full"
-                style={{ backgroundColor: COLORS.primary[600] }}
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 rounded-t-full bg-white"
               />
             )}
           </Button>
@@ -321,14 +306,7 @@ export function Header({
           <Button
             variant="ghost"
             onClick={handleInstallClick}
-            className="flex flex-col items-center justify-center h-full px-2 py-2 rounded-none hover:bg-gray-50 transition-all"
-            style={{ color: COLORS.text.secondary }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = COLORS.primary[600]
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = COLORS.text.secondary
-            }}
+            className="flex flex-col items-center justify-center h-full px-2 py-2 rounded-none hover:bg-white/10 transition-all text-grey"
           >
             <Download className="h-5 w-5 mb-1" />
             <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
@@ -339,14 +317,7 @@ export function Header({
           <Button
             variant="ghost"
             onClick={onCartClick}
-            className="flex flex-col items-center justify-center h-full px-2 py-2 rounded-none hover:bg-gray-50 transition-all relative"
-            style={{ color: COLORS.text.secondary }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = COLORS.primary[600]
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = COLORS.text.secondary
-            }}
+            className="flex flex-col items-center justify-center h-full px-2 py-2 rounded-none hover:bg-white/10 transition-all relative text-grey"
           >
             <div className="relative">
               <ShoppingCart className="h-5 w-5 mb-1" />

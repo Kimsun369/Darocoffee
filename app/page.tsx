@@ -8,6 +8,7 @@ import { CartSidebar } from "@/components/cart-sidebar"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { InstallPrompt } from "@/components/install-prompt"
+import { COLORS } from "@/config/color-config"
 
 interface Product {
   id: number
@@ -226,7 +227,7 @@ export default function HomePage() {
   const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
-    <div className="min-h-screen bg-gradient pb-20">
+    <div className="min-h-screen pb-20" style={{ background: COLORS.background.gradient }}>
       <main>
         <Header
           cartItemCount={cartItemCount}
@@ -243,10 +244,16 @@ export default function HomePage() {
         <div id="menu-section">
           {isLoading ? (
             <div className="text-center py-20">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mb-4"></div>
+              <div 
+                className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 mb-4"
+                style={{ borderColor: COLORS.primary[600] }}
+              ></div>
               <p
-                className={`text-amber-800 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                style={{ fontFamily: language === "kh" ? "'Khmer OS', sans-serif" : undefined }}
+                className={`${language === "kh" ? "font-mono" : "font-sans"}`}
+                style={{ 
+                  color: COLORS.text.onLight,
+                  fontFamily: language === "kh" ? "'Khmer OS', sans-serif" : undefined 
+                }}
               >
                 {language === "en" ? "Loading menu..." : "កំពុងដំណើរការ menu..."}
               </p>
@@ -267,16 +274,25 @@ export default function HomePage() {
             />
           ) : (
             <div className="text-center py-20">
-              <div className="text-amber-600 text-6xl mb-4">☕</div>
+              <div 
+                className="text-6xl mb-4"
+                style={{ color: COLORS.primary[600] }}
+              >☕</div>
               <h3
-                className={`text-amber-800 text-xl font-semibold mb-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                style={{ fontFamily: language === "kh" ? "'Khmer OS', sans-serif" : undefined }}
+                className={`text-xl font-semibold mb-2 ${language === "kh" ? "font-mono" : "font-sans"}`}
+                style={{ 
+                  color: COLORS.text.onLight,
+                  fontFamily: language === "kh" ? "'Khmer OS', sans-serif" : undefined 
+                }}
               >
                 {language === "en" ? "Menu Not Available" : "Menu មិនអាចប្រើបាន"}
               </h3>
               <p
-                className={`text-amber-700 ${language === "kh" ? "font-mono" : "font-sans"}`}
-                style={{ fontFamily: language === "kh" ? "'Khmer OS', sans-serif" : undefined }}
+                className={`${language === "kh" ? "font-mono" : "font-sans"}`}
+                style={{ 
+                  color: COLORS.text.onLight,
+                  fontFamily: language === "kh" ? "'Khmer OS', sans-serif" : undefined 
+                }}
               >
                 {language === "en"
                   ? "Could not load menu from Google Sheet. Please check your Sheet ID, tab name, and publish settings. Try renaming your tab to 'Sheet1' and ensure it is published to the web."
@@ -285,8 +301,6 @@ export default function HomePage() {
             </div>
           )}
         </div>
-
-
       </main>
 
       <Footer language={language} />
