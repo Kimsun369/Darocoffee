@@ -2,7 +2,7 @@
 export type ThemeName = "amber" | "red" | "blue" | "green" | "purple" | "pink"
 
 // JUST CHANGE THIS VARIABLE TO SWITCH THEMES
-export const CURRENT_THEME: ThemeName = "pink" // Change to 'blue', 'green', etc.
+export const CURRENT_THEME: ThemeName = "amber" // Change to 'blue', 'green', etc.
 
 // Theme definitions
 const THEMES = {
@@ -107,19 +107,16 @@ const getThemeGradient = (theme: ThemeName) => {
 
 // Function to determine if background is light or dark for text contrast
 const getTextColorForBackground = (theme: ThemeName) => {
-  // For light gradient backgrounds, use dark text for contrast
-  const lightThemes = ["amber", "blue", "green", "pink"]
-  return lightThemes.includes(theme) ? "#111827" : "#ffffff"
+  // All gradients use light colors (50 and 100), so all need dark text
+  return "#111827" // Always use dark text for these light gradient backgrounds
 }
 
 const getSecondaryTextColor = (theme: ThemeName) => {
-  const lightThemes = ["amber", "blue", "green", "pink"]
-  return lightThemes.includes(theme) ? "#6b7280" : "#d1d5db"
+  return "#6b7280" // Use the same gray for all themes since backgrounds are light
 }
 
 const getTertiaryTextColor = (theme: ThemeName) => {
-  const lightThemes = ["amber", "blue", "green", "pink"]
-  return lightThemes.includes(theme) ? "#9ca3af" : "#9ca3af"
+  return "#9ca3af" // Use the same gray for all themes
 }
 
 // Shared colors (consistent across all themes)
