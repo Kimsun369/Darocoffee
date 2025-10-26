@@ -211,7 +211,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
               backgroundColor: COLORS.background.primary,
             }}
           >
-            <X className="h-4 w-4" />
+           
           </Button>
         </DialogHeader>
 

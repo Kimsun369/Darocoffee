@@ -453,12 +453,12 @@ export function MenuSection({
             <div
               className={`absolute top-2 left-2 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 ${language === "kh" ? "font-mono" : "font-sans"}`}
               style={{
-                background: "linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)",
+                background: `linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)`,
                 border: "2px solid #ffffff",
-                animation: "pulse 2s ease-in-out infinite",
+                animation: "discountPulse 2s ease-in-out infinite",
               }}
             >
-              <Sparkles className="h-3 w-3" style={{ animation: "spin 3s linear infinite" }} />
+              <Sparkles className="h-3 w-3" style={{ animation: "sparkleRotate 2s linear infinite" }} />
               <span>{`-${product.discount}%`}</span>
             </div>
           )}
@@ -482,9 +482,10 @@ export function MenuSection({
           >
             <Heart
               className={`h-5 w-5 transition-all duration-300 ${
-                favorites.has(product.id) ? "fill-red-500 text-red-500" : "text-gray-400"
+                favorites.has(product.id) ? "fill-red-500 text-red-500" : ""
               }`}
               style={{
+                color: favorites.has(product.id) ? COLORS.semantic.error : COLORS.gray[400],
                 animation: favorites.has(product.id) ? "heartBeat 0.5s ease-in-out" : "none",
               }}
             />
@@ -520,7 +521,7 @@ export function MenuSection({
                   </span>
                   <span
                     className={`text-sm font-medium line-through ${language === "kh" ? "font-mono" : "font-sans"}`}
-                    style={{ color: COLORS.primary[600] }}
+                    style={{ color: COLORS.text.tertiary }}
                   >
                     ${product.originalPrice.toFixed(2)}
                   </span>
@@ -566,11 +567,12 @@ export function MenuSection({
 
   return (
     <div className="min-h-screen" style={{ background: COLORS.background.gradient }}>
+      {/* Search Bar */}
       <div
         className="sticky top-0 z-40 border-b-2 shadow-md"
         style={{
           backgroundColor: COLORS.background.primary,
-          borderColor: COLORS.primary[600],
+          borderColor: COLORS.border.strong,
           animation: "slideDown 0.5s ease-out",
         }}
       >
@@ -604,9 +606,9 @@ export function MenuSection({
         <div
           className="relative border-y-4 shadow-2xl overflow-hidden"
           style={{
-            background: "linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)",
-            borderColor: "#991b1b",
-            animation: "glowPulse 3s ease-in-out infinite",
+            background: `linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)`,
+            borderColor: "#b91c1c",
+            animation: "discountGlow 3s ease-in-out infinite",
           }}
         >
           <div
@@ -635,14 +637,14 @@ export function MenuSection({
                   style={{
                     backgroundColor: "rgba(255, 255, 255, 0.2)",
                     backdropFilter: "blur(4px)",
-                    animation: "bounce 2s ease-in-out infinite",
+                    animation: "discountBounce 2s ease-in-out infinite",
                   }}
                 >
                   <Sparkles
                     className="h-7 w-7"
                     style={{
                       color: "#ffffff",
-                      animation: "sparkle 1.5s ease-in-out infinite",
+                      animation: "sparkleRotate 2s ease-in-out infinite",
                     }}
                   />
                 </div>
@@ -708,7 +710,7 @@ export function MenuSection({
                     style={{
                       backgroundColor: "#dc2626",
                       color: "#ffffff",
-                      animation: "pulse 2s ease-in-out infinite",
+                      animation: "badgePulse 2s ease-in-out infinite",
                     }}
                   >
                     {getEventProductCount.all}
@@ -742,7 +744,7 @@ export function MenuSection({
                       style={{
                         backgroundColor: "#dc2626",
                         color: "#ffffff",
-                        animation: "pulse 2s ease-in-out infinite",
+                        animation: "badgePulse 2s ease-in-out infinite",
                       }}
                     >
                       {getEventProductCount[event]}
@@ -804,7 +806,7 @@ export function MenuSection({
                     style={{
                       clipPath: "polygon(15% 0, 100% 0, 85% 100%, 0% 100%)",
                       marginLeft: index === 0 ? "0" : "-15px",
-                      backgroundColor: isSelected ? COLORS.primary[800] : COLORS.background.primary,
+                      backgroundColor: isSelected ? COLORS.primary[800] : COLORS.primary[600],
                       color: COLORS.text.inverse,
                       transform: isSelected ? "scale(1.05)" : "scale(1)",
                       zIndex: isSelected ? 10 : 1,
@@ -813,13 +815,11 @@ export function MenuSection({
                         : "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                       ...(imageUrl
                         ? {
-                            backgroundImage: `linear-gradient(${COLORS.primary[800]}80, ${COLORS.primary[800]}80), url(${imageUrl})`,
+                            backgroundImage: `linear-gradient(${COLORS.primary[800]}CC, ${COLORS.primary[800]}CC), url(${imageUrl})`,
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                           }
-                        : {
-                            backgroundColor: isSelected ? COLORS.primary[800] : COLORS.primary[600],
-                          }),
+                        : {}),
                     }}
                     onMouseEnter={(e) => {
                       if (!isSelected) {
@@ -1033,12 +1033,46 @@ export function MenuSection({
           }
         }
 
-        @keyframes glowPulse {
+        /* Updated discount animations to pulse between red shades */
+        @keyframes discountGlow {
           0%, 100% {
-            box-shadow: 0 0 20px rgba(220, 38, 38, 0.5), 0 0 40px rgba(220, 38, 38, 0.3);
+            /* Using static red colors for glow animation */
+            box-shadow: 0 0 20px #dc262680, 0 0 40px #dc262650;
           }
           50% {
-            box-shadow: 0 0 30px rgba(220, 38, 38, 0.8), 0 0 60px rgba(220, 38, 38, 0.5);
+            box-shadow: 0 0 30px #b91c1cCC, 0 0 60px #b91c1c80;
+          }
+        }
+
+        @keyframes discountPulse {
+          0%, 100% {
+            /* Using static red gradient that pulses between shades */
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            transform: scale(1);
+          }
+          50% {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            transform: scale(1.05);
+          }
+        }
+
+        @keyframes discountBounce {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+        }
+
+        @keyframes badgePulse {
+          0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+          50% {
+            transform: scale(1.1);
+            opacity: 0.95;
           }
         }
 
@@ -1051,34 +1085,14 @@ export function MenuSection({
           }
         }
 
-        @keyframes pulse {
-          0%, 100% {
-            transform: scale(1);
-            opacity: 1;
-          }
-          50% {
-            transform: scale(1.05);
-            opacity: 0.9;
-          }
-        }
-
-        @keyframes bounce {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-
-        @keyframes sparkle {
+        @keyframes sparkleRotate {
           0%, 100% {
             transform: scale(1) rotate(0deg);
             opacity: 1;
           }
           50% {
             transform: scale(1.2) rotate(180deg);
-            opacity: 0.8;
+            opacity: 0.9;
           }
         }
 
@@ -1125,15 +1139,6 @@ export function MenuSection({
         }
 
         @keyframes rotatePattern {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        @keyframes spin {
           from {
             transform: rotate(0deg);
           }
