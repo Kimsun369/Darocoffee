@@ -75,14 +75,64 @@ export function Header({
     },
   ]
 
+  // Navigation items configuration
+  const navItems = [
+    {
+      id: "top",
+      icon: Home,
+      label: {
+        en: "Home",
+        kh: "ទំព័រដើម"
+      }
+    },
+    {
+      id: "menu",
+      icon: Menu,
+      label: {
+        en: "Menu",
+        kh: "ម្ហូប"
+      }
+    },
+    {
+      id: "contact",
+      icon: Phone,
+      label: {
+        en: "Contact",
+        kh: "ទំនាក់ទំនង"
+      }
+    },
+    {
+      id: "install",
+      icon: Download,
+      label: {
+        en: "Install",
+        kh: "តំឡើង"
+      },
+      onClick: handleInstallClick
+    },
+    {
+      id: "cart",
+      icon: ShoppingCart,
+      label: {
+        en: "Cart",
+        kh: "កន្ត្រក"
+      },
+      onClick: onCartClick,
+      badge: cartItemCount
+    }
+  ]
+
   // Apply the same background color as footer
   const headerBackgroundStyle = {
     backgroundColor: COLORS.primary[100],
   }
 
   const promotionalBarStyle = {
-    backgroundColor: COLORS.primary[700], // Slightly lighter for promotional bar
+    backgroundColor: COLORS.primary[700],
   }
+
+  // Dynamic color for active state
+  const activeColor = COLORS.primary[600]
 
   return (
     <>
@@ -228,112 +278,80 @@ export function Header({
         </div>
       )}
 
-      {/* Bottom Navigation - Same background as footer */}
+      {/* Bottom Navigation - Fixed with proper active states */}
       <nav
         className="fixed bottom-0 left-0 right-0 z-50 border-t shadow-lg"
         style={headerBackgroundStyle}
       >
         <div className="grid grid-cols-5 h-16 max-w-lg mx-auto">
-          <Button
-            variant="ghost"
-            onClick={(e) => {
-              e.preventDefault()
-              onScrollToSection("top")
-            }}
-            className={`flex flex-col items-center justify-center h-full px-2 py-2 rounded-none transition-all ${
-              currentSection === "top" ? "hover:bg-white/10" : "hover:bg-white/10"
-            } text-grey`}
-          >
-            <Home
-              className={`h-5 w-5 mb-1 ${currentSection === "top" ? "fill-current" : ""}`}
-            />
-            <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
-              {language === "en" ? "Home" : "ទំព័រដើម"}
-            </span>
-            {currentSection === "top" && (
-              <div
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 rounded-t-full bg-white"
-              />
-            )}
-          </Button>
+          {navItems.map((item) => {
+            const isActive = currentSection === item.id;
+            const IconComponent = item.icon;
+            
+            return (
+              <Button
+                key={item.id}
+                variant="ghost"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (item.onClick) {
+                    item.onClick();
+                  } else if (item.id !== "install" && item.id !== "cart") {
+                    onScrollToSection(item.id);
+                  }
+                }}
+                className={`flex flex-col items-center justify-center h-full px-2 py-2 rounded-none transition-all relative group ${
+                  isActive ? "text-white" : "text-gray-600 hover:text-gray-800"
+                }`}
+              >
+                {/* Active indicator bar */}
+                {isActive && (
+                  <div
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 rounded-t-full"
+                    style={{ backgroundColor: activeColor }}
+                  />
+                )}
 
-          <Button
-            variant="ghost"
-            onClick={(e) => {
-              e.preventDefault()
-              onScrollToSection("menu")
-            }}
-            className={`flex flex-col items-center justify-center h-full px-2 py-2 rounded-none transition-all ${
-              currentSection === "menu" ? "hover:bg-white/10" : "hover:bg-white/10"
-            } text-grey`}
-          >
-            <Menu
-              className={`h-5 w-5 mb-1 ${currentSection === "menu" ? "fill-current" : ""}`}
-            />
-            <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
-              {language === "en" ? "Menu" : "ម្ហូប"}
-            </span>
-            {currentSection === "menu" && (
-              <div
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 rounded-t-full bg-white"
-              />
-            )}
-          </Button>
+                {/* Icon with active state */}
+                <div className="relative">
+                  <IconComponent 
+                    className={`h-5 w-5 mb-1 transition-colors ${
+                      isActive ? "fill-current" : ""
+                    }`}
+                    style={isActive ? { color: activeColor } : {}}
+                  />
+                  
+                  {/* Badge for cart */}
+                  {item.badge && item.badge > 0 && (
+                    <span
+                      className="absolute -top-2 -right-2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-sm"
+                      style={{ backgroundColor: COLORS.semantic.error }}
+                    >
+                      {item.badge > 99 ? "99+" : item.badge}
+                    </span>
+                  )}
+                </div>
 
-          <Button
-            variant="ghost"
-            onClick={(e) => {
-              e.preventDefault()
-              onScrollToSection("contact")
-            }}
-            className={`flex flex-col items-center justify-center h-full px-2 py-2 rounded-none transition-all ${
-              currentSection === "contact" ? "hover:bg-white/10" : "hover:bg-white/10"
-            } text-grey`}
-          >
-            <Phone
-              className={`h-5 w-5 mb-1 ${currentSection === "contact" ? "fill-current" : ""}`}
-            />
-            <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
-              {language === "en" ? "Contact" : "ទំនាក់ទំនង"}
-            </span>
-            {currentSection === "contact" && (
-              <div
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 rounded-t-full bg-white"
-              />
-            )}
-          </Button>
-
-          <Button
-            variant="ghost"
-            onClick={handleInstallClick}
-            className="flex flex-col items-center justify-center h-full px-2 py-2 rounded-none hover:bg-white/10 transition-all text-grey"
-          >
-            <Download className="h-5 w-5 mb-1" />
-            <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
-              {language === "en" ? "Install" : "តំឡើង"}
-            </span>
-          </Button>
-
-          <Button
-            variant="ghost"
-            onClick={onCartClick}
-            className="flex flex-col items-center justify-center h-full px-2 py-2 rounded-none hover:bg-white/10 transition-all relative text-grey"
-          >
-            <div className="relative">
-              <ShoppingCart className="h-5 w-5 mb-1" />
-              {cartItemCount > 0 && (
-                <span
-                  className="absolute -top-2 -right-2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-sm"
-                  style={{ backgroundColor: COLORS.semantic.error }}
+                {/* Label with active state */}
+                <span 
+                  className={`text-xs font-medium transition-colors ${
+                    language === "kh" ? "font-mono" : "font-sans"
+                  } ${isActive ? "font-semibold" : ""}`}
+                  style={isActive ? { color: activeColor } : {}}
                 >
-                  {cartItemCount > 99 ? "99+" : cartItemCount}
+                  {item.label[language]}
                 </span>
-              )}
-            </div>
-            <span className={`text-xs font-medium ${language === "kh" ? "font-mono" : "font-sans"}`}>
-              {language === "en" ? "Cart" : "កន្ត្រក"}
-            </span>
-          </Button>
+
+                {/* Hover effect */}
+                <div 
+                  className={`absolute inset-0 rounded-lg transition-opacity ${
+                    isActive ? "opacity-10" : "opacity-0 group-hover:opacity-5"
+                  }`}
+                  style={{ backgroundColor: activeColor }}
+                />
+              </Button>
+            );
+          })}
         </div>
       </nav>
     </>
