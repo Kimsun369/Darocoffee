@@ -37,9 +37,9 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --font-work-sans: "Work Sans", sans-serif;
-  --font-playfair-display: "Playfair Display", serif;
-  /* Added Kantumruy font variable for Khmer language */
+  /* Apple Fonts for English text */
+  --font-apple-english: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  /* Kantumruy font for Khmer language */
   --font-kantumruy: "Kantumruy", sans-serif;
 }
 
@@ -79,9 +79,10 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-work-sans);
-  --font-serif: var(--font-playfair-display);
-  /* Added Kantumruy font as mono font for Khmer text usage */
+  /* Set Apple fonts as default for English */
+  --font-sans: var(--font-apple-english);
+  --font-serif: var(--font-apple-english);
+  /* Keep Kantumruy for Khmer text */
   --font-mono: var(--font-kantumruy);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -124,9 +125,19 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    /* Apply Apple font to all elements by default */
+    font-family: var(--font-apple-english);
   }
   body {
     @apply bg-background text-foreground;
+  }
+  
+  /* Apply Kantumruy font specifically for Khmer language */
+  /* You can use this class on elements containing Khmer text */
+  .khmer-lang,
+  [lang="km"],
+  [lang="kh"] {
+    font-family: var(--font-kantumruy) !important;
   }
 }
 

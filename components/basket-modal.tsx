@@ -43,10 +43,12 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
   const [quantity, setQuantity] = useState(1)
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({})
   const [selectedOptionsPricing, setSelectedOptionsPricing] = useState<Record<string, number>>({})
+  const [showOptions, setShowOptions] = useState(false)
 
   useEffect(() => {
     if (product && isOpen) {
       setQuantity(1)
+      setShowOptions(false)
       const defaultOptions: Record<string, string> = {}
       const defaultPricing: Record<string, number> = {}
 
@@ -89,7 +91,22 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
     return basePrice + optionsPrice
   }
 
-  const handleAddToCart = () => {
+  const handleQuickAdd = () => {
+    const cartItem: CartItem = {
+      id: `${product.id}-${Date.now()}-${Math.random()}`,
+      productId: product.id,
+      name: language === "en" ? product.name : product.name_kh,
+      price: product.price * quantity, // Base price only for quick add
+      quantity,
+      options: {},
+      optionsPricing: {},
+    }
+
+    onAddToCart(cartItem)
+    onClose()
+  }
+
+  const handleAddWithOptions = () => {
     const cartItem: CartItem = {
       id: `${product.id}-${Date.now()}-${Math.random()}`,
       productId: product.id,
@@ -126,11 +143,13 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
     return optionMap[optionType]?.[language] || optionType
   }
 
+  const hasOptions = product.options && Object.keys(product.options).length > 0
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md max-h-[90vh] overflow-hidden p-0 sm:max-w-lg bg-[#faf8f5] border-amber-200/50">
         <DialogHeader className="relative px-5 sm:px-6 pt-5 sm:pt-6 pb-4 bg-gradient-to-b from-white to-amber-50/30">
-          <DialogTitle className="font-serif text-xl sm:text-2xl text-amber-900 leading-tight text-center pr-8">
+          <DialogTitle className="text-xl sm:text-2xl text-amber-900 leading-tight text-center pr-8">
             {language === "en" ? product.name : product.name_kh}
           </DialogTitle>
           
@@ -157,9 +176,41 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
               </div>
             )}
 
-            {product.options && Object.keys(product.options).length > 0 && (
+            {/* Quantity Selector - Always Visible */}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-5 sm:p-6 shadow-sm">
+              <h4 className="font-semibold text-stone-900 text-center mb-4 text-sm sm:text-base">
+                {language === "en" ? "Quantity" : "បរិមាណ"}
+              </h4>
+              <div className="flex items-center justify-center gap-6 sm:gap-8">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  disabled={quantity <= 1}
+                  className="rounded-full w-12 h-12 sm:w-14 sm:h-14 border-2 border-stone-300 hover:border-amber-900 hover:bg-amber-50 transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-90"
+                >
+                  <Minus className="h-5 w-5 sm:h-6 sm:w-6" />
+                </Button>
+
+                <span className="text-3xl sm:text-4xl font-bold text-amber-900 min-w-[3rem] text-center">
+                  {quantity}
+                </span>
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="rounded-full w-12 h-12 sm:w-14 sm:h-14 border-2 border-stone-300 hover:border-amber-900 hover:bg-amber-50 transition-all active:scale-90"
+                >
+                  <Plus className="h-5 w-5 sm:h-6 sm:w-6" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Options Section - Only shows after clicking "Add Item" */}
+            {showOptions && hasOptions && (
               <div className="space-y-5 sm:space-y-6">
-                {Object.entries(product.options).map(([optionType, options]) => (
+                {Object.entries(product.options!).map(([optionType, options]) => (
                   <div key={optionType} className="space-y-3">
                     <h4 className="font-semibold text-stone-900 text-sm sm:text-base tracking-tight">
                       {getOptionDisplayName(optionType)}
@@ -195,77 +246,69 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart, language }
               </div>
             )}
 
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-5 sm:p-6 shadow-sm">
-              <h4 className="font-semibold text-stone-900 text-center mb-4 text-sm sm:text-base">
-                {language === "en" ? "Quantity" : "បរិមាណ"}
-              </h4>
-              <div className="flex items-center justify-center gap-6 sm:gap-8">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  disabled={quantity <= 1}
-                  className="rounded-full w-12 h-12 sm:w-14 sm:h-14 border-2 border-stone-300 hover:border-amber-900 hover:bg-amber-50 transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-90"
-                >
-                  <Minus className="h-5 w-5 sm:h-6 sm:w-6" />
-                </Button>
+            {/* Price Breakdown - Only shows when options are visible */}
+            {showOptions && (
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-5 space-y-2.5 shadow-sm">
+                <div className="flex justify-between text-sm sm:text-base">
+                  <span className="text-stone-600">{language === "en" ? "Base price" : "តម្លៃមូលដ្ឋាន"}</span>
+                  <span className="font-medium text-stone-900">${product.price.toFixed(2)}</span>
+                </div>
 
-                <span className="text-3xl sm:text-4xl font-bold text-amber-900 min-w-[3rem] text-center">
-                  {quantity}
-                </span>
+                {Object.entries(selectedOptionsPricing).map(([optionType, price]) => {
+                  if (price > 0) {
+                    return (
+                      <div key={optionType} className="flex justify-between text-sm">
+                        <span className="text-stone-600">
+                          {getOptionDisplayName(optionType)}: {selectedOptions[optionType]}
+                        </span>
+                        <span className="text-amber-900 font-medium">+${price.toFixed(2)}</span>
+                      </div>
+                    )
+                  }
+                  return null
+                })}
 
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="rounded-full w-12 h-12 sm:w-14 sm:h-14 border-2 border-stone-300 hover:border-amber-900 hover:bg-amber-50 transition-all active:scale-90"
-                >
-                  <Plus className="h-5 w-5 sm:h-6 sm:w-6" />
-                </Button>
+                <div className="border-t border-stone-200 pt-2.5 flex justify-between font-semibold text-base sm:text-lg">
+                  <span className="text-stone-900">{language === "en" ? "Item total" : "សរុបមុខទំនិញ"}</span>
+                  <span className="text-amber-900">${calculateBasePriceWithOptions().toFixed(2)}</span>
+                </div>
               </div>
-            </div>
-
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-5 space-y-2.5 shadow-sm">
-              <div className="flex justify-between text-sm sm:text-base">
-                <span className="text-stone-600">{language === "en" ? "Base price" : "តម្លៃមូលដ្ឋាន"}</span>
-                <span className="font-medium text-stone-900">${product.price.toFixed(2)}</span>
-              </div>
-
-              {Object.entries(selectedOptionsPricing).map(([optionType, price]) => {
-                if (price > 0) {
-                  return (
-                    <div key={optionType} className="flex justify-between text-sm">
-                      <span className="text-stone-600">
-                        {getOptionDisplayName(optionType)}: {selectedOptions[optionType]}
-                      </span>
-                      <span className="text-amber-900 font-medium">+${price.toFixed(2)}</span>
-                    </div>
-                  )
-                }
-                return null
-              })}
-
-              <div className="border-t border-stone-200 pt-2.5 flex justify-between font-semibold text-base sm:text-lg">
-                <span className="text-stone-900">{language === "en" ? "Item total" : "សរុបមុខទំនិញ"}</span>
-                <span className="text-amber-900">${calculateBasePriceWithOptions().toFixed(2)}</span>
-              </div>
-            </div>
+            )}
           </div>
         </div>
 
+        {/* Fixed Bottom Section */}
         <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-white via-white to-white/80 backdrop-blur-md border-t border-amber-200/50 shadow-2xl px-5 sm:px-6 py-4 sm:py-5">
-          <div className="max-w-md mx-auto flex justify-between items-center gap-4 sm:gap-5">
-            <div className="flex flex-col">
-              <span className="text-xs text-stone-600">{language === "en" ? "Total" : "សរុប"}</span>
-              <span className="text-2xl sm:text-3xl font-bold text-amber-900">${calculateTotalPrice().toFixed(2)}</span>
+          <div className="max-w-md mx-auto space-y-4">
+            {/* Total Display */}
+            <div className="flex justify-between items-center">
+              <span className="text-lg font-semibold text-stone-900">
+                {language === "en" ? "Total" : "សរុប"}
+              </span>
+              <span className="text-2xl sm:text-3xl font-bold text-amber-900">
+                ${showOptions ? calculateTotalPrice().toFixed(2) : (product.price * quantity).toFixed(2)}
+              </span>
             </div>
 
-            <Button
-              onClick={handleAddToCart}
-              className="text-base sm:text-lg py-3 sm:py-3.5 px-8 sm:px-10 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 bg-amber-900 hover:bg-amber-800 text-white active:scale-95 font-semibold whitespace-nowrap"
-            >
-              {language === "en" ? "Add to Cart" : "បន្ថែមទៅកន្ត្រក"}
-            </Button>
+            {/* Add Button */}
+            {!showOptions ? (
+              <Button
+                onClick={hasOptions ? () => setShowOptions(true) : handleQuickAdd}
+                className="w-full text-base sm:text-lg py-3 sm:py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 bg-amber-900 hover:bg-amber-800 text-white active:scale-95 font-semibold"
+              >
+                {language === "en" 
+                  ? `Add ${quantity} item${quantity > 1 ? 's' : ''}`
+                  : `បន្ថែម ${quantity} មុខ`
+                }
+              </Button>
+            ) : (
+              <Button
+                onClick={handleAddWithOptions}
+                className="w-full text-base sm:text-lg py-3 sm:py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 bg-amber-900 hover:bg-amber-800 text-white active:scale-95 font-semibold"
+              >
+                {language === "en" ? "Add to Cart" : "បន្ថែមទៅកន្ត្រក"}
+              </Button>
+            )}
           </div>
         </div>
       </DialogContent>
