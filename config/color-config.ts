@@ -2,7 +2,7 @@
 export type ThemeName = "amber" | "red" | "blue" | "green" | "purple" | "pink" | "grey" | "yellow" | "gold" | "brown"
 
 // JUST CHANGE THIS VARIABLE TO SWITCH THEMES
-export const CURRENT_THEME: ThemeName = "purple" // Change to 'blue', 'green', etc.
+export const CURRENT_THEME: ThemeName = "pink" // Change to 'blue', 'green', etc.
 
 // Theme definitions
 const THEMES = {
