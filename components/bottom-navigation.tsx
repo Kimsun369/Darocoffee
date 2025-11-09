@@ -202,7 +202,7 @@ export function BottomNavigation({
                   }
                 }}
               >
-                <div className="relative">
+                {/* <div className="relative">
                   <item.icon className="h-5 w-5" />
                   {item.hasBadge && cartItemCount > 0 && (
                     <div
@@ -217,7 +217,7 @@ export function BottomNavigation({
                       {cartItemCount > 99 ? "99+" : cartItemCount}
                     </div>
                   )}
-                </div>
+                </div> */}
                 <span className="text-xs mt-1">{item.label}</span>
               </Button>
             ),

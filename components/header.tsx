@@ -322,12 +322,12 @@ export function Header({
                   />
                   
                   {/* Badge for cart */}
-                  {item.badge && item.badge > 0 && (
+                  {item.id === 'cart' && Number(cartItemCount) > 0 && (
                     <span
                       className="absolute -top-2 -right-2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-sm"
                       style={{ backgroundColor: COLORS.semantic.error }}
                     >
-                      {item.badge > 99 ? "99+" : item.badge}
+                      {cartItemCount > 99 ? "99+" : cartItemCount}
                     </span>
                   )}
                 </div>
